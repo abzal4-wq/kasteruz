@@ -1,0 +1,769 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500;1,600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* shadcn tokenlar (yorug' — admin uchun) */
+    --background: 40 33% 97%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 0 0% 10%;
+    --primary-foreground: 40 33% 97%;
+    --secondary: 40 33% 93%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 40 20% 92%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 36 33% 52%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 40 15% 88%;
+    --input: 40 15% 88%;
+    --ring: 36 33% 52%;
+    --radius: 0.45rem;
+
+    /* charcoal shkalasi (matn — CSS o'zgaruvchi orqali, dark rejimda aylanadi) */
+    --charcoal-50: 245 245 245;  --charcoal-100: 232 232 232;
+    --charcoal-200: 200 200 200; --charcoal-300: 168 168 168;
+    --charcoal-400: 136 136 136; --charcoal-500: 104 104 104;
+    --charcoal-600: 72 72 72;    --charcoal-700: 46 46 46;
+    --charcoal-800: 26 26 26;    --charcoal-900: 13 13 13;
+
+    /* urg'u (accent) — yorug'da brand-500 */
+    --accent-rgb: var(--brand-500);
+
+    /* asosiy tugma (yorug': to'q charcoal) */
+    --btn-bg: 26 26 26;  --btn-fg: 250 248 244;  --btn-bg-h: 46 46 46;
+
+    /* maydon (input) foni */
+    --field: 0 0 0 / 0.04;
+
+    /* Mavzu urg'u rangi (standart: Atelier Gold #C9A227) */
+    --brand-50: 251 246 230;  --brand-100: 245 233 194; --brand-200: 235 212 137;
+    --brand-300: 224 192 79;  --brand-400: 212 175 55;  --brand-500: 201 162 39;
+    --brand-600: 166 132 30;  --brand-700: 131 104 24;  --brand-800: 94 75 18;
+    --brand-900: 61 49 12;
+    --bg-deep: #14110a; --bg-deep2: #0a0805;
+  }
+
+  /* ═══ MAVZULAR ═══ (brand shkalasi + to'q fon rangi) */
+  html[data-theme="brown"] {
+    --brand-50: 251 246 230;  --brand-100: 245 233 194; --brand-200: 235 212 137;
+    --brand-300: 224 192 79;  --brand-400: 212 175 55;  --brand-500: 201 162 39;
+    --brand-600: 166 132 30;  --brand-700: 131 104 24;  --brand-800: 94 75 18;
+    --brand-900: 61 49 12;
+    --bg-deep: #14110a; --bg-deep2: #0a0805;
+  }
+  html[data-theme="black"] {
+    --brand-50: 244 244 244;  --brand-100: 228 228 228; --brand-200: 200 200 200;
+    --brand-300: 176 176 178; --brand-400: 130 130 134; --brand-500: 90 90 96;
+    --brand-600: 64 64 70;    --brand-700: 44 44 48;    --brand-800: 28 28 30;
+    --brand-900: 16 16 18;
+    --bg-deep: #2b2b31; --bg-deep2: #161619;
+  }
+  html[data-theme="navy"] {
+    --brand-50: 237 242 248;  --brand-100: 213 224 238; --brand-200: 173 193 220;
+    --brand-300: 130 165 210; --brand-400: 86 130 186;  --brand-500: 56 96 150;
+    --brand-600: 40 72 116;   --brand-700: 30 54 86;    --brand-800: 22 40 64;
+    --brand-900: 14 26 42;
+    --bg-deep: #16314f; --bg-deep2: #0b1a2e;
+  }
+  html[data-theme="green"] {
+    --brand-50: 236 244 239;  --brand-100: 211 230 219; --brand-200: 169 206 184;
+    --brand-300: 128 192 158; --brand-400: 82 156 118;  --brand-500: 56 120 88;
+    --brand-600: 42 94 68;    --brand-700: 32 72 52;    --brand-800: 24 54 40;
+    --brand-900: 16 38 28;
+    --bg-deep: #173c27; --bg-deep2: #0c2114;
+  }
+  html[data-theme="platinum"] {
+    --brand-50: 248 247 245;  --brand-100: 238 235 231; --brand-200: 222 217 210;
+    --brand-300: 206 200 190; --brand-400: 180 172 160; --brand-500: 156 148 136;
+    --brand-600: 124 116 104; --brand-700: 96 90 81;    --brand-800: 70 65 58;
+    --brand-900: 46 42 37;
+    --bg-deep: #34302a; --bg-deep2: #1d1a15;
+  }
+
+  /* ═══ FON REJIMI ═══ (data-mode) — urg'u rangidan mustaqil orqa fon.
+     data-theme'dan keyin yozilgani uchun --bg-deep'ni ustun qiladi. */
+  html[data-mode="dark"]  { --bg-deep: #0f0f0f; --bg-deep2: #060606; }
+  html[data-mode="light"] { --bg-deep: #f4f1ea; --bg-deep2: #e8e2d6; }
+
+  /* ═══ DARK REJIM (faqat .app-dark ichida — storefront) ═══ */
+  .app-dark {
+    color: rgb(var(--charcoal-800));
+    /* charcoal shkalasini matn uchun yorug'ga aylantiramiz */
+    --charcoal-50: 60 57 52;    --charcoal-100: 78 74 68;
+    --charcoal-200: 100 95 88;  --charcoal-300: 130 124 116;
+    --charcoal-400: 158 151 142; --charcoal-500: 180 173 163;
+    --charcoal-600: 205 199 189; --charcoal-700: 226 221 212;
+    --charcoal-800: 244 241 234; --charcoal-900: 252 250 246;
+
+    /* dark rejimda urg'u yorqinroq (brand-300) */
+    --accent-rgb: var(--brand-300);
+
+    /* asosiy tugma yorug' (oq), matn to'q */
+    --btn-bg: 244 241 234; --btn-fg: 22 19 15; --btn-bg-h: 255 255 255;
+
+    /* maydon foni — yorug' shaffof */
+    --field: 255 255 255 / 0.08;
+
+    /* shadcn tokenlar dark */
+    --foreground: 40 30% 94%;
+    --muted-foreground: 40 8% 62%;
+    --border: 40 8% 26%;
+    --background: 30 20% 6%;
+    --card: 30 14% 12%;
+    --popover: 30 14% 12%;
+    --secondary: 40 6% 18%;
+    --secondary-foreground: 40 30% 94%;
+  }
+
+  /* Header hero ustida — matnni yorug' qiladi, LEKIN ::before fon YO'Q.
+     (app-dark'ni ishlatsak, uning fixed ::before'i butun sahifani qoplab
+     qo'yardi — shuning uchun alohida klass.) */
+  .nav-over-hero {
+    color: rgb(var(--charcoal-800));
+    --charcoal-50: 60 57 52;    --charcoal-100: 78 74 68;
+    --charcoal-200: 100 95 88;  --charcoal-300: 130 124 116;
+    --charcoal-400: 158 151 142; --charcoal-500: 180 173 163;
+    --charcoal-600: 205 199 189; --charcoal-700: 226 221 212;
+    --charcoal-800: 244 241 234; --charcoal-900: 252 250 246;
+    --accent-rgb: var(--brand-300);
+  }
+
+  /* ═══ LIGHT REJIM (storefront, .app-light) ═══
+     Matn to'q (default :root charcoal), urg'u to'qroq, tugma to'q.
+     "Sahna" bo'limlari (hero, marquee, footer) barcha rejimda qorong'i
+     qoladi — shuning uchun text-cream'ni global to'qga aylantirmaymiz. */
+  .app-light {
+    color: rgb(var(--charcoal-800));
+    --accent-rgb: var(--brand-600);
+    --btn-bg: 26 26 26; --btn-fg: 250 248 244; --btn-bg-h: 46 46 46;
+    --field: 0 0 0 / 0.045;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply text-foreground font-sans;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+    background: #faf8f4;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* ─── Storefront dark fon — toza, glow'siz (real klassik) ─── */
+  .app-dark::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    transition: background 0.5s ease;
+    background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-deep2) 100%);
+  }
+
+  /* Light rejimda "sahna" bo'limlari (hero, marquee) qorong'i qoladi —
+     dramatik kontrast. Dark/navy rejimda esa shaffof (umumiy fonni ko'rsatadi). */
+  .app-light .scene-dark {
+    background: linear-gradient(165deg, #1b1611 0%, #0c0a07 100%);
+  }
+
+  /* ─── Light fon — toza, glow'siz ─── */
+  .app-light::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    transition: background 0.5s ease;
+    background: linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-deep2) 100%);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   ADMIN — 5 ta to'liq palitra (vibe) tizimi
+   Har bir mavzu butun ko'rinishni boshqaradi: fon, yuza, matn,
+   sidebar, urg'u, chegara, soya. Faqat .admin-skin ichida.
+   ════════════════════════════════════════════════════════════ */
+.admin-skin {
+  /* Standart (Elegant Brown) */
+  --ad-bg: #F3EEE6;
+  --ad-surface: #FBF8F3;
+  --ad-surface-2: #F6F1E9;
+  --ad-text: #3B2A1E;
+  --ad-text-2: #6E5D4E;
+  --ad-text-3: #9A8B7C;
+  --ad-border: #EAE2D5;
+  --ad-accent: #A9743C;
+  --ad-accent-soft: rgba(169, 116, 60, 0.12);
+  --ad-on-accent: #FFFFFF;
+  --ad-sidebar: linear-gradient(180deg, #2C1E12 0%, #1E140B 100%);
+  --ad-sidebar-text: #F0E6D8;
+  --ad-sidebar-muted: rgba(240, 230, 216, 0.55);
+  --ad-sidebar-active: rgba(169, 116, 60, 0.22);
+  --ad-glass: rgba(251, 248, 243, 0.72);
+}
+html[data-theme="navy"] .admin-skin {
+  --ad-bg: #EEF2F8;
+  --ad-surface: #FFFFFF;
+  --ad-surface-2: #F4F7FC;
+  --ad-text: #0A192F;
+  --ad-text-2: #45556C;
+  --ad-text-3: #8A98AD;
+  --ad-border: #E1E7F1;
+  --ad-accent: #2952CC;
+  --ad-accent-soft: rgba(41, 82, 204, 0.10);
+  --ad-on-accent: #FFFFFF;
+  --ad-sidebar: linear-gradient(180deg, #0E2342 0%, #0A192F 100%);
+  --ad-sidebar-text: #E6EDF7;
+  --ad-sidebar-muted: rgba(230, 237, 247, 0.55);
+  --ad-sidebar-active: rgba(41, 82, 204, 0.32);
+  --ad-glass: rgba(255, 255, 255, 0.72);
+}
+html[data-theme="green"] .admin-skin {
+  --ad-bg: #F4F1E8;
+  --ad-surface: #FBFAF4;
+  --ad-surface-2: #F2EFE2;
+  --ad-text: #1E3A2B;
+  --ad-text-2: #4A6353;
+  --ad-text-3: #8B9C8F;
+  --ad-border: #E7E1D0;
+  --ad-accent: #B8995A;
+  --ad-accent-soft: rgba(184, 153, 90, 0.14);
+  --ad-on-accent: #1E3A2B;
+  --ad-sidebar: linear-gradient(180deg, #1C3A28 0%, #122719 100%);
+  --ad-sidebar-text: #EDEAD9;
+  --ad-sidebar-muted: rgba(237, 234, 217, 0.55);
+  --ad-sidebar-active: rgba(184, 153, 90, 0.26);
+  --ad-glass: rgba(251, 250, 244, 0.72);
+}
+html[data-theme="black"] .admin-skin {
+  --ad-bg: #FFFFFF;
+  --ad-surface: #FFFFFF;
+  --ad-surface-2: #F6F6F6;
+  --ad-text: #0A0A0A;
+  --ad-text-2: #555555;
+  --ad-text-3: #9A9A9A;
+  --ad-border: #ECECEC;
+  --ad-accent: #111111;
+  --ad-accent-soft: rgba(0, 0, 0, 0.06);
+  --ad-on-accent: #FFFFFF;
+  --ad-sidebar: linear-gradient(180deg, #161616 0%, #000000 100%);
+  --ad-sidebar-text: #FFFFFF;
+  --ad-sidebar-muted: rgba(255, 255, 255, 0.5);
+  --ad-sidebar-active: rgba(255, 255, 255, 0.14);
+  --ad-glass: rgba(255, 255, 255, 0.7);
+}
+html[data-theme="platinum"] .admin-skin {
+  --ad-bg: #FBFBFC;
+  --ad-surface: #FFFFFF;
+  --ad-surface-2: #F7F7F9;
+  --ad-text: #2B2B2B;
+  --ad-text-2: #6B6B6F;
+  --ad-text-3: #A6A6AC;
+  --ad-border: #EEEEF1;
+  --ad-accent: #3A3A3C;
+  --ad-accent-soft: rgba(58, 58, 60, 0.07);
+  --ad-on-accent: #FFFFFF;
+  --ad-sidebar: linear-gradient(180deg, #FFFFFF 0%, #F6F6F8 100%);
+  --ad-sidebar-text: #2B2B2B;
+  --ad-sidebar-muted: rgba(43, 43, 43, 0.5);
+  --ad-sidebar-active: rgba(58, 58, 60, 0.08);
+  --ad-glass: rgba(255, 255, 255, 0.7);
+}
+
+@layer components {
+  /* ─── Admin yuzalar va soyalar ─────────────────────────── */
+  .ad-card {
+    background: var(--ad-surface);
+    border-radius: 22px;
+    box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04),
+                0 10px 28px -12px rgba(17, 24, 39, 0.12);
+    transition: box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .ad-card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 2px 4px rgba(17, 24, 39, 0.05),
+                0 22px 48px -16px rgba(17, 24, 39, 0.22);
+  }
+  .ad-glass-bar {
+    background: var(--ad-glass);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    border: 1px solid var(--ad-border);
+  }
+  .ad-pressable {
+    transition: transform 0.15s ease;
+  }
+  .ad-pressable:active {
+    transform: scale(0.96);
+  }
+
+  /* Jadval qatori */
+  .ad-row {
+    transition: background 0.2s ease;
+  }
+  .ad-row:hover {
+    background: var(--ad-surface-2);
+  }
+
+  /* Ikonka tugma */
+  .ad-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.25rem;
+    width: 2.25rem;
+    border-radius: 0.75rem;
+    color: var(--ad-text-3);
+    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  }
+  .ad-icon-btn:hover {
+    background: var(--ad-surface-2);
+    color: var(--ad-text);
+  }
+  .ad-icon-btn:active {
+    transform: scale(0.92);
+  }
+
+  /* Asosiy tugma (urg'u) */
+  .ad-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    padding: 0.65rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: var(--ad-accent);
+    color: var(--ad-on-accent);
+    box-shadow: 0 8px 20px -8px var(--ad-accent);
+    transition: filter 0.2s ease, transform 0.15s ease;
+  }
+  .ad-btn:hover { filter: brightness(1.08); }
+  .ad-btn:active { transform: scale(0.96); }
+
+  /* Qidiruv / maydon (pill) */
+  .ad-input {
+    width: 100%;
+    border-radius: 9999px;
+    background: var(--ad-surface);
+    border: 1px solid var(--ad-border);
+    color: var(--ad-text);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .ad-input::placeholder { color: var(--ad-text-3); }
+  .ad-input:focus {
+    outline: none;
+    border-color: var(--ad-accent);
+    box-shadow: 0 0 0 3px var(--ad-accent-soft);
+  }
+
+  /* Pill belgi (badge) */
+  .ad-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+  }
+
+  .container-page {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* ─── iOS Liquid Glass yuzalar (yorug' — admin) ─────────── */
+  .glass {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px rgba(17, 17, 17, 0.08);
+  }
+  .glass-nav {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+  }
+  .glass-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+  }
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+  }
+
+  /* ─── Dark Liquid Glass (storefront) ─── */
+  .app-dark .glass {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.4);
+  }
+  .app-dark .glass-nav {
+    background: rgba(16, 14, 12, 0.55);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .app-dark .glass-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  }
+  .app-dark .glass-strong {
+    background: rgba(38, 35, 32, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Footer — barcha fon rejimlarida qorong'i (cream/gold matn doim o'qiladi) */
+  .footer-dark {
+    background: rgba(26, 23, 20, 0.88);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Maydon (input/select) foni — rejimga moslashadi */
+  .field-surface {
+    background: rgb(var(--field));
+  }
+
+  /* iOS bosish effekti */
+  .tap {
+    @apply transition-transform duration-150 active:scale-95;
+  }
+
+  /* Safe-area (iPhone pastki chizig'i) */
+  .pb-safe {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
+  }
+
+  /* Gorizontal scroll — scrollbar yashirin */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-card {
+    @apply transition-all duration-300 hover:-translate-y-1;
+  }
+
+  /* Narx */
+  .price-main {
+    @apply font-sans font-semibold text-charcoal;
+  }
+  .price-sale {
+    @apply font-sans font-semibold text-gold;
+  }
+  .price-original {
+    @apply font-sans text-muted-foreground line-through;
+  }
+
+  /* Auth ekran input (ikonka bilan birga ishlatiladi) */
+  .auth-input {
+    @apply w-full bg-transparent py-3 text-sm text-charcoal outline-none placeholder:text-charcoal-400;
+  }
+
+  /* Input (iOS) */
+  .input-kaster {
+    @apply field-surface w-full rounded-xl border border-white/10
+           px-4 py-3 text-sm text-foreground
+           placeholder:text-muted-foreground
+           focus:outline-none focus:ring-2 focus:ring-gold/50
+           transition-all duration-200;
+  }
+}
+
+/* Scroll bar (iOS — nozik) */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, 0.35); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(128, 128, 128, 0.55); }
+
+/* Instagram-uslubidagi "double-tap" yurak portlashi */
+@keyframes heartPop {
+  0%   { transform: scale(0) rotate(-12deg); opacity: 0; }
+  15%  { transform: scale(1.25) rotate(-12deg); opacity: 1; }
+  35%  { transform: scale(0.95) rotate(-12deg); opacity: 1; }
+  50%  { transform: scale(1.05) rotate(-12deg); opacity: 1; }
+  100% { transform: scale(1.1) rotate(-12deg); opacity: 0; }
+}
+.animate-heart-pop {
+  animation: heartPop 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Rasm yuklanish placeholder */
+.img-placeholder {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ═══ SPLASH (o'yin kabi kutib olish) ═══ */
+@keyframes splashLogoIn {
+  0%   { opacity: 0; transform: scale(0.4) rotate(-12deg); }
+  55%  { opacity: 1; transform: scale(1.12) rotate(4deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+@keyframes splashRing {
+  0%   { transform: scale(0.6); opacity: 0; }
+  40%  { opacity: 0.9; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+@keyframes splashSweep {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes splashLetter {
+  0%   { opacity: 0; transform: translateY(18px); letter-spacing: 0.6em; }
+  100% { opacity: 1; transform: translateY(0); letter-spacing: 0.32em; }
+}
+@keyframes splashFade {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes splashBar {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@keyframes splashOut {
+  0%   { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.12); visibility: hidden; }
+}
+@keyframes splashDraw {
+  to { stroke-dashoffset: 0; }
+}
+.splash-out { animation: splashOut 0.6s cubic-bezier(0.7,0,0.84,0) forwards; }
+
+/* Kuchaytirilgan splash effektlari */
+@keyframes splashBurst {
+  0%   { opacity: 0; transform: scale(0.2); }
+  35%  { opacity: 0.85; }
+  100% { opacity: 0; transform: scale(2.8); }
+}
+@keyframes splashIconIn {
+  0%   { opacity: 0; transform: scale(0.3) translateY(30px) rotate(-10deg); }
+  55%  { opacity: 1; transform: scale(1.1) translateY(0) rotate(3deg); }
+  75%  { transform: scale(0.97) rotate(-1deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+@keyframes splashShine {
+  0%   { transform: translateX(-200%) skewX(-20deg); }
+  55%  { transform: translateX(220%) skewX(-20deg); }
+  100% { transform: translateX(220%) skewX(-20deg); }
+}
+@keyframes splashSpark {
+  0%   { opacity: 0; transform: scale(0) rotate(0deg); }
+  45%  { opacity: 1; transform: scale(1) rotate(90deg); }
+  100% { opacity: 0; transform: scale(0.2) rotate(170deg); }
+}
+@keyframes splashLetterPop {
+  0%   { opacity: 0; transform: translateY(22px) scale(0.8); }
+  60%  { opacity: 1; transform: translateY(-3px) scale(1.04); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes splashUnderline {
+  0%   { transform: scaleX(0); opacity: 0; }
+  100% { transform: scaleX(1); opacity: 1; }
+}
+@keyframes splashFlash {
+  0%   { opacity: 0; }
+  50%  { opacity: 0.5; }
+  100% { opacity: 0; }
+}
+
+/* Auth ekran kirish animatsiyasi */
+@keyframes authIn {
+  0%   { opacity: 0; transform: translateY(24px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.auth-in { animation: authIn 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* Stagger (ketma-ket paydo bo'lish) */
+@keyframes staggerIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══ EDITORIAL / CINEMATIC (yangi dizayn) ═══ */
+/* Harakatlanuvchi nur (hero spotlight) */
+@keyframes heroSpot {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.85; }
+  50%      { transform: translate(-44%, -56%) scale(1.18); opacity: 1; }
+}
+/* Kinetik tipografika — pastdan ochilib chiqadi */
+@keyframes kineticUp {
+  0%   { transform: translateY(115%) rotate(3deg); opacity: 0; }
+  100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+}
+/* Cheksiz yuruvchi lenta (marquee) */
+@keyframes marqueeX {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track { animation: marqueeX 26s linear infinite; will-change: transform; }
+.marquee-track.rev { animation-direction: reverse; }
+/* Scroll ishorasi */
+@keyframes scrollHint {
+  0%   { transform: translateY(-2px); opacity: 0; }
+  40%  { opacity: 1; }
+  100% { transform: translateY(10px); opacity: 0; }
+}
+/* Oltin matn yaltirashi */
+@keyframes textShine {
+  to { background-position: 200% center; }
+}
+.text-shimmer {
+  background: linear-gradient(100deg, currentColor 30%, rgb(var(--brand-200)) 50%, currentColor 70%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShine 4s linear infinite;
+}
+/* Yumshoq doimiy suzish */
+@keyframes driftY {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+.stagger-grid > * {
+  animation: staggerIn 0.5s cubic-bezier(0.22,1,0.36,1) both;
+}
+.stagger-grid > *:nth-child(1)  { animation-delay: 0.04s; }
+.stagger-grid > *:nth-child(2)  { animation-delay: 0.08s; }
+.stagger-grid > *:nth-child(3)  { animation-delay: 0.12s; }
+.stagger-grid > *:nth-child(4)  { animation-delay: 0.16s; }
+.stagger-grid > *:nth-child(5)  { animation-delay: 0.20s; }
+.stagger-grid > *:nth-child(6)  { animation-delay: 0.24s; }
+.stagger-grid > *:nth-child(7)  { animation-delay: 0.28s; }
+.stagger-grid > *:nth-child(8)  { animation-delay: 0.32s; }
+.stagger-grid > *:nth-child(n+9) { animation-delay: 0.36s; }
+
+/* Toast — yuqoridan suzib kirish */
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-16px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Sahifa o'tish animatsiyasi (route transition) */
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page-transition {
+  animation: pageIn 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* "Harakatni kamaytirish" sozlamasi — barcha animatsiyalarni o'chiradi */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* iOS toggle switch */
+.ios-switch {
+  position: relative;
+  width: 3.25rem;
+  height: 1.85rem;
+  border-radius: 9999px;
+  background: rgba(120,120,128,0.32);
+  transition: background 0.25s ease;
+  flex-shrink: 0;
+}
+.ios-switch[data-on="true"] {
+  background: rgb(var(--accent-rgb));
+}
+.ios-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 1.55rem; height: 1.55rem;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  transition: transform 0.25s cubic-bezier(0.22,1,0.36,1);
+}
+.ios-switch[data-on="true"]::after {
+  transform: translateX(1.4rem);
+}
+
+/* Brendlar cheksiz sirpanma lentasi */
+@keyframes brandMarquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-33.3333%); }
+}
+.brand-marquee {
+  animation: brandMarquee 30s linear infinite;
+  will-change: transform;
+}
+.brand-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Navbar hero ustida shaffof bo'lganda — yuqoridan nozik qoraytirgich (matn o'qilishi uchun) */
+.nav-scrim {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.15) 60%, transparent 100%);
+}
+
+/* Gorizontal slayder — scrollbar'ni yashirish */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Konfetti — xarid muvaffaqiyatli bo'lganda tushadigan bo'lakchalar */
+@keyframes confettiFall {
+  0%   { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate3d(var(--cx, 0), 110vh, 0) rotate(var(--cr, 720deg)); opacity: 0; }
+}
+.confetti-piece {
+  position: absolute;
+  top: 0;
+  width: 0.6rem;
+  height: 0.9rem;
+  border-radius: 2px;
+  will-change: transform, opacity;
+  animation: confettiFall var(--cd, 2.8s) cubic-bezier(0.22, 0.61, 0.36, 1) var(--cdelay, 0s) forwards;
+}
