@@ -8,10 +8,10 @@ dist/
 build/
 .next/
 
-# Environment
+# Environment — barcha .env* chetlanadi, faqat namuna qoladi
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 
 # Logs
 *.log
