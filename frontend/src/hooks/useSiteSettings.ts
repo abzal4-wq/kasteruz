@@ -37,8 +37,7 @@ export interface SiteSettings {
 }
 
 export const SITE_DEFAULTS: SiteSettings = {
-  heroImage:
-    "https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=1600&q=85&auto=format&fit=crop",
+  heroImage: "/hero.jpg",
   heroTitle1: "Tikilgan",
   heroTitle2: "mukammallik",
   heroSubtitle:
