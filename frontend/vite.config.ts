@@ -11,7 +11,7 @@ export default defineConfig({
   },
   server: {
     host: true, // tarmoqqa ochish (telefon/boshqa qurilmalardan kirish uchun)
-    port: 5173,
+    port: Number(process.env.PORT) || 5173, // PORT env (preview) yoki standart 5173
     proxy: {
       "/api": {
         target: "http://localhost:4000",

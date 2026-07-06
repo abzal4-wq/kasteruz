@@ -93,10 +93,11 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-      // ─── Tipografika (iOS — SF Pro / system) ─────────────────
+      // ─── Tipografika (Héritage — o'yma serif) ─────────────────
       fontFamily: {
-        serif:  ["Playfair Display", "Fraunces", "Georgia", "serif"],
-        sans:   ["-apple-system", "BlinkMacSystemFont", "SF Pro Display", "Inter", "Manrope", "system-ui", "sans-serif"],
+        serif:   ["Cormorant Garamond", "Georgia", "serif"],
+        display: ["Cinzel", "Cormorant Garamond", "Georgia", "serif"],
+        sans:    ["Inter", "-apple-system", "BlinkMacSystemFont", "SF Pro Display", "system-ui", "sans-serif"],
       },
       letterSpacing: {
         widest: "0.2em",

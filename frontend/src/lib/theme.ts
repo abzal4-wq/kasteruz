@@ -14,6 +14,7 @@ export interface ThemeDef {
 }
 
 export const THEMES: ThemeDef[] = [
+  { id: "bordeaux", name_uz: "Bordo", name_ru: "Бордовый", swatch: "#853631" },
   { id: "brown", name_uz: "Jigarrang", name_ru: "Коричневый", swatch: "#B08D57" },
   { id: "black", name_uz: "Qora", name_ru: "Чёрный", swatch: "#2E2E2E" },
   { id: "navy", name_uz: "To'q ko'k", name_ru: "Тёмно-синий", swatch: "#2C4A6E" },
@@ -24,7 +25,7 @@ export const THEMES: ThemeDef[] = [
 export type ThemeId = (typeof THEMES)[number]["id"];
 
 const KEY = "kaster-theme";
-const DEFAULT: ThemeId = "brown";
+const DEFAULT: ThemeId = "bordeaux";
 
 export function loadTheme(): ThemeId {
   try {
@@ -72,7 +73,7 @@ export const BG_MODES: BgModeDef[] = [
 export type BgMode = (typeof BG_MODES)[number]["id"];
 
 const MODE_KEY = "kaster-bgmode";
-const DEFAULT_MODE: BgMode = "dark";
+const DEFAULT_MODE: BgMode = "light";
 
 export function loadBgMode(): BgMode {
   try {

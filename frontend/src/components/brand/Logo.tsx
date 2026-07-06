@@ -6,16 +6,50 @@ interface LogoProps {
   variant?: "dark" | "light";
 }
 
+// Maison gerbi — romb ichida "K" monogrami (o'yma uslub)
+export function LogoCrest({ className, size = 34 }: { className?: string; size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 40 40"
+      fill="none"
+      className={className}
+      aria-hidden
+    >
+      {/* Tashqi romb */}
+      <rect x="6.5" y="6.5" width="27" height="27" transform="rotate(45 20 20)" stroke="currentColor" strokeWidth="1" />
+      {/* Ichki romb (hairline) */}
+      <rect x="9.5" y="9.5" width="21" height="21" transform="rotate(45 20 20)" stroke="currentColor" strokeWidth="0.6" opacity="0.55" />
+      {/* K monogram */}
+      <text
+        x="20"
+        y="25.6"
+        textAnchor="middle"
+        fontFamily="Cinzel, Cormorant Garamond, Georgia, serif"
+        fontSize="15"
+        fontWeight="600"
+        fill="currentColor"
+      >
+        K
+      </text>
+    </svg>
+  );
+}
+
 export function Logo({ className, variant = "dark" }: LogoProps) {
   const color = variant === "dark" ? "text-charcoal" : "text-cream";
 
   return (
-    <Link to="/" className={cn("inline-flex flex-col items-center leading-none", className)}>
-      <span className={cn("font-serif text-xl font-semibold uppercase tracking-[0.32em]", color)}>
-        Kaster
-      </span>
-      <span className={cn("mt-1 text-[0.55rem] uppercase tracking-[0.38em] text-gold")}>
-        Menswear · Toshkent
+    <Link to="/" className={cn("group inline-flex items-center gap-2.5 leading-none sm:gap-3", className)}>
+      <LogoCrest size={26} className="flex-shrink-0 text-gold transition-transform duration-500 group-hover:scale-110 sm:h-[34px] sm:w-[34px]" />
+      <span className="flex flex-col">
+        <span className={cn("font-display text-[0.9rem] font-semibold uppercase tracking-[0.24em] sm:text-lg sm:tracking-[0.3em]", color)}>
+          Kaster
+        </span>
+        <span className="mt-1 whitespace-nowrap text-[0.44rem] uppercase tracking-[0.26em] text-gold sm:text-[0.48rem] sm:tracking-[0.3em]">
+          Sartoria · Toshkent
+        </span>
       </span>
     </Link>
   );

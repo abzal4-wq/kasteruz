@@ -6,6 +6,7 @@ import { IS_DEMO } from "@/lib/demo-data";
 export type SectionId =
   | "featured"
   | "categories"
+  | "looks"
   | "standard"
   | "story"
   | "brands"
@@ -15,6 +16,7 @@ export type SectionId =
 export const SECTION_LABELS: Record<SectionId, string> = {
   featured: "Tavsiya etilgan",
   categories: "Kolleksiyalar",
+  looks: "Looklar (kombinatsiyalar)",
   standard: "Kaster standarti",
   story: "Brend hikoyasi",
   brands: "Brendlar",
@@ -48,6 +50,7 @@ export const SITE_DEFAULTS: SiteSettings = {
   ],
   sections: [
     { id: "featured", visible: true },
+    { id: "looks", visible: true },
     { id: "standard", visible: true },
     { id: "categories", visible: true },
     { id: "story", visible: true },

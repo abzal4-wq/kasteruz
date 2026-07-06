@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500;1,600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -44,15 +44,22 @@
     /* maydon (input) foni */
     --field: 0 0 0 / 0.04;
 
-    /* Mavzu urg'u rangi (standart: Atelier Gold #C9A227) */
-    --brand-50: 251 246 230;  --brand-100: 245 233 194; --brand-200: 235 212 137;
-    --brand-300: 224 192 79;  --brand-400: 212 175 55;  --brand-500: 201 162 39;
-    --brand-600: 166 132 30;  --brand-700: 131 104 24;  --brand-800: 94 75 18;
-    --brand-900: 61 49 12;
-    --bg-deep: #14110a; --bg-deep2: #0a0805;
+    /* Mavzu urg'u rangi (standart: Maison Bordeaux #853631 — oxblood) */
+    --brand-50: 250 244 240;  --brand-100: 241 226 219; --brand-200: 224 189 178;
+    --brand-300: 206 149 136; --brand-400: 175 100 88;  --brand-500: 133 54 49;
+    --brand-600: 107 42 40;   --brand-700: 84 33 32;    --brand-800: 60 24 23;
+    --brand-900: 40 16 15;
+    --bg-deep: #17100d; --bg-deep2: #0a0605;
   }
 
   /* ═══ MAVZULAR ═══ (brand shkalasi + to'q fon rangi) */
+  html[data-theme="bordeaux"] {
+    --brand-50: 250 244 240;  --brand-100: 241 226 219; --brand-200: 224 189 178;
+    --brand-300: 206 149 136; --brand-400: 175 100 88;  --brand-500: 133 54 49;
+    --brand-600: 107 42 40;   --brand-700: 84 33 32;    --brand-800: 60 24 23;
+    --brand-900: 40 16 15;
+    --bg-deep: #17100d; --bg-deep2: #0a0605;
+  }
   html[data-theme="brown"] {
     --brand-50: 251 246 230;  --brand-100: 245 233 194; --brand-200: 235 212 137;
     --brand-300: 224 192 79;  --brand-400: 212 175 55;  --brand-500: 201 162 39;
@@ -91,8 +98,8 @@
 
   /* ═══ FON REJIMI ═══ (data-mode) — urg'u rangidan mustaqil orqa fon.
      data-theme'dan keyin yozilgani uchun --bg-deep'ni ustun qiladi. */
-  html[data-mode="dark"]  { --bg-deep: #0f0f0f; --bg-deep2: #060606; }
-  html[data-mode="light"] { --bg-deep: #f4f1ea; --bg-deep2: #e8e2d6; }
+  html[data-mode="dark"]  { --bg-deep: #12100d; --bg-deep2: #070605; }
+  html[data-mode="light"] { --bg-deep: #f7f2e7; --bg-deep2: #ede5d3; }
 
   /* ═══ DARK REJIM (faqat .app-dark ichida — storefront) ═══ */
   .app-dark {
@@ -161,7 +168,7 @@
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior-y: none;
-    background: #faf8f4;
+    background: #f7f2e7;
   }
 
   h1, h2, h3, h4 {
@@ -186,7 +193,7 @@
   /* Light rejimda "sahna" bo'limlari (hero, marquee) qorong'i qoladi —
      dramatik kontrast. Dark/navy rejimda esa shaffof (umumiy fonni ko'rsatadi). */
   .app-light .scene-dark {
-    background: linear-gradient(165deg, #1b1611 0%, #0c0a07 100%);
+    background: linear-gradient(165deg, #1a1210 0%, #0b0706 100%);
   }
 
   /* ─── Light fon — toza, glow'siz ─── */
@@ -752,6 +759,117 @@ html[data-theme="platinum"] .admin-skin {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* ════════════════════════════════════════════════════════════
+   MAISON HÉRITAGE — o'yma (engraved) klassik dizayn tili
+   Parchment + siyoh + bordo. Double-hairline ramkalar, muhr,
+   drop-cap, tikuv chiziqlari, ark oynalar.
+   ════════════════════════════════════════════════════════════ */
+
+/* Siyoh rangli nozik chiziq (rejimga moslashadi) */
+.rule-ink {
+  height: 1px;
+  background: rgb(var(--charcoal-800) / 0.16);
+}
+
+/* Ikki qavatli o'yma ramka — klassik kitob muqovasi uslubi */
+.frame-double {
+  position: relative;
+}
+.frame-double::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgb(var(--charcoal-800) / 0.28);
+  pointer-events: none;
+}
+.frame-double::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgb(var(--charcoal-800) / 0.14);
+  pointer-events: none;
+}
+
+/* Tikuv (bosma nuqta) chizig'i — tikuvchilik motifi */
+.stitch-h {
+  height: 1px;
+  background-image: linear-gradient(90deg, rgb(var(--charcoal-800) / 0.45) 42%, transparent 42%);
+  background-size: 9px 1px;
+}
+
+/* Drop cap — bosh harf o'yma uslubda */
+.dropcap::first-letter {
+  float: left;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 3.9em;
+  line-height: 0.78;
+  padding: 0.06em 0.14em 0 0;
+  color: rgb(var(--accent-rgb));
+}
+
+/* Aylanuvchi muhr (seal) */
+@keyframes sealSpin {
+  to { transform: rotate(360deg); }
+}
+.seal-spin {
+  animation: sealSpin 26s linear infinite;
+  will-change: transform;
+}
+
+/* O'yma tugma — letterpress, keskin burchak, ichki hairline */
+.btn-press {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: rgb(var(--btn-bg));
+  color: rgb(var(--btn-fg));
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+.btn-press::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgb(var(--btn-fg) / 0.35);
+  pointer-events: none;
+  transition: inset 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btn-press:hover { background: rgb(var(--btn-bg-h)); }
+.btn-press:hover::after { inset: 6px; }
+.btn-press:active { transform: scale(0.97); }
+
+/* Hairline tugma (ikkilamchi) */
+.btn-hairline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border: 1px solid rgb(var(--charcoal-800) / 0.35);
+  color: rgb(var(--charcoal-800));
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+.btn-hairline:hover {
+  border-color: rgb(var(--accent-rgb));
+  background: rgb(var(--accent-rgb) / 0.06);
+}
+
+/* Ramka burchak belgisi (+) — chizma/pattern motifi */
+.corner-mark {
+  position: absolute;
+  width: 17px;
+  height: 17px;
+  pointer-events: none;
+}
+.corner-mark::before,
+.corner-mark::after {
+  content: "";
+  position: absolute;
+  background: rgb(var(--charcoal-800) / 0.55);
+}
+.corner-mark::before { left: 8px; top: 0; width: 1px; height: 100%; }
+.corner-mark::after  { top: 8px; left: 0; height: 1px; width: 100%; }
 
 /* Konfetti — xarid muvaffaqiyatli bo'lganda tushadigan bo'lakchalar */
 @keyframes confettiFall {

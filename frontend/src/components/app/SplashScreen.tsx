@@ -1,28 +1,22 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/auth";
-
-// Uchqunlar (sparkle) joylashuvi — ikonka atrofida
-const SPARKS = [
-  { top: "8%", left: "18%", size: 10, delay: 0.5 },
-  { top: "14%", left: "82%", size: 14, delay: 0.7 },
-  { top: "60%", left: "8%", size: 12, delay: 0.9 },
-  { top: "70%", left: "88%", size: 9, delay: 1.0 },
-  { top: "30%", left: "92%", size: 8, delay: 1.2 },
-  { top: "40%", left: "4%", size: 11, delay: 0.65 },
-];
+import { useThemeStore } from "@/store/theme";
+import { LogoCrest } from "@/components/brand/Logo";
 
 const LETTERS = "KASTER".split("");
 
-// O'yin kabi kutib olish ekrani — ilk yuklanishda bir marta
+// Maison kutib olish ekrani — titul varaq uslubida, ilk yuklanishda bir marta
 export function SplashScreen() {
   const initialized = useAuthStore((s) => s.initialized);
+  // Splash .app-dark tashqarisida — dark rejimda matnni yorug'ga o'girish uchun
+  const bgMode = useThemeStore((s) => s.bgMode);
   const [minTimeDone, setMinTimeDone] = useState(false);
   const [forced, setForced] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [gone, setGone] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => setMinTimeDone(true), 2600);
+    const t = setTimeout(() => setMinTimeDone(true), 2400);
     // Xavfsizlik klapani: auth init osilib qolsa ham splash ~5s da albatta ketadi
     // (aks holda u butun saytni abadiy bloklab qo'yardi).
     const hard = setTimeout(() => setForced(true), 5000);
@@ -41,81 +35,48 @@ export function SplashScreen() {
 
   return (
     <div
-      className={`fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-hidden ${leaving ? "splash-out" : ""}`}
-      style={{ background: "linear-gradient(165deg, var(--bg-deep) 0%, var(--bg-deep2) 100%)" }}
+      className={`fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-hidden ${bgMode === "dark" ? "nav-over-hero" : ""} ${leaving ? "splash-out" : ""}`}
+      style={{ background: "linear-gradient(170deg, var(--bg-deep) 0%, var(--bg-deep2) 100%)" }}
     >
-      {/* Harakatlanuvchi fon nurlari */}
+      {/* Titul varaq ramkasi — ikki qavat hairline */}
       <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(38rem 38rem at 20% 8%, rgb(var(--brand-400)/0.5), transparent 60%)," +
-            "radial-gradient(42rem 42rem at 85% 92%, rgb(var(--brand-300)/0.45), transparent 60%)",
-          animation: "splashFade 1s ease-out both",
-        }}
+        className="pointer-events-none absolute inset-4 border border-charcoal/25 sm:inset-6"
+        style={{ animation: "splashFade 0.9s ease-out 0.15s both" }}
       />
-      {/* Vinetka */}
-      <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(circle at 50% 42%, transparent 40%, rgba(0,0,0,0.5) 100%)" }} />
+      <div
+        className="pointer-events-none absolute inset-4 border border-charcoal/10 sm:inset-6"
+        style={{ margin: 7, animation: "splashFade 0.9s ease-out 0.3s both" }}
+      />
 
-      {/* Logo zonasi */}
-      <div className="relative flex h-52 w-52 items-center justify-center">
-        {/* Markaziy yorug'lik portlashi */}
-        <div
-          className="absolute h-40 w-40 rounded-full"
-          style={{
-            background: "radial-gradient(circle, rgb(var(--brand-300)/0.9), transparent 65%)",
-            animation: "splashBurst 1.1s ease-out 0.15s both",
-          }}
-        />
-        {/* Aylanuvchi konic shimmer */}
-        <div
-          className="absolute h-52 w-52 rounded-full opacity-50"
-          style={{
-            background: "conic-gradient(from 0deg, transparent, rgb(var(--brand-300)/0.65), transparent 38%)",
-            animation: "splashSweep 2.6s linear infinite",
-          }}
-        />
-        {/* Tarqaluvchi halqalar */}
-        <span className="absolute h-36 w-36 rounded-full border border-gold/40" style={{ animation: "splashRing 2.3s ease-out infinite" }} />
-        <span className="absolute h-36 w-36 rounded-full border border-gold/30" style={{ animation: "splashRing 2.3s ease-out 0.8s infinite" }} />
+      {/* Gerb zonasi — aylanuvchi muhr halqasi ichida */}
+      <div className="relative flex h-48 w-48 items-center justify-center">
+        {/* Aylanuvchi nuqta-halqa (tikuv motifi) */}
+        <div className="seal-spin absolute inset-0">
+          <svg viewBox="0 0 100 100" className="h-full w-full text-charcoal">
+            <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeOpacity="0.4" strokeWidth="0.5" strokeDasharray="3 4" />
+          </svg>
+        </div>
+        {/* Ichki statik halqa */}
+        <span className="absolute inset-5 rounded-full border border-charcoal/15" style={{ animation: "splashFade 1s ease-out 0.4s both" }} />
+        {/* Tarqaluvchi halqa */}
+        <span className="absolute h-36 w-36 rounded-full border border-gold/30" style={{ animation: "splashRing 2.6s ease-out 1s infinite" }} />
 
-        {/* Uchqunlar */}
-        {SPARKS.map((s, i) => (
-          <span
-            key={i}
-            className="absolute text-gold"
-            style={{ top: s.top, left: s.left, fontSize: s.size, animation: `splashSpark 1.6s ease-out ${s.delay}s infinite` }}
-          >
-            ✦
-          </span>
-        ))}
-
-        {/* Kostyum ikonka + porlash */}
-        <div
-          className="relative h-36 w-36 overflow-hidden rounded-2xl shadow-float ring-1 ring-white/10"
-          style={{ animation: "splashIconIn 1s cubic-bezier(0.22,1,0.36,1) both" }}
-        >
-          <img src="/icon-512.png" alt="Kaster" className="h-full w-full object-cover" />
-          {/* Diagonal porlash (gloss) */}
-          <div
-            className="absolute inset-y-0 -left-1/2 w-1/2"
-            style={{
-              background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent)",
-              animation: "splashShine 1.8s ease-in-out 0.7s both",
-            }}
-          />
+        {/* Gerb */}
+        <div style={{ animation: "splashIconIn 1s cubic-bezier(0.22,1,0.36,1) 0.2s both" }}>
+          <LogoCrest size={86} className="text-gold" />
         </div>
       </div>
 
-      {/* Brend nomi — harfma-harf */}
-      <div className="mt-10 flex">
+      {/* Brend nomi — harfma-harf, o'yma serif */}
+      <div className="mt-9 flex">
         {LETTERS.map((ch, i) => (
           <span
             key={i}
-            className="font-serif text-4xl font-light text-cream"
+            className="font-display text-3xl font-semibold text-charcoal sm:text-4xl"
             style={{
-              letterSpacing: "0.08em",
-              animation: `splashLetterPop 0.6s cubic-bezier(0.22,1,0.36,1) ${0.7 + i * 0.08}s both`,
+              letterSpacing: "0.24em",
+              marginRight: i === LETTERS.length - 1 ? "-0.24em" : 0,
+              animation: `splashLetterPop 0.6s cubic-bezier(0.22,1,0.36,1) ${0.6 + i * 0.09}s both`,
             }}
           >
             {ch}
@@ -123,31 +84,36 @@ export function SplashScreen() {
         ))}
       </div>
 
-      {/* Oltin chiziq (underline) */}
+      {/* Ornament chiziq */}
       <div
-        className="mt-3 h-[2px] w-28 origin-center rounded-full bg-gold"
-        style={{ animation: "splashUnderline 0.7s cubic-bezier(0.22,1,0.36,1) 1.25s both" }}
-      />
-
-      <p
-        className="mt-3 text-[0.6rem] uppercase tracking-[0.45em] text-gold"
-        style={{ animation: "splashFade 0.7s ease-out 1.5s both" }}
+        className="mt-4 flex items-center gap-2.5"
+        style={{ animation: "splashUnderline 0.7s cubic-bezier(0.22,1,0.36,1) 1.3s both" }}
       >
-        Menswear · Toshkent
-      </p>
-
-      {/* Pastki progress chizig'i */}
-      <div className="absolute bottom-16 h-0.5 w-44 overflow-hidden rounded-full bg-white/10">
-        <div
-          className="h-full w-full origin-left rounded-full bg-gold"
-          style={{ animation: "splashBar 2.5s cubic-bezier(0.5,0,0.2,1) forwards" }}
-        />
+        <span className="h-px w-10 bg-gold/60" />
+        <span className="text-[0.5rem] text-gold">◆</span>
+        <span className="h-px w-10 bg-gold/60" />
       </div>
 
-      {/* Chiqishdagi yorug'lik chaqnashi */}
-      {leaving && (
-        <div className="pointer-events-none absolute inset-0 bg-gold" style={{ animation: "splashFlash 0.6s ease-out both" }} />
-      )}
+      <p
+        className="mt-4 text-[0.6rem] uppercase tracking-[0.45em] text-gold"
+        style={{ animation: "splashFade 0.7s ease-out 1.5s both" }}
+      >
+        Sartoria · Toshkent
+      </p>
+      <p
+        className="mt-2 font-serif text-xs italic text-charcoal-400"
+        style={{ animation: "splashFade 0.7s ease-out 1.7s both" }}
+      >
+        Est. MMXXIV
+      </p>
+
+      {/* Pastki progress chizig'i — hairline */}
+      <div className="absolute bottom-14 h-px w-44 overflow-hidden bg-charcoal/15">
+        <div
+          className="h-full w-full origin-left bg-gold"
+          style={{ animation: "splashBar 2.4s cubic-bezier(0.5,0,0.2,1) forwards" }}
+        />
+      </div>
     </div>
   );
 }

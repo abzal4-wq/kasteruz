@@ -24,7 +24,6 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useBrands } from "@/hooks/useBrands";
-import { usePageMeta } from "@/hooks/usePageMeta";
 
 const ALL_SIZES = ["46", "48", "50", "52", "54", "56"];
 const ALL_FITS = [
@@ -43,10 +42,7 @@ export default function CatalogPage() {
   const brandParam = searchParams.get("brand") ?? undefined;
 
   const [sizes, setSizes] = useState<string[]>([]);
-  const [colors, setColors] = useState<string[]>([]);
   const [fitType, setFitType] = useState<string>("");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
   const [sort, setSort] = useState<ProductFilters["sort"]>("newest");
   const [filterOpen, setFilterOpen] = useState(false);
 
@@ -55,31 +51,20 @@ export default function CatalogPage() {
   const currentCategory = categories?.find((c) => c.slug === categorySlug);
   const currentBrand = allBrands?.find((b) => b.id === brandParam);
 
-  // Filtr variantlari uchun asosiy ro'yxat (o'lcham/rang/narx filtrisiz)
-  const { data: baseProducts } = useProducts({ categorySlug, brand: brandParam, search: searchQuery });
-  const availableColors = useMemo(() => {
-    const m = new Map<string, string | null>();
-    baseProducts?.forEach((p) =>
-      p.variants?.forEach((v) => {
-        if (v.color && !m.has(v.color)) m.set(v.color, v.color_hex ?? null);
-      })
-    );
-    return Array.from(m.entries());
-  }, [baseProducts]);
+  // Mahsulotlar brend NOMI bilan saqlanadi, URL esa brend ID beradi —
+  // filtrga nomni uzatamiz (aks holda hech narsa topilmaydi)
+  const brandName = currentBrand?.name ?? brandParam;
 
   const filters: ProductFilters = useMemo(
     () => ({
       categorySlug,
-      brand: brandParam,
+      brand: brandName,
       search: searchQuery,
       sizes: sizes.length ? sizes : undefined,
-      colors: colors.length ? colors : undefined,
       fitType: fitType || undefined,
-      minPrice: minPrice ? Number(minPrice) : undefined,
-      maxPrice: maxPrice ? Number(maxPrice) : undefined,
       sort,
     }),
-    [categorySlug, brandParam, searchQuery, sizes, colors, fitType, minPrice, maxPrice, sort]
+    [categorySlug, brandName, searchQuery, sizes, fitType, sort]
   );
 
   const { data: products, isLoading } = useProducts(filters);
@@ -89,23 +74,14 @@ export default function CatalogPage() {
       prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
     );
   }
-  function toggleColor(color: string) {
-    setColors((prev) =>
-      prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]
-    );
-  }
 
   function resetFilters() {
     setSizes([]);
-    setColors([]);
     setFitType("");
-    setMinPrice("");
-    setMaxPrice("");
     if (brandParam) navigate("/catalog");
   }
 
-  const activeCount = sizes.length + colors.length + (fitType ? 1 : 0) + (minPrice || maxPrice ? 1 : 0);
-  const hasActiveFilters = activeCount > 0 || !!brandParam;
+  const hasActiveFilters = sizes.length > 0 || fitType !== "" || !!brandParam;
 
   // Filtr paneli (sheet va desktop uchun umumiy)
   const FilterContent = () => (
@@ -156,58 +132,6 @@ export default function CatalogPage() {
         </div>
       </div>
 
-      {/* Rang */}
-      {availableColors.length > 0 && (
-        <div>
-          <h4 className="mb-3 font-sans text-xs font-semibold uppercase tracking-widest text-charcoal">
-            Rang
-          </h4>
-          <div className="flex flex-wrap gap-2.5">
-            {availableColors.map(([name, hex]) => (
-              <button
-                key={name}
-                onClick={() => toggleColor(name)}
-                title={name}
-                aria-label={name}
-                className={cn(
-                  "h-9 w-9 rounded-full border transition-all hover:scale-110",
-                  colors.includes(name)
-                    ? "scale-110 border-charcoal ring-2 ring-gold ring-offset-2 ring-offset-transparent"
-                    : "border-border"
-                )}
-                style={{ backgroundColor: hex ?? "#ccc" }}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Narx */}
-      <div>
-        <h4 className="mb-3 font-sans text-xs font-semibold uppercase tracking-widest text-charcoal">
-          Narx (so'm)
-        </h4>
-        <div className="flex items-center gap-2">
-          <input
-            type="number"
-            inputMode="numeric"
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-            placeholder="dan"
-            className="input-kaster w-full"
-          />
-          <span className="text-muted-foreground">—</span>
-          <input
-            type="number"
-            inputMode="numeric"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            placeholder="gacha"
-            className="input-kaster w-full"
-          />
-        </div>
-      </div>
-
       {hasActiveFilters && (
         <Button variant="outline" onClick={resetFilters} className="w-full">
           <X className="mr-2 h-4 w-4" />
@@ -231,8 +155,6 @@ export default function CatalogPage() {
     : currentCategory
     ? pick(currentCategory, "name")
     : t("nav.catalog");
-
-  usePageMeta(`${heading} — Kaster.uz | Erkaklar kiyimlari`);
 
   return (
     <div className="container-page py-10">
@@ -325,9 +247,9 @@ export default function CatalogPage() {
                 <Button variant="outline" size="sm" className="lg:hidden">
                   <SlidersHorizontal className="mr-2 h-4 w-4" />
                   {t("filters.title")}
-                  {activeCount > 0 && (
-                    <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-sm bg-gold text-[0.65rem] text-white">
-                      {activeCount}
+                  {hasActiveFilters && (
+                    <span className="ml-2 flex h-5 w-5 items-center justify-center bg-gold text-[0.65rem] text-white">
+                      {sizes.length + (fitType ? 1 : 0)}
                     </span>
                   )}
                 </Button>
@@ -357,7 +279,7 @@ export default function CatalogPage() {
           </div>
 
           {/* Grid */}
-          <div className="grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-3 md:gap-x-4 md:gap-y-8">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-3">
             {isLoading
               ? Array.from({ length: 6 }).map((_, i) => <ProductCardSkeleton key={i} />)
               : products?.map((product, i) => (
