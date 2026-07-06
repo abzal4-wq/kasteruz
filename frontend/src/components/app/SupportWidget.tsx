@@ -43,7 +43,7 @@ export function SupportWidget() {
   }[];
 
   return (
-    <div className="fixed bottom-28 left-4 z-40 flex flex-col items-start gap-3 lg:bottom-6">
+    <div className="fab-lift fixed bottom-28 left-4 z-40 flex flex-col items-start gap-3 transition-[bottom] duration-300 lg:bottom-6">
       {/* Kanallar */}
       {open && (
         <div className="flex animate-[scale-in_0.2s_ease-out] flex-col gap-2.5">

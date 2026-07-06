@@ -144,6 +144,16 @@ export default function ProductPage() {
     return () => io.disconnect();
   }, [product?.id]);
 
+  // Yopishqoq panel chiqqanda suzuvchi tugmalar (chat, tepaga) u bilan
+  // to'qnashmasligi uchun body'ga belgi qo'yamiz (index.css'da ko'tariladi)
+  useEffect(() => {
+    if (showStickyBuy) document.body.dataset.stickyBuy = "1";
+    else delete document.body.dataset.stickyBuy;
+    return () => {
+      delete document.body.dataset.stickyBuy;
+    };
+  }, [showStickyBuy]);
+
   // Yaqinda ko'rilgan mahsulotlarga qo'shish
   useEffect(() => {
     if (!product) return;

@@ -112,6 +112,12 @@ export function BrandCarousel() {
         <div className="pointer-events-none absolute inset-2.5 z-20 border sm:inset-4" style={{ borderColor: `${tx}2e` }} />
         <div className="pointer-events-none absolute inset-2.5 z-20 hidden border sm:block sm:inset-4" style={{ margin: 6, borderColor: `${tx}17` }} />
 
+        {/* Ink pardasi — yorqin brend ranglarini maison palitrasiga moslab yumshatadi */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{ background: "rgba(20, 15, 11, 0.24)" }}
+        />
+
         {/* Nozik urg'u nuri */}
         <div
           className="pointer-events-none absolute inset-0 transition-opacity duration-700"

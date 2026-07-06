@@ -21,7 +21,7 @@ export function BackToTop() {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }}
       aria-label="Tepaga"
-      className="glass-strong tap fixed bottom-28 right-4 z-40 flex h-11 w-11 animate-[scale-in_0.25s_ease-out] items-center justify-center rounded-full text-charcoal shadow-float lg:bottom-6"
+      className="fab-lift glass-strong tap fixed bottom-28 right-4 z-40 flex h-11 w-11 animate-[scale-in_0.25s_ease-out] items-center justify-center rounded-full text-charcoal shadow-float transition-[bottom] duration-300 lg:bottom-6"
     >
       <ArrowUp className="h-5 w-5" />
     </button>

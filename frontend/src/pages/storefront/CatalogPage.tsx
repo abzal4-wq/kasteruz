@@ -179,7 +179,7 @@ export default function CatalogPage() {
                   "h-8 w-8 rounded-full border transition-all hover:scale-110",
                   colors.includes(color)
                     ? "scale-110 border-charcoal ring-2 ring-gold ring-offset-2"
-                    : "border-border"
+                    : "border-charcoal/25 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.06)]"
                 )}
                 style={{ background: hex ?? "#ccc" }}
               />
@@ -270,7 +270,8 @@ export default function CatalogPage() {
               >
                 {heading}
               </h1>
-              {!isLoading && (
+              {/* Kichik assortimentda sonni ko'rsatmaymiz (kolleksiya taassurotini saqlaymiz) */}
+              {!isLoading && (products?.length ?? 0) >= 20 && (
                 <p className="mt-3 text-sm text-muted-foreground">
                   {products?.length ?? 0} {t("common.pieces")}
                 </p>

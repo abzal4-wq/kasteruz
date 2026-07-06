@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <rect width="40" height="40" fill="#12100d"/>
+  <rect x="7.5" y="7.5" width="25" height="25" transform="rotate(45 20 20)" fill="none" stroke="#EDE6D5" stroke-width="1.4"/>
+  <text x="20" y="26.2" text-anchor="middle" font-family="Cinzel, Cormorant Garamond, Georgia, serif" font-size="16" font-weight="600" fill="#EDE6D5">K</text>
+</svg>

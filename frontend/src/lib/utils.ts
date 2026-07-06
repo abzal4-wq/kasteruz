@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 // UZS formatida narx ko'rsatish: 1290000 → "1 290 000 so'm"
 export function formatPrice(amount: number): string {
   return (
-    new Intl.NumberFormat("uz-UZ", {
+    new Intl.NumberFormat("ru-RU", {
       maximumFractionDigits: 0,
     }).format(amount) + " so'm"
   );
@@ -16,7 +16,7 @@ export function formatPrice(amount: number): string {
 
 // Qisqa format: 1290000 → "1 290 000"
 export function formatNumber(amount: number): string {
-  return new Intl.NumberFormat("uz-UZ", {
+  return new Intl.NumberFormat("ru-RU", {
     maximumFractionDigits: 0,
   }).format(amount);
 }

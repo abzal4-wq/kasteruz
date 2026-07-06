@@ -885,3 +885,11 @@ html[data-theme="platinum"] .admin-skin {
   will-change: transform, opacity;
   animation: confettiFall var(--cd, 2.8s) cubic-bezier(0.22, 0.61, 0.36, 1) var(--cdelay, 0s) forwards;
 }
+
+/* ─── Suzuvchi tugmalar (chat, tepaga) — mobil yopishqoq "Savatga"
+   paneli chiqqanda ustma-ust tushmasligi uchun yuqoriga ko'tariladi ─── */
+@media (max-width: 1023.98px) {
+  body[data-sticky-buy="1"] .fab-lift {
+    bottom: 11rem;
+  }
+}
