@@ -132,6 +132,14 @@ export default function ProductPage() {
     setQuantity(1);
   }, [selectedVariant?.id]);
 
+  // Tanlangan rangga mos suratga o'tamiz (bitta model — har rang o'z rasmida)
+  useEffect(() => {
+    if (!selectedColor || !product?.images?.length) return;
+    const idx = product.images.findIndex((im) => im.color === selectedColor);
+    if (idx >= 0) setActiveImage(idx);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedColor, product?.id]);
+
   // Mobil yopishqoq panel — asosiy "Savatga" tugmasi ekrandan chiqsa ko'rsatamiz
   useEffect(() => {
     const el = buyRowRef.current;

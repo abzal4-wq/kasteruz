@@ -73,6 +73,7 @@ export interface ProductImage {
   variant_id: string | null;
   url: string;
   alt: string | null;
+  color: string | null; // qaysi rang variantiga tegishli (null = umumiy)
   sort_order: number;
   is_primary: boolean;
   created_at: string;

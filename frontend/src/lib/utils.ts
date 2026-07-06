@@ -55,7 +55,8 @@ export function discountPercent(original: number, sale: number): number {
 // Supabase Storage URL'ni to'liq URL'ga aylantirish
 export function getStorageUrl(path: string | null): string | null {
   if (!path) return null;
-  if (path.startsWith("http") || path.startsWith("data:") || path.startsWith("blob:")) return path;
+  // To'liq URL, data/blob yoki saytning o'z public papkasidagi rasm ("/products/...")
+  if (path.startsWith("http") || path.startsWith("data:") || path.startsWith("blob:") || path.startsWith("/")) return path;
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
   return `${supabaseUrl}/storage/v1/object/public/${path}`;
 }

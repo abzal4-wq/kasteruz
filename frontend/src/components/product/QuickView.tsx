@@ -41,8 +41,13 @@ export function QuickView() {
   }, [colors, color]);
 
   const name = product ? pick(product, "name") : "";
+  // Tanlangan rang surati > asosiy surat > birinchi surat
   const img = getStorageUrl(
-    (product?.images?.find((i) => i.is_primary) ?? product?.images?.[0])?.url ?? null
+    (
+      (color && product?.images?.find((i) => i.color === color)) ||
+      product?.images?.find((i) => i.is_primary) ||
+      product?.images?.[0]
+    )?.url ?? null
   );
   const hasDiscount = !!product && product.sale_price != null && product.sale_price < product.base_price;
   const price = product ? product.sale_price ?? product.base_price : 0;
