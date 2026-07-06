@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useBrands } from "@/hooks/useBrands";
+import { usePageMeta } from "@/hooks/usePageMeta";
 
 const ALL_SIZES = ["46", "48", "50", "52", "54", "56"];
 const ALL_FITS = [
@@ -42,7 +43,10 @@ export default function CatalogPage() {
   const brandParam = searchParams.get("brand") ?? undefined;
 
   const [sizes, setSizes] = useState<string[]>([]);
+  const [colors, setColors] = useState<string[]>([]);
   const [fitType, setFitType] = useState<string>("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
   const [sort, setSort] = useState<ProductFilters["sort"]>("newest");
   const [filterOpen, setFilterOpen] = useState(false);
 
@@ -55,16 +59,31 @@ export default function CatalogPage() {
   // filtrga nomni uzatamiz (aks holda hech narsa topilmaydi)
   const brandName = currentBrand?.name ?? brandParam;
 
+  // Rang fasetlari uchun bazaviy so'rov (o'lcham/rang/narx filtrsiz)
+  const { data: baseProducts } = useProducts({ categorySlug, brand: brandName, search: searchQuery });
+  const availableColors = useMemo(() => {
+    const map = new Map<string, string | null>();
+    baseProducts?.forEach((p) =>
+      p.variants?.forEach((v) => {
+        if (!map.has(v.color)) map.set(v.color, v.color_hex);
+      })
+    );
+    return Array.from(map.entries());
+  }, [baseProducts]);
+
   const filters: ProductFilters = useMemo(
     () => ({
       categorySlug,
       brand: brandName,
       search: searchQuery,
       sizes: sizes.length ? sizes : undefined,
+      colors: colors.length ? colors : undefined,
       fitType: fitType || undefined,
+      minPrice: minPrice ? Number(minPrice) : undefined,
+      maxPrice: maxPrice ? Number(maxPrice) : undefined,
       sort,
     }),
-    [categorySlug, brandName, searchQuery, sizes, fitType, sort]
+    [categorySlug, brandName, searchQuery, sizes, colors, fitType, minPrice, maxPrice, sort]
   );
 
   const { data: products, isLoading } = useProducts(filters);
@@ -75,13 +94,24 @@ export default function CatalogPage() {
     );
   }
 
+  function toggleColor(color: string) {
+    setColors((prev) =>
+      prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]
+    );
+  }
+
   function resetFilters() {
     setSizes([]);
+    setColors([]);
     setFitType("");
+    setMinPrice("");
+    setMaxPrice("");
     if (brandParam) navigate("/catalog");
   }
 
-  const hasActiveFilters = sizes.length > 0 || fitType !== "" || !!brandParam;
+  const activeCount =
+    sizes.length + colors.length + (fitType ? 1 : 0) + (minPrice || maxPrice ? 1 : 0);
+  const hasActiveFilters = activeCount > 0 || !!brandParam;
 
   // Filtr paneli (sheet va desktop uchun umumiy)
   const FilterContent = () => (
@@ -132,6 +162,58 @@ export default function CatalogPage() {
         </div>
       </div>
 
+      {/* Rang */}
+      {availableColors.length > 0 && (
+        <div>
+          <h4 className="mb-3 font-sans text-xs font-semibold uppercase tracking-widest text-charcoal">
+            Rang
+          </h4>
+          <div className="flex flex-wrap gap-2.5">
+            {availableColors.map(([color, hex]) => (
+              <button
+                key={color}
+                onClick={() => toggleColor(color)}
+                title={color}
+                aria-label={color}
+                className={cn(
+                  "h-8 w-8 rounded-full border transition-all hover:scale-110",
+                  colors.includes(color)
+                    ? "scale-110 border-charcoal ring-2 ring-gold ring-offset-2"
+                    : "border-border"
+                )}
+                style={{ background: hex ?? "#ccc" }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Narx */}
+      <div>
+        <h4 className="mb-3 font-sans text-xs font-semibold uppercase tracking-widest text-charcoal">
+          Narx (so'm)
+        </h4>
+        <div className="flex items-center gap-2">
+          <input
+            type="number"
+            inputMode="numeric"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            placeholder="dan"
+            className="input-kaster w-full"
+          />
+          <span className="text-charcoal-400">—</span>
+          <input
+            type="number"
+            inputMode="numeric"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            placeholder="gacha"
+            className="input-kaster w-full"
+          />
+        </div>
+      </div>
+
       {hasActiveFilters && (
         <Button variant="outline" onClick={resetFilters} className="w-full">
           <X className="mr-2 h-4 w-4" />
@@ -155,6 +237,8 @@ export default function CatalogPage() {
     : currentCategory
     ? pick(currentCategory, "name")
     : t("nav.catalog");
+
+  usePageMeta(`${heading} — Kaster.uz | Erkaklar kiyimlari`);
 
   return (
     <div className="container-page py-10">
@@ -247,9 +331,9 @@ export default function CatalogPage() {
                 <Button variant="outline" size="sm" className="lg:hidden">
                   <SlidersHorizontal className="mr-2 h-4 w-4" />
                   {t("filters.title")}
-                  {hasActiveFilters && (
+                  {activeCount > 0 && (
                     <span className="ml-2 flex h-5 w-5 items-center justify-center bg-gold text-[0.65rem] text-white">
-                      {sizes.length + (fitType ? 1 : 0)}
+                      {activeCount}
                     </span>
                   )}
                 </Button>
@@ -284,7 +368,7 @@ export default function CatalogPage() {
               ? Array.from({ length: 6 }).map((_, i) => <ProductCardSkeleton key={i} />)
               : products?.map((product, i) => (
                   <Reveal key={product.id} delay={Math.min(i, 7) * 60} direction="up">
-                    <ProductCard product={product} />
+                    <ProductCard product={product} index={i} />
                   </Reveal>
                 ))}
           </div>

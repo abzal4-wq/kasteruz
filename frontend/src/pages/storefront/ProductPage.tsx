@@ -1,14 +1,18 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ChevronRight, Check, Minus, Plus, ShoppingBag, Heart, Share2, Truck, RotateCcw, ShieldCheck } from "lucide-react";
+import { ChevronRight, Check, Minus, Plus, ShoppingBag, Heart, Share2, Truck, RotateCcw, ShieldCheck, Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useProduct } from "@/hooks/useProducts";
 import { useLang } from "@/hooks/useLang";
+import { usePageMeta } from "@/hooks/usePageMeta";
+import { useProductReviews, reviewAverage } from "@/hooks/useReviews";
 import { useCartStore } from "@/store/cart";
 import { useWishlistStore } from "@/store/wishlist";
 import { useRecentlyViewedStore } from "@/store/recentlyViewed";
 import { RecentlyViewed } from "@/components/product/RecentlyViewed";
 import { RelatedMosaic } from "@/components/product/RelatedMosaic";
+import { ProductReviews } from "@/components/product/ProductReviews";
+import { SizeGuide } from "@/components/product/SizeGuide";
 import { Reveal } from "@/components/app/Reveal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,6 +41,12 @@ export default function ProductPage() {
   const { pick } = useLang();
   const { productId } = useParams();
   const { data: product, isLoading } = useProduct(productId);
+  const { data: reviews = [] } = useProductReviews(productId);
+  const reviewAvg = reviewAverage(reviews);
+  usePageMeta(
+    product ? `${pick(product, "name")} — Kaster.uz` : undefined,
+    product ? pick(product, "description") || undefined : undefined
+  );
   const addItem = useCartStore((s) => s.addItem);
   const addRecent = useRecentlyViewedStore((s) => s.add);
 
@@ -341,9 +351,28 @@ export default function ProductPage() {
               <Share2 className="h-4 w-4 text-charcoal" />
             </button>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            {t("product.sku")}: {product.sku}
-          </p>
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+            <p className="text-xs text-muted-foreground">
+              {t("product.sku")}: {product.sku}
+            </p>
+            {reviews.length > 0 && (
+              <a href="#reviews" className="flex items-center gap-1.5 text-xs text-charcoal transition-colors hover:text-gold">
+                <span className="inline-flex items-center gap-0.5">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <Star
+                      key={i}
+                      className={cn(
+                        "h-3.5 w-3.5",
+                        i <= Math.round(reviewAvg) ? "fill-gold text-gold" : "fill-transparent text-charcoal-300"
+                      )}
+                    />
+                  ))}
+                </span>
+                <span className="font-medium">{reviewAvg.toFixed(1)}</span>
+                <span className="text-muted-foreground">({reviews.length})</span>
+              </a>
+            )}
+          </div>
 
           {/* Narx — serif, klassik luxury */}
           <div className="mt-4 flex items-baseline gap-3 sm:mt-6">
@@ -397,9 +426,7 @@ export default function ProductPage() {
               <h4 className="text-xs font-semibold uppercase tracking-widest">
                 {t("product.selectSize")}
               </h4>
-              <Link to="/size-guide" className="text-xs text-gold hover:underline">
-                {t("product.sizeGuide")}
-              </Link>
+              <SizeGuide triggerClassName="text-gold" />
             </div>
             <div className="flex flex-wrap gap-2">
               {sizes.map((variant) => {
@@ -547,6 +574,11 @@ export default function ProductPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Sharhlar */}
+      <div id="reviews" className="mx-auto mt-4 max-w-3xl scroll-mt-24">
+        <ProductReviews productId={product.id} />
       </div>
 
       {/* Kolleksiyadan — kubik-mozaika uslubida boshqa mahsulotlar */}

@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import { Heart, ArrowUpRight } from "lucide-react";
+import { Heart, ArrowUpRight, Eye } from "lucide-react";
 import type { Product } from "@/types/database";
 import { useLang } from "@/hooks/useLang";
 import { formatPrice, discountPercent, getStorageUrl } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { useWishlistStore } from "@/store/wishlist";
+import { useQuickView } from "@/store/quickview";
 
 interface ProductCardProps {
   product: Product;
@@ -16,6 +17,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
   const { pick } = useLang();
   const isWishlisted = useWishlistStore((s) => s.ids.includes(product.id));
   const toggleWishlist = useWishlistStore((s) => s.toggle);
+  const openQuickView = useQuickView((s) => s.open);
   const name = pick(product, "name");
   const primaryImage = product.images?.find((img) => img.is_primary) ?? product.images?.[0];
   const imageUrl = getStorageUrl(primaryImage?.url ?? null);
@@ -64,11 +66,20 @@ export function ProductCard({ product, index }: ProductCardProps) {
               )}
             </div>
 
-            {/* "Ko'rish" — hoverda pastdan */}
+            {/* Hoverda pastdan: Tez ko'rish (Quick View) + to'liq sahifa */}
             <div className="absolute inset-x-4 bottom-4 z-20 flex translate-y-4 items-center justify-between opacity-0 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0 group-hover:opacity-100">
-              <span className="border border-cream/50 px-4 py-2 text-[0.56rem] font-medium uppercase tracking-[0.22em] text-cream backdrop-blur-sm">
-                Ko'rish
-              </span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  openQuickView(product);
+                }}
+                className="tap flex items-center gap-1.5 border border-cream/50 px-4 py-2 text-[0.56rem] font-medium uppercase tracking-[0.22em] text-cream backdrop-blur-sm transition-colors hover:border-cream hover:bg-cream/10"
+              >
+                <Eye className="h-3.5 w-3.5" />
+                Tez ko'rish
+              </button>
               <span className="flex h-8 w-8 items-center justify-center border border-cream/50 text-cream backdrop-blur-sm">
                 <ArrowUpRight className="h-3.5 w-3.5" />
               </span>
