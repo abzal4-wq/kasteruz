@@ -80,6 +80,16 @@ export default function ProductPage() {
     }
   }
 
+  // Rasmlar — primary birinchi, keyin sort_order
+  // (Supabase embed tartibi kafolatlanmagan, shuning uchun o'zimiz saralaymiz)
+  const images = useMemo(() => {
+    const arr = [...(product?.images ?? [])];
+    arr.sort(
+      (a, b) => Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order
+    );
+    return arr;
+  }, [product]);
+
   // Mavjud ranglar va o'lchamlar
   const colors = useMemo(() => {
     if (!product?.variants) return [];
@@ -132,13 +142,17 @@ export default function ProductPage() {
     setQuantity(1);
   }, [selectedVariant?.id]);
 
-  // Tanlangan rangga mos suratga o'tamiz (bitta model — har rang o'z rasmida)
+  // Rasm tanlash: rang bo'lsa — mos surat, bo'lmasa — primary (0)
+  // (bitta model — har rang o'z rasmida)
   useEffect(() => {
-    if (!selectedColor || !product?.images?.length) return;
-    const idx = product.images.findIndex((im) => im.color === selectedColor);
-    if (idx >= 0) setActiveImage(idx);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedColor, product?.id]);
+    if (!images.length) return;
+    if (!selectedColor) {
+      setActiveImage(0);
+      return;
+    }
+    const idx = images.findIndex((im) => im.color === selectedColor);
+    setActiveImage(idx >= 0 ? idx : 0);
+  }, [selectedColor, images]);
 
   // Mobil yopishqoq panel — asosiy "Savatga" tugmasi ekrandan chiqsa ko'rsatamiz
   useEffect(() => {
@@ -219,7 +233,6 @@ export default function ProductPage() {
 
   const name = pick(product, "name");
   const description = pick(product, "description");
-  const images = product.images ?? [];
   const basePrice = getVariantPrice(
     product.base_price,
     selectedVariant?.price_override ?? null
@@ -230,7 +243,7 @@ export default function ProductPage() {
 
   function handleAddToCart() {
     if (!selectedVariant) return;
-    const img = getStorageUrl(images[0]?.url ?? null);
+    const img = getStorageUrl((images[activeImage] ?? images[0])?.url ?? null);
     addItem({
       variantId: selectedVariant.id,
       productId: product!.id,
