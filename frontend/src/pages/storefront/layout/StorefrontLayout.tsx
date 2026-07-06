@@ -8,7 +8,9 @@ import { Toaster } from "@/components/app/Toaster";
 import { InstallPrompt } from "@/components/app/InstallPrompt";
 import { OfflineIndicator } from "@/components/app/OfflineIndicator";
 import { BackToTop } from "@/components/app/BackToTop";
+import { SupportWidget } from "@/components/app/SupportWidget";
 import { SearchOverlay } from "@/components/app/SearchOverlay";
+import { QuickView } from "@/components/product/QuickView";
 import { useAuthStore } from "@/store/auth";
 import { useThemeStore } from "@/store/theme";
 import { cn } from "@/lib/utils";
@@ -48,7 +50,9 @@ export default function StorefrontLayout() {
       <Toaster />
       <InstallPrompt />
       <BackToTop />
+      <SupportWidget />
       <SearchOverlay />
+      <QuickView />
     </div>
   );
 }

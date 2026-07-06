@@ -205,6 +205,8 @@ export default function CheckoutPage() {
     return null;
   }
 
+  // Faqat sozlangan to'lov usullarini ko'rsatamiz (cash doim mavjud).
+  // Payme/Click/Uzum merchant ID kiritilgach avtomatik paydo bo'ladi.
   const paymentOptions = (
     [
       { value: "cash", label: t("checkout.cash"), icon: Banknote },
@@ -212,7 +214,7 @@ export default function CheckoutPage() {
       { value: "click", label: t("checkout.click"), icon: CreditCard },
       { value: "uzum", label: t("checkout.uzum"), icon: CreditCard },
     ] as const
-  ).map((o) => ({ ...o, available: isPaymentConfigured(o.value) }));
+  ).filter((o) => isPaymentConfigured(o.value));
 
   return (
     <div className="container-page py-10">
@@ -337,20 +339,16 @@ export default function CheckoutPage() {
                   <label
                     key={opt.value}
                     className={cn(
-                      "flex items-center gap-3 rounded-xl p-4 transition-all",
-                      !opt.available
-                        ? "cursor-not-allowed opacity-50 glass"
-                        : "tap cursor-pointer " +
-                          (paymentMethod === opt.value
-                            ? "glass-strong shadow-glass-sm ring-1 ring-gold/40"
-                            : "glass")
+                      "tap flex cursor-pointer items-center gap-3 rounded-xl p-4 transition-all",
+                      paymentMethod === opt.value
+                        ? "glass-strong shadow-glass-sm ring-1 ring-gold/40"
+                        : "glass"
                     )}
                   >
                     <input
                       type="radio"
                       value={opt.value}
                       {...register("paymentMethod")}
-                      disabled={!opt.available}
                       className="sr-only"
                     />
                     <span
@@ -365,11 +363,6 @@ export default function CheckoutPage() {
                     </span>
                     <opt.icon className="h-5 w-5 text-charcoal" />
                     <span className="text-sm">{opt.label}</span>
-                    {!opt.available && (
-                      <span className="ml-auto rounded-full bg-charcoal-100/60 px-2 py-0.5 text-[0.6rem] font-medium text-charcoal-500">
-                        tez orada
-                      </span>
-                    )}
                   </label>
                 ))}
               </div>

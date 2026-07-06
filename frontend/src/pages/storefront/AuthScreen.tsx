@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Mail, Lock, User as UserIcon, Phone, Eye, EyeOff, ArrowRight, Smartphone, Sparkles } from "lucide-react";
+import { Mail, Lock, User as UserIcon, Phone, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { useAuthStore } from "@/store/auth";
 import { supabase } from "@/lib/supabase";
 import { IS_DEMO } from "@/lib/demo-data";
@@ -10,7 +10,6 @@ import { toast } from "@/store/toast";
 import { cn } from "@/lib/utils";
 
 type Mode = "login" | "register";
-type Method = "email" | "phone";
 
 interface LocationState {
   from?: { pathname: string };
@@ -23,7 +22,6 @@ export default function AuthScreen() {
   const { signInEmail, signUpEmail } = useAuthStore();
 
   const [mode, setMode] = useState<Mode>("login");
-  const [method, setMethod] = useState<Method>("email");
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -160,45 +158,7 @@ export default function AuthScreen() {
             <span className="h-px flex-1 bg-white/10" />
           </div>
 
-          {/* Email / Telefon usuli */}
-          <div className="mb-5 flex gap-2">
-            <button
-              onClick={() => { haptic("light"); setMethod("email"); }}
-              className={cn(
-                "tap flex flex-1 items-center justify-center gap-1.5 rounded-xl border py-2 text-xs font-medium transition-all",
-                method === "email" ? "border-gold/50 bg-gold/10 text-gold" : "border-white/10 text-charcoal-400"
-              )}
-            >
-              <Mail className="h-3.5 w-3.5" /> Email
-            </button>
-            <button
-              onClick={() => { haptic("light"); setMethod("phone"); }}
-              className={cn(
-                "tap flex flex-1 items-center justify-center gap-1.5 rounded-xl border py-2 text-xs font-medium transition-all",
-                method === "phone" ? "border-gold/50 bg-gold/10 text-gold" : "border-white/10 text-charcoal-400"
-              )}
-            >
-              <Smartphone className="h-3.5 w-3.5" /> Telefon
-            </button>
-          </div>
-
-          {method === "phone" ? (
-            // Telefon — SMS tez orada
-            <div className="flex flex-col items-center rounded-xl border border-gold/20 bg-gold/5 px-4 py-8 text-center">
-              <Sparkles className="h-7 w-7 text-gold" />
-              <p className="mt-3 text-sm font-medium text-charcoal">SMS orqali kirish tez orada</p>
-              <p className="mt-1 text-xs text-charcoal-400">
-                Hozircha email orqali ro'yxatdan o'ting — bir necha soniyada tayyor
-              </p>
-              <button
-                onClick={() => { haptic("light"); setMethod("email"); }}
-                className="tap mt-4 flex items-center gap-1.5 rounded-full bg-gold px-5 py-2 text-xs font-semibold text-white"
-              >
-                Email bilan davom etish <ArrowRight className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={submit} className="space-y-3.5">
+          <form onSubmit={submit} className="space-y-3.5">
               {mode === "register" && (
                 <AuthField icon={<UserIcon className="h-4 w-4" />}>
                   <input
@@ -270,7 +230,6 @@ export default function AuthScreen() {
                 </button>
               </p>
             </form>
-          )}
         </div>
 
         <p className="mt-6 text-center text-[0.65rem] leading-relaxed text-charcoal-400">

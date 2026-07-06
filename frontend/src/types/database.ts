@@ -304,3 +304,14 @@ export interface CartItem {
   price: number;
   quantity: number;
 }
+
+// ─── Mahsulot sharhi ─────────────────────────────────────────
+export interface ProductReview {
+  id: string;
+  product_id: string;
+  customer_id: string;
+  rating: number;
+  comment: string | null;
+  author_name: string | null;
+  created_at: string;
+}

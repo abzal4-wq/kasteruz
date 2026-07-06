@@ -139,7 +139,7 @@ export default function HomePage() {
           loading="eager"
           decoding="async"
           onError={(e) => { e.currentTarget.style.display = "none"; }}
-          className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover object-center"
+          className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover object-[72%_center] sm:object-center"
         />
         <div
           className="pointer-events-none absolute inset-0"

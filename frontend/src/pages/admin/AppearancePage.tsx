@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { ImageIcon, Check, ChevronUp, ChevronDown, Eye, EyeOff, Type } from "lucide-react";
+import { ImageIcon, Check, ChevronUp, ChevronDown, Eye, EyeOff, Type, Upload } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { IS_DEMO } from "@/lib/demo-data";
+import { uploadProductImages } from "@/lib/upload";
+import { toast } from "@/store/toast";
 import {
   useSiteSettings,
   SITE_DEFAULTS,
@@ -20,6 +22,7 @@ export default function AppearancePage() {
   const [form, setForm] = useState<SiteSettings>(SITE_DEFAULTS);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (data) setForm(data);
@@ -29,6 +32,25 @@ export default function AppearancePage() {
   function setHero<K extends keyof SiteSettings>(k: K, v: SiteSettings[K]) {
     setForm((f) => ({ ...f, [k]: v }));
     dirty();
+  }
+
+  // Hero rasmini fayldan yuklash (Supabase Storage → public URL)
+  async function onHeroFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const urls = await uploadProductImages([file]);
+      if (urls[0]) {
+        setHero("heroImage", urls[0]);
+        toast.success("Rasm yuklandi");
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Yuklashda xatolik");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
   }
   function setStat(i: number, key: "val" | "label", v: string) {
     setForm((f) => ({ ...f, heroStats: f.heroStats.map((s, idx) => idx === i ? { ...s, [key]: v } : s) }));
@@ -88,8 +110,14 @@ export default function AppearancePage() {
       <div className="space-y-5 rounded-xl border border-border bg-white p-6">
         <h2 className="font-serif text-lg text-charcoal">Bosh sahifa (Hero)</h2>
 
-        <Field icon={<ImageIcon className="h-4 w-4" />} label="Fon rasmi (URL)">
-          <Input value={form.heroImage} onChange={(e) => setHero("heroImage", e.target.value)} placeholder="https://...jpg" inputMode="url" />
+        <Field icon={<ImageIcon className="h-4 w-4" />} label="Fon rasmi (yuklang yoki URL)">
+          <div className="flex gap-2">
+            <Input value={form.heroImage} onChange={(e) => setHero("heroImage", e.target.value)} placeholder="https://...jpg" inputMode="url" />
+            <label className={`tap flex shrink-0 cursor-pointer items-center gap-1.5 rounded-xl border border-border bg-white px-3.5 text-xs font-medium text-charcoal transition-colors hover:border-gold/50 ${uploading ? "pointer-events-none opacity-60" : ""}`}>
+              {uploading ? "Yuklanmoqda…" : <><Upload className="h-4 w-4 text-gold" /> Yuklash</>}
+              <input type="file" accept="image/*" className="hidden" onChange={onHeroFile} disabled={uploading} />
+            </label>
+          </div>
         </Field>
         {form.heroImage && (
           <div className="overflow-hidden rounded-lg border border-border">

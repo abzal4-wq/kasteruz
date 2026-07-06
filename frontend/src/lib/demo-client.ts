@@ -38,12 +38,13 @@ const db: Record<string, Row[]> = {
   purchase_orders: [],
   purchase_order_items: [],
   wishlists: [],
+  product_reviews: [],
 };
 
 // ─── Demo ma'lumotlarni localStorage'da saqlash ──────────────
 // Buyurtma oqimi jadvallarini saqlaymiz — sahifa yangilanganda yo'qolmasin
 const PERSIST_KEY = "kaster-demo-db";
-const PERSIST_TABLES = ["orders", "order_items", "addresses", "order_status_history", "payments"];
+const PERSIST_TABLES = ["orders", "order_items", "addresses", "order_status_history", "payments", "product_reviews"];
 
 function persistDb() {
   try {

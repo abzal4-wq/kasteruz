@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import { Heart, ArrowUpRight } from "lucide-react";
+import { Heart, ArrowUpRight, Eye } from "lucide-react";
 import type { Product } from "@/types/database";
 import { useLang } from "@/hooks/useLang";
 import { formatPrice, discountPercent, getStorageUrl } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { useWishlistStore } from "@/store/wishlist";
+import { useQuickView } from "@/store/quickview";
 
 interface ProductCardProps {
   product: Product;
@@ -14,6 +15,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const { pick } = useLang();
   const isWishlisted = useWishlistStore((s) => s.ids.includes(product.id));
   const toggleWishlist = useWishlistStore((s) => s.toggle);
+  const openQuickView = useQuickView((s) => s.open);
   const name = pick(product, "name");
   const primaryImage = product.images?.find((img) => img.is_primary) ?? product.images?.[0];
   const imageUrl = getStorageUrl(primaryImage?.url ?? null);
@@ -69,11 +71,20 @@ export function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
 
-          {/* "Batafsil" — hoverda pastdan suzib chiqadi */}
+          {/* Hoverda pastdan suzib chiqadi: Tez ko'rish (Quick View) + to'liq sahifa */}
           <div className="absolute inset-x-3 bottom-3 z-20 flex translate-y-4 items-center justify-between opacity-0 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0 group-hover:opacity-100">
-            <span className="rounded-md bg-gold px-4 py-2 text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-white shadow-glass-sm backdrop-blur">
-              Ko'rish
-            </span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                openQuickView(product);
+              }}
+              className="tap flex items-center gap-1.5 rounded-md bg-gold px-4 py-2 text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-white shadow-glass-sm backdrop-blur transition-transform hover:scale-105"
+            >
+              <Eye className="h-3.5 w-3.5" />
+              Tez ko'rish
+            </button>
             <span className="flex h-8 w-8 items-center justify-center rounded-md bg-white/90 text-charcoal shadow-glass-sm">
               <ArrowUpRight className="h-4 w-4" />
             </span>
@@ -99,7 +110,7 @@ export function ProductCard({ product }: ProductCardProps) {
       </button>
 
       {/* ─── Ma'lumot ─── */}
-      <Link to={`/product/${product.id}`} className="mt-3.5 block px-1">
+      <Link to={`/product/${product.id}`} className="mt-2.5 block px-0.5">
         <div className="flex items-center justify-between gap-2">
           {product.fit_type && (
             <p className="text-[0.6rem] font-medium uppercase tracking-[0.18em] text-gold">
@@ -121,13 +132,13 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        <h3 className="mt-1.5 font-serif text-base font-light text-charcoal line-clamp-1 transition-colors group-hover:text-gold sm:text-[1.05rem]">
+        <h3 className="mt-1 font-serif text-sm font-light text-charcoal line-clamp-1 transition-colors group-hover:text-gold sm:text-[0.95rem]">
           {name}
         </h3>
         {/* Nafis oltin chiziqcha — hover'da o'sadi */}
-        <span className="mt-1.5 block h-px w-0 bg-gold/70 transition-all duration-500 ease-out group-hover:w-9" />
+        <span className="mt-1 block h-px w-0 bg-gold/70 transition-all duration-500 ease-out group-hover:w-9" />
 
-        <div className="mt-2 flex items-baseline gap-2">
+        <div className="mt-1.5 flex items-baseline gap-2">
           {hasDiscount ? (
             <>
               <span className="text-sm font-semibold tracking-wide text-gold">{formatPrice(displayPrice)}</span>

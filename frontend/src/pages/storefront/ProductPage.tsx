@@ -1,13 +1,17 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ChevronRight, Check, Minus, Plus, ShoppingBag, Heart, Share2, Truck, RotateCcw, ShieldCheck } from "lucide-react";
+import { ChevronRight, Check, Minus, Plus, ShoppingBag, Heart, Share2, Truck, RotateCcw, ShieldCheck, Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useProduct } from "@/hooks/useProducts";
 import { useLang } from "@/hooks/useLang";
+import { usePageMeta } from "@/hooks/usePageMeta";
 import { useCartStore } from "@/store/cart";
 import { useWishlistStore } from "@/store/wishlist";
 import { useRecentlyViewedStore } from "@/store/recentlyViewed";
 import { RecentlyViewed } from "@/components/product/RecentlyViewed";
+import { SizeGuide } from "@/components/product/SizeGuide";
+import { ProductReviews } from "@/components/product/ProductReviews";
+import { useProductReviews, reviewAverage } from "@/hooks/useReviews";
 import { Reveal } from "@/components/app/Reveal";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +40,12 @@ export default function ProductPage() {
   const { pick } = useLang();
   const { productId } = useParams();
   const { data: product, isLoading } = useProduct(productId);
+  const { data: reviews = [] } = useProductReviews(productId);
+  const reviewAvg = reviewAverage(reviews);
+  usePageMeta(
+    product ? `${pick(product, "name")} — Kaster.uz` : undefined,
+    product ? (pick(product, "description") || undefined) : undefined
+  );
   const addItem = useCartStore((s) => s.addItem);
   const addRecent = useRecentlyViewedStore((s) => s.add);
 
@@ -226,9 +236,9 @@ export default function ProductPage() {
   const maxQty = availableStock ?? 99;
 
   return (
-    <div className="container-page py-8">
+    <div className="container-page py-5 sm:py-8">
       {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-1.5 text-xs text-muted-foreground">
+      <nav className="mb-4 flex items-center gap-1.5 text-xs text-muted-foreground sm:mb-6">
         <Link to="/" className="hover:text-gold">{t("nav.home")}</Link>
         <ChevronRight className="h-3 w-3" />
         <Link to="/catalog" className="hover:text-gold">{t("nav.catalog")}</Link>
@@ -236,7 +246,7 @@ export default function ProductPage() {
         <span className="text-charcoal">{name}</span>
       </nav>
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-10">
         {/* ─── Galereya ─────────────────────────────────── */}
         <div className="flex flex-col-reverse gap-4 sm:flex-row">
           {/* Thumbnaillar */}
@@ -247,7 +257,7 @@ export default function ProductPage() {
                   key={img.id}
                   onClick={() => setActiveImage(i)}
                   className={cn(
-                    "tap h-20 w-16 flex-shrink-0 overflow-hidden rounded-md border-2 transition-all duration-300",
+                    "tap h-16 w-14 flex-shrink-0 overflow-hidden rounded-md border-2 transition-all duration-300",
                     activeImage === i
                       ? "border-gold shadow-glass-sm"
                       : "border-transparent opacity-60 hover:opacity-100"
@@ -265,7 +275,7 @@ export default function ProductPage() {
 
           {/* Asosiy rasm — ikki marta bosilsa "like" (Instagram kabi) */}
           <div
-            className="group relative aspect-[3/4] flex-1 cursor-pointer select-none overflow-hidden rounded-[0.7rem] bg-white/5 shadow-glass"
+            className="group relative mx-auto aspect-[4/5] w-full max-w-sm flex-1 cursor-pointer select-none overflow-hidden rounded-[0.6rem] bg-white/5 shadow-glass sm:mx-0 sm:aspect-[3/4] sm:max-w-none"
             onClick={handleImageTap}
           >
             {images[activeImage] ? (
@@ -329,7 +339,7 @@ export default function ProductPage() {
               : "Kaster"}
           </p>
           <div className="mt-4 flex items-start justify-between gap-3">
-            <h1 className="font-serif text-4xl font-light leading-[1.05] text-charcoal lg:text-5xl">
+            <h1 className="font-serif text-2xl font-light leading-[1.1] text-charcoal sm:text-3xl lg:text-4xl">
               {name}
             </h1>
             <button
@@ -340,17 +350,36 @@ export default function ProductPage() {
               <Share2 className="h-4 w-4 text-charcoal" />
             </button>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            {t("product.sku")}: {product.sku}
-          </p>
+          <div className="mt-2 flex items-center gap-3">
+            <p className="text-xs text-muted-foreground">
+              {t("product.sku")}: {product.sku}
+            </p>
+            {reviews.length > 0 && (
+              <a href="#reviews" className="flex items-center gap-1.5 text-xs text-charcoal hover:text-gold">
+                <span className="inline-flex items-center gap-0.5">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <Star
+                      key={i}
+                      className={cn(
+                        "h-3.5 w-3.5",
+                        i <= Math.round(reviewAvg) ? "fill-gold text-gold" : "fill-transparent text-charcoal-300"
+                      )}
+                    />
+                  ))}
+                </span>
+                <span className="font-medium">{reviewAvg.toFixed(1)}</span>
+                <span className="text-muted-foreground">({reviews.length})</span>
+              </a>
+            )}
+          </div>
 
           {/* Narx — serif, klassik luxury */}
-          <div className="mt-6 flex items-baseline gap-3">
-            <span className={cn("font-serif text-4xl font-light tracking-tight", hasDiscount ? "text-gold" : "text-charcoal")}>
+          <div className="mt-4 flex items-baseline gap-3">
+            <span className={cn("font-serif text-2xl font-light tracking-tight sm:text-3xl", hasDiscount ? "text-gold" : "text-charcoal")}>
               {formatPrice(displayPrice)}
             </span>
             {hasDiscount && (
-              <span className="text-lg text-muted-foreground line-through">
+              <span className="text-base text-muted-foreground line-through">
                 {formatPrice(product.base_price)}
               </span>
             )}
@@ -358,7 +387,7 @@ export default function ProductPage() {
 
           {/* Rang tanlash */}
           {colors.length > 0 && (
-            <div className="mt-8">
+            <div className="mt-6">
               <h4 className="mb-3 text-xs font-semibold uppercase tracking-widest">
                 {t("product.selectColor")}
                 {selectedColor && (
@@ -376,7 +405,7 @@ export default function ProductPage() {
                       setSelectedSize(null);
                     }}
                     className={cn(
-                      "h-10 w-10 rounded-full border-2 transition-all duration-300 hover:scale-110",
+                      "h-9 w-9 rounded-full border-2 transition-all duration-300 hover:scale-110",
                       selectedColor === variant.color
                         ? "scale-110 border-charcoal ring-2 ring-gold ring-offset-2"
                         : "border-border"
@@ -391,14 +420,12 @@ export default function ProductPage() {
           )}
 
           {/* O'lcham tanlash */}
-          <div className="mt-8">
+          <div className="mt-6">
             <div className="mb-3 flex items-center justify-between">
               <h4 className="text-xs font-semibold uppercase tracking-widest">
                 {t("product.selectSize")}
               </h4>
-              <Link to="/size-guide" className="text-xs text-gold hover:underline">
-                {t("product.sizeGuide")}
-              </Link>
+              <SizeGuide />
             </div>
             <div className="flex flex-wrap gap-2">
               {sizes.map((variant) => {
@@ -411,7 +438,7 @@ export default function ProductPage() {
                     disabled={oos}
                     title={oos ? "Tugagan" : undefined}
                     className={cn(
-                      "tap relative flex h-12 min-w-12 items-center justify-center rounded-md px-3 text-sm font-medium transition-all duration-300",
+                      "tap relative flex h-11 min-w-11 items-center justify-center rounded-md px-3 text-sm font-medium transition-all duration-300",
                       oos
                         ? "cursor-not-allowed text-charcoal-400 line-through opacity-45"
                         : selectedSize === variant.size
@@ -444,23 +471,23 @@ export default function ProductPage() {
           )}
 
           {/* Miqdor + savatga */}
-          <div ref={buyRowRef} className="mt-8 flex flex-wrap gap-3">
+          <div ref={buyRowRef} className="mt-6 flex flex-wrap gap-3">
             <div className="flex items-center rounded-md glass">
               <button
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                 disabled={quantity <= 1}
-                className="tap flex h-12 w-12 items-center justify-center rounded-l-md transition-colors hover:bg-black/5 disabled:opacity-40"
+                className="tap flex h-11 w-11 items-center justify-center rounded-l-md transition-colors hover:bg-black/5 disabled:opacity-40"
                 aria-label="Kamaytirish"
               >
                 <Minus className="h-4 w-4" />
               </button>
-              <span className="flex h-12 w-12 items-center justify-center text-sm font-medium">
+              <span className="flex h-11 w-11 items-center justify-center text-sm font-medium">
                 {quantity}
               </span>
               <button
                 onClick={() => setQuantity((q) => Math.min(maxQty, q + 1))}
                 disabled={quantity >= maxQty}
-                className="tap flex h-12 w-12 items-center justify-center rounded-r-md transition-colors hover:bg-black/5 disabled:opacity-40"
+                className="tap flex h-11 w-11 items-center justify-center rounded-r-md transition-colors hover:bg-black/5 disabled:opacity-40"
                 aria-label="Ko'paytirish"
               >
                 <Plus className="h-4 w-4" />
@@ -488,13 +515,13 @@ export default function ProductPage() {
           </div>
 
           {/* Kafolat / ishonch chiplari */}
-          <div className="mt-6 grid grid-cols-3 gap-2.5">
+          <div className="mt-5 grid grid-cols-3 gap-2.5">
             {[
               { icon: Truck, label: "Tez yetkazish" },
               { icon: RotateCcw, label: "Qaytarish" },
               { icon: ShieldCheck, label: "Kafolat" },
             ].map((g) => (
-              <div key={g.label} className="glass-card flex flex-col items-center gap-2 rounded-2xl py-4">
+              <div key={g.label} className="glass-card flex flex-col items-center gap-1.5 rounded-xl py-3">
                 <g.icon className="h-4 w-4 text-gold" strokeWidth={1.7} />
                 <span className="text-[0.62rem] uppercase tracking-wider text-charcoal-400">{g.label}</span>
               </div>
@@ -546,6 +573,11 @@ export default function ProductPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Sharhlar */}
+      <div id="reviews" className="mx-auto max-w-3xl scroll-mt-24">
+        <ProductReviews productId={product.id} />
       </div>
 
       {/* Yaqinda ko'rilgan (joriydan tashqari) */}
