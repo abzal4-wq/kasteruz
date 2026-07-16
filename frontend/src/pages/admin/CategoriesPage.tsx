@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Pencil, Trash2, Eye, EyeOff, FolderTree } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, EyeOff, FolderTree, ImagePlus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { uploadProductImages } from "@/lib/upload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { demoCategories, IS_DEMO } from "@/lib/demo-data";
-import { cn } from "@/lib/utils";
+import { cn, getStorageUrl } from "@/lib/utils";
 import type { Category } from "@/types/database";
 
 interface CategoryForm {
@@ -48,6 +49,8 @@ function CategoryModal({
   );
   const [saving, setSaving] = useState(false);
   const [slugTouched, setSlugTouched] = useState(!!editing);
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState("");
 
   function set(patch: Partial<CategoryForm>) {
     setForm((f) => ({ ...f, ...patch }));
@@ -57,18 +60,44 @@ function CategoryModal({
     set({ name_uz: v, ...(slugTouched ? {} : { slug: slugify(v) }) });
   }
 
+  // Fayl tanlanganda — preview + URL maydonini tozalash
+  function onFile(f: File | null) {
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPreview(reader.result as string);
+      setFile(f);
+      set({ image_url: "" });
+    };
+    reader.readAsDataURL(f);
+  }
+
   async function save() {
     if (!form.name_uz.trim() || !form.slug.trim()) return;
     setSaving(true);
 
+    // Fayl tanlangan bo'lsa — yuklaymiz
+    let imageUrl = form.image_url;
+    if (file) {
+      try {
+        const [uploaded] = await uploadProductImages([file]);
+        imageUrl = uploaded;
+      } catch {
+        setSaving(false);
+        alert("Rasm yuklashda xato");
+        return;
+      }
+    }
+
     if (IS_DEMO) {
+      const data = { ...form, image_url: imageUrl };
       if (editing) {
         const idx = demoCategories.findIndex((c) => c.id === editing.id);
-        if (idx >= 0) demoCategories[idx] = { ...demoCategories[idx], ...form, parent_id: null };
+        if (idx >= 0) demoCategories[idx] = { ...demoCategories[idx], ...data, parent_id: null };
       } else {
         demoCategories.push({
           id: `cat-${Date.now()}`,
-          ...form,
+          ...data,
           parent_id: null,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -79,7 +108,7 @@ function CategoryModal({
         name_uz: form.name_uz,
         name_ru: form.name_ru || form.name_uz,
         slug: form.slug,
-        image_url: form.image_url || null,
+        image_url: imageUrl || null,
         sort_order: form.sort_order,
         is_active: form.is_active,
       };
@@ -130,15 +159,36 @@ function CategoryModal({
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Rasm URL</label>
-            <Input
-              placeholder="https://..."
-              value={form.image_url}
-              onChange={(e) => set({ image_url: e.target.value })}
-            />
-            {form.image_url && (
-              <img src={form.image_url} alt="" className="mt-2 h-20 w-32 rounded-lg object-cover" />
-            )}
+            <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Rasm (fayl yoki URL)</label>
+            <div className="flex items-start gap-3">
+              <div className="relative h-20 w-28 flex-shrink-0 overflow-hidden rounded-lg border border-black/10 bg-black/5">
+                {preview || form.image_url ? (
+                  <img src={preview || getStorageUrl(form.image_url)!} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                    <ImagePlus className="h-5 w-5" />
+                  </div>
+                )}
+              </div>
+              <div className="min-w-0 flex-1 space-y-2">
+                <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-gold px-3 py-2 text-xs font-semibold text-white transition-transform hover:scale-105">
+                  <ImagePlus className="h-3.5 w-3.5" /> Fayl yuklash
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => { onFile(e.target.files?.[0] ?? null); e.target.value = ""; }}
+                  />
+                </label>
+                <Input
+                  placeholder="yoki URL: https://…"
+                  value={file ? "" : form.image_url}
+                  disabled={!!file}
+                  onChange={(e) => set({ image_url: e.target.value })}
+                  className="text-xs"
+                />
+              </div>
+            </div>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex-1">
