@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Search, Pencil, Eye, EyeOff, Trash2, ImagePlus, X } from "lucide-react";
+import { Plus, Search, Pencil, Eye, EyeOff, Trash2, ImagePlus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { supabase } from "@/lib/supabase";
 import { uploadProductImages } from "@/lib/upload";
@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { formatPrice, getStorageUrl } from "@/lib/utils";
+import { formatPrice, getStorageUrl, cn } from "@/lib/utils";
 import type { Product } from "@/types/database";
 
 interface ProductForm {
@@ -49,6 +49,24 @@ const EMPTY: ProductForm = {
   description_uz: "", description_ru: "", is_featured: false,
 };
 
+// ─── Rang bloki: bitta model — har rang o'z surati + o'lchamlari ───
+interface ColorBlock {
+  key: string;
+  color: string;
+  hex: string;
+  imageUrl: string;   // mavjud yoki qo'lda kiritilgan URL
+  file: File | null;  // yuklangan fayl
+  preview: string;    // fayl uchun preview (dataURL)
+  sizes: string[];
+}
+
+const SIZE_OPTIONS = ["46", "48", "50", "52", "54", "56", "Universal"];
+const STANDARD_SIZES = ["46", "48", "50", "52", "54"];
+let blockCounter = 0;
+const newBlockKey = () => `b${++blockCounter}`;
+// Variant SKU uchun qisqa rang kodi (Qora→QOR, To'q ko'k→TOQ)
+const colorSlug = (s: string) => s.replace(/[^A-Za-z0-9]/g, "").slice(0, 3).toUpperCase() || "X";
+
 export default function ProductsPage() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
@@ -65,10 +83,8 @@ export default function ProductsPage() {
   const fitType = watch("fit_type");
   const isFeatured = watch("is_featured");
 
-  // Rasm yuklash holati
-  const [newFiles, setNewFiles] = useState<File[]>([]);
-  const [newPreviews, setNewPreviews] = useState<string[]>([]);
-  const [existingImages, setExistingImages] = useState<{ id: string; url: string }[]>([]);
+  // Ranglar + o'lchamlar + rasmlar
+  const [colorBlocks, setColorBlocks] = useState<ColorBlock[]>([]);
 
   // Admin barcha mahsulotlarni ko'radi (is_active filtri yo'q)
   const { data: products, isLoading } = useQuery({
@@ -118,6 +134,7 @@ export default function ProductsPage() {
         const { error } = await supabase.from("products").update(payload).eq("id", editing.id);
         if (error) throw error;
         productId = editing.id;
+        await supabase.from("products").update({ is_featured: form.is_featured }).eq("id", productId);
       } else {
         const { data, error } = await supabase
           .from("products").insert({ ...payload, is_featured: form.is_featured })
@@ -126,34 +143,80 @@ export default function ProductsPage() {
         productId = data.id;
       }
 
-      // Featured holatini yangilash (tahrirlashda)
-      if (editing) {
-        await supabase.from("products").update({ is_featured: form.is_featured }).eq("id", productId);
-      }
+      // ─── Ranglar → rasmlar + variantlar ───
+      // 1) Har rang uchun rasm URL'ini tayyorlaymiz (fayl bo'lsa yuklaymiz)
+      const resolved = await Promise.all(
+        colorBlocks
+          .filter((b) => b.color.trim())
+          .map(async (b) => {
+            let url = b.imageUrl.trim();
+            if (b.file) {
+              const [uploaded] = await uploadProductImages([b.file]);
+              url = uploaded;
+            }
+            return { color: b.color.trim(), hex: b.hex, sizes: b.sizes, url };
+          })
+      );
 
-      // O'chirilgan eski rasmlarni bazadan ham o'chirish
-      if (editing) {
-        const keptIds = existingImages.map((i) => i.id);
-        const removed = (editing.images ?? []).filter((i) => !keptIds.includes(i.id));
-        for (const img of removed) {
-          await supabase.from("product_images").delete().eq("id", img.id);
-        }
-      }
-
-      // Yangi rasmlarni yuklash (bir nechta)
-      if (newFiles.length > 0) {
-        const urls = await uploadProductImages(newFiles);
-        const hasPrimary =
-          existingImages.length > 0 ||
-          (editing?.images?.some((i) => i.is_primary) ?? false);
-        const rows = urls.map((url, idx) => ({
+      // 2) Rasmlarni almashtiramiz (order_items rasmga bog'liq emas — xavfsiz)
+      await supabase.from("product_images").delete().eq("product_id", productId);
+      const imageRows = resolved
+        .filter((b) => b.url)
+        .map((b, idx) => ({
           product_id: productId,
-          url,
-          alt: form.name_uz,
-          is_primary: !hasPrimary && idx === 0,
-          sort_order: existingImages.length + idx,
+          url: b.url,
+          alt: `${form.name_uz} — ${b.color}`,
+          color: b.color,
+          is_primary: idx === 0,
+          sort_order: idx,
         }));
-        await supabase.from("product_images").insert(rows);
+      if (imageRows.length) {
+        const { error } = await supabase.from("product_images").insert(imageRows);
+        if (error) throw error;
+      }
+
+      // 3) Variantlar: kerakli (rang+o'lcham) to'plami
+      const keyOf = (color: string, size: string) => `${color}::${size}`;
+      const existing = editing?.variants ?? [];
+      const existingKeys = new Set(existing.map((v) => keyOf(v.color, v.size)));
+      // Takroriy (rang+o'lcham)larni chiqarib tashlaymiz (SKU to'qnashuvi oldi)
+      const seenDesired = new Set<string>();
+      const desired = resolved
+        .flatMap((b) => b.sizes.map((size) => ({ color: b.color, hex: b.hex, size })))
+        .filter((d) => {
+          const k = keyOf(d.color, d.size);
+          if (seenDesired.has(k)) return false;
+          seenDesired.add(k);
+          return true;
+        });
+      const desiredKeys = new Set(desired.map((d) => keyOf(d.color, d.size)));
+
+      // Yangi variantlarni qo'shamiz
+      const toInsert = desired.filter((d) => !existingKeys.has(keyOf(d.color, d.size)));
+      if (toInsert.length) {
+        const rows = toInsert.map((d) => ({
+          product_id: productId,
+          size: d.size,
+          color: d.color,
+          color_hex: d.hex,
+          sku: `${form.sku}-${colorSlug(d.color)}-${d.size}`,
+        }));
+        const { error } = await supabase.from("product_variants").insert(rows);
+        if (error) throw error;
+      }
+
+      // Mavjud variantlar rang hex'ini yangilaymiz
+      for (const b of resolved) {
+        await supabase.from("product_variants")
+          .update({ color_hex: b.hex })
+          .eq("product_id", productId).eq("color", b.color);
+      }
+
+      // Olib tashlangan variantlarni o'chiramiz (buyurtmada bo'lsa — jim o'tadi)
+      const toDelete = existing.filter((v) => !desiredKeys.has(keyOf(v.color, v.size)));
+      for (const v of toDelete) {
+        await supabase.from("inventory").delete().eq("variant_id", v.id);
+        await supabase.from("product_variants").delete().eq("id", v.id);
       }
     },
     onSuccess: () => {
@@ -166,7 +229,6 @@ export default function ProductsPage() {
   // O'chirish
   const deleteProduct = useMutation({
     mutationFn: async (product: Product) => {
-      // Avval bog'liq yozuvlar (variantlar, rasmlar), keyin mahsulot
       for (const v of product.variants ?? []) {
         await supabase.from("inventory").delete().eq("variant_id", v.id);
       }
@@ -182,9 +244,7 @@ export default function ProductsPage() {
   function openNew() {
     setEditing(null);
     reset(EMPTY);
-    setNewFiles([]);
-    setNewPreviews([]);
-    setExistingImages([]);
+    setColorBlocks([]);
     setDialogOpen(true);
   }
 
@@ -199,14 +259,33 @@ export default function ProductsPage() {
       description_uz: p.description_uz ?? "", description_ru: p.description_ru ?? "",
       is_featured: p.is_featured,
     });
-    setNewFiles([]);
-    setNewPreviews([]);
-    setExistingImages(
-      (p.images ?? [])
-        .slice()
-        .sort((a, b) => (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0))
-        .map((i) => ({ id: i.id, url: i.url }))
-    );
+
+    // Variantlarni rang bo'yicha guruhlab bloklarga aylantiramiz
+    const byColor = new Map<string, ColorBlock>();
+    (p.variants ?? []).forEach((v) => {
+      if (!byColor.has(v.color)) {
+        const img = (p.images ?? []).find((i) => (i as any).color === v.color);
+        byColor.set(v.color, {
+          key: newBlockKey(),
+          color: v.color,
+          hex: v.color_hex ?? "#888888",
+          imageUrl: img?.url ?? "",
+          file: null,
+          preview: "",
+          sizes: [],
+        });
+      }
+      byColor.get(v.color)!.sizes.push(v.size);
+    });
+    // Rangsiz (umumiy) rasmlar ham blok sifatida ko'rinsin
+    if (byColor.size === 0 && (p.images?.length ?? 0) > 0) {
+      const img = p.images![0];
+      byColor.set("_", {
+        key: newBlockKey(), color: "", hex: "#888888",
+        imageUrl: img.url, file: null, preview: "", sizes: [],
+      });
+    }
+    setColorBlocks(Array.from(byColor.values()));
     setDialogOpen(true);
   }
 
@@ -214,30 +293,36 @@ export default function ProductsPage() {
     setDialogOpen(false);
     setEditing(null);
     reset(EMPTY);
-    setNewFiles([]);
-    setNewPreviews([]);
-    setExistingImages([]);
+    setColorBlocks([]);
   }
 
-  // Fayl tanlanganda — preview yaratish
-  function handleFiles(fileList: FileList | null) {
-    if (!fileList) return;
-    const arr = Array.from(fileList).filter((f) => f.type.startsWith("image/"));
-    setNewFiles((prev) => [...prev, ...arr]);
-    arr.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = () => setNewPreviews((prev) => [...prev, reader.result as string]);
-      reader.readAsDataURL(file);
-    });
+  // ─── Rang bloklari boshqaruvi ───
+  function addColorBlock() {
+    setColorBlocks((prev) => [
+      ...prev,
+      { key: newBlockKey(), color: "", hex: "#1a1a1a", imageUrl: "", file: null, preview: "", sizes: [] },
+    ]);
   }
-
-  function removeNewFile(idx: number) {
-    setNewFiles((prev) => prev.filter((_, i) => i !== idx));
-    setNewPreviews((prev) => prev.filter((_, i) => i !== idx));
+  function updateBlock(key: string, patch: Partial<ColorBlock>) {
+    setColorBlocks((prev) => prev.map((b) => (b.key === key ? { ...b, ...patch } : b)));
   }
-
-  function removeExisting(id: string) {
-    setExistingImages((prev) => prev.filter((i) => i.id !== id));
+  function removeBlock(key: string) {
+    setColorBlocks((prev) => prev.filter((b) => b.key !== key));
+  }
+  function toggleBlockSize(key: string, size: string) {
+    setColorBlocks((prev) =>
+      prev.map((b) =>
+        b.key === key
+          ? { ...b, sizes: b.sizes.includes(size) ? b.sizes.filter((s) => s !== size) : [...b.sizes, size] }
+          : b
+      )
+    );
+  }
+  function onBlockFile(key: string, file: File | null) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => updateBlock(key, { file, preview: reader.result as string, imageUrl: "" });
+    reader.readAsDataURL(file);
   }
 
   function handleDelete(p: Product) {
@@ -373,7 +458,7 @@ export default function ProductsPage() {
 
       {/* ─── Qo'shish / Tahrirlash dialog ───────────────── */}
       <Dialog open={dialogOpen} onOpenChange={(o) => !o && closeDialog()}>
-        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+        <DialogContent className="max-h-[92vh] max-w-2xl overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {editing ? "Mahsulotni tahrirlash" : "Yangi mahsulot"}
@@ -463,59 +548,131 @@ export default function ProductsPage() {
               </div>
             </div>
 
-            <div>
-              <label className="mb-1.5 block text-xs uppercase tracking-wider text-muted-foreground">
-                Rasmlar (bir nechta yuklash mumkin)
-              </label>
-
-              <div className="flex flex-wrap gap-3">
-                {/* Mavjud rasmlar (tahrirlashda) */}
-                {existingImages.map((img) => (
-                  <div key={img.id} className="group relative h-24 w-20 overflow-hidden rounded-lg border border-black/10">
-                    <img src={getStorageUrl(img.url)!} alt="" className="h-full w-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => removeExisting(img.id)}
-                      className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </div>
-                ))}
-
-                {/* Yangi tanlangan rasmlar */}
-                {newPreviews.map((src, idx) => (
-                  <div key={idx} className="group relative h-24 w-20 overflow-hidden rounded-lg border border-gold">
-                    <img src={src} alt="" className="h-full w-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => removeNewFile(idx)}
-                      className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </div>
-                ))}
-
-                {/* Yuklash tugmasi */}
-                <label className="flex h-24 w-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed border-black/15 text-muted-foreground transition-colors hover:border-gold hover:text-gold">
-                  <ImagePlus className="h-5 w-5" />
-                  <span className="text-[0.6rem]">Yuklash</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    className="hidden"
-                    onChange={(e) => {
-                      handleFiles(e.target.files);
-                      e.target.value = "";
-                    }}
-                  />
-                </label>
+            {/* ─── Ranglar · o'lchamlar · rasmlar ─── */}
+            <div className="rounded-xl border border-black/10 bg-black/[0.015] p-4">
+              <div className="mb-1 flex items-center justify-between">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-charcoal">
+                    Ranglar · o'lchamlar · rasmlar
+                  </label>
+                  <p className="mt-0.5 text-[0.7rem] text-muted-foreground">
+                    Bitta model — har rang o'z surati va o'lchamlarida
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={addColorBlock}
+                  className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-lg bg-gold px-3 py-2 text-xs font-semibold text-white transition-transform hover:scale-105"
+                >
+                  <Plus className="h-3.5 w-3.5" /> Rang qo'shish
+                </button>
               </div>
-              <p className="mt-1.5 text-[0.7rem] text-muted-foreground">
-                Birinchi rasm asosiy bo'ladi. JPG, PNG.
-              </p>
+
+              {colorBlocks.length === 0 && (
+                <p className="mt-2 rounded-lg border border-dashed border-black/15 px-4 py-6 text-center text-xs text-muted-foreground">
+                  Hali rang qo'shilmagan. <b>"Rang qo'shish"</b> bilan boshlang.
+                </p>
+              )}
+
+              <div className="mt-3 space-y-3">
+                {colorBlocks.map((b) => (
+                  <div key={b.key} className="rounded-xl border border-black/10 bg-white p-3">
+                    <div className="flex gap-3">
+                      {/* Rasm */}
+                      <div className="flex-shrink-0">
+                        <div className="relative h-24 w-20 overflow-hidden rounded-lg border border-black/10 bg-black/5">
+                          {b.preview || b.imageUrl ? (
+                            <img
+                              src={b.preview || getStorageUrl(b.imageUrl)!}
+                              alt=""
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                              <ImagePlus className="h-5 w-5" />
+                            </div>
+                          )}
+                        </div>
+                        <label className="mt-1.5 flex cursor-pointer items-center justify-center gap-1 text-[0.6rem] font-medium text-gold hover:underline">
+                          <ImagePlus className="h-3 w-3" /> Fayl yuklash
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => { onBlockFile(b.key, e.target.files?.[0] ?? null); e.target.value = ""; }}
+                          />
+                        </label>
+                      </div>
+
+                      {/* O'ng: rang, URL, o'lchamlar */}
+                      <div className="min-w-0 flex-1 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={b.hex}
+                            onChange={(e) => updateBlock(b.key, { hex: e.target.value })}
+                            className="h-9 w-9 flex-shrink-0 cursor-pointer rounded border border-black/10 bg-transparent p-0.5"
+                            title="Rang tusi"
+                          />
+                          <Input
+                            value={b.color}
+                            onChange={(e) => updateBlock(b.key, { color: e.target.value })}
+                            placeholder="Rang nomi — Qora, Bordo, To'q ko'k…"
+                            className="flex-1"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeBlock(b.key)}
+                            className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-rose-50 hover:text-rose-500"
+                            title="Rangni o'chirish"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+
+                        <Input
+                          value={b.file ? "" : b.imageUrl}
+                          onChange={(e) => updateBlock(b.key, { imageUrl: e.target.value, file: null, preview: "" })}
+                          placeholder="yoki rasm URL: https://…"
+                          disabled={!!b.file}
+                          inputMode="url"
+                          className="text-xs"
+                        />
+
+                        <div>
+                          <div className="mb-1.5 flex items-center justify-between">
+                            <span className="text-[0.65rem] uppercase tracking-wider text-muted-foreground">O'lchamlar</span>
+                            <button
+                              type="button"
+                              onClick={() => updateBlock(b.key, { sizes: STANDARD_SIZES })}
+                              className="text-[0.65rem] font-medium text-gold hover:underline"
+                            >
+                              Standart (46–54)
+                            </button>
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {SIZE_OPTIONS.map((s) => (
+                              <button
+                                key={s}
+                                type="button"
+                                onClick={() => toggleBlockSize(b.key, s)}
+                                className={cn(
+                                  "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
+                                  b.sizes.includes(s)
+                                    ? "bg-gold text-white"
+                                    : "bg-black/5 text-charcoal hover:bg-black/10"
+                                )}
+                              >
+                                {s}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div>
