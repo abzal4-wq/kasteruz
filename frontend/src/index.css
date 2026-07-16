@@ -98,8 +98,9 @@
 
   /* ═══ FON REJIMI ═══ (data-mode) — urg'u rangidan mustaqil orqa fon.
      data-theme'dan keyin yozilgani uchun --bg-deep'ni ustun qiladi. */
-  html[data-mode="dark"]  { --bg-deep: #12100d; --bg-deep2: #070605; }
-  html[data-mode="light"] { --bg-deep: #f7f2e7; --bg-deep2: #ede5d3; }
+  /* Yumshatilgan: dark sof qora emas (iliq to'q), light ko'z qamashtirmaydi */
+  html[data-mode="dark"]  { --bg-deep: #1c1712; --bg-deep2: #12100b; }
+  html[data-mode="light"] { --bg-deep: #f2ebdb; --bg-deep2: #e9e0cd; }
 
   /* ═══ DARK REJIM (faqat .app-dark ichida — storefront) ═══ */
   .app-dark {
@@ -123,10 +124,10 @@
     /* shadcn tokenlar dark */
     --foreground: 40 30% 94%;
     --muted-foreground: 40 8% 62%;
-    --border: 40 8% 26%;
-    --background: 30 20% 6%;
-    --card: 30 14% 12%;
-    --popover: 30 14% 12%;
+    --border: 40 8% 28%;
+    --background: 30 16% 10%;
+    --card: 30 13% 15%;
+    --popover: 30 13% 15%;
     --secondary: 40 6% 18%;
     --secondary-foreground: 40 30% 94%;
   }
@@ -168,7 +169,7 @@
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior-y: none;
-    background: #f7f2e7;
+    background: #f2ebdb;
   }
 
   h1, h2, h3, h4 {
