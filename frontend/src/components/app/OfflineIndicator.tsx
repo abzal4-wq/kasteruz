@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { WifiOff, Wifi } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 // Internet uzilganda yuqorida chiziq ko'rsatadi, qaytganda qisqa "ulandi" xabari
 export function OfflineIndicator() {
+  const { t } = useTranslation();
   const [online, setOnline] = useState(navigator.onLine);
   const [showBack, setShowBack] = useState(false);
 
@@ -33,12 +35,12 @@ export function OfflineIndicator() {
       {online ? (
         <>
           <Wifi className="h-3.5 w-3.5" />
-          Internet qayta ulandi
+          {t("common.backOnline")}
         </>
       ) : (
         <>
           <WifiOff className="h-3.5 w-3.5" />
-          Internet aloqasi yo'q — offline rejim
+          {t("common.offline")}
         </>
       )}
     </div>

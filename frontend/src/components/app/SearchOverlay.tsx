@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Search, X, Clock, TrendingUp, ArrowUpLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase";
 import { useSearchStore } from "@/store/search";
 import { useLang } from "@/hooks/useLang";
@@ -9,11 +10,19 @@ import { haptic } from "@/lib/haptics";
 import { formatPrice, getStorageUrl } from "@/lib/utils";
 import type { Product } from "@/types/database";
 
-const POPULAR = ["Kostyum", "Shim", "Ko'ylak", "Bugaso", "Salvarini", "Galstuk"];
-
 export function SearchOverlay() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { pick } = useLang();
+  // "Bugaso" va "Salvarini" — brend nomlari, tarjima qilinmaydi
+  const POPULAR = [
+    t("search.termSuit"),
+    t("search.termPants"),
+    t("search.termShirt"),
+    "Bugaso",
+    "Salvarini",
+    t("search.termTie"),
+  ];
   const { open, setOpen, history, addHistory, removeHistory, clearHistory } = useSearchStore();
   const [term, setTerm] = useState("");
   const [debounced, setDebounced] = useState("");
@@ -90,7 +99,7 @@ export function SearchOverlay() {
             ref={inputRef}
             value={term}
             onChange={(e) => setTerm(e.target.value)}
-            placeholder="Mahsulot, brend qidiring..."
+            placeholder={t("search.placeholder")}
             className="flex-1 bg-transparent text-sm text-charcoal outline-none placeholder:text-charcoal-400"
           />
           {term && (
@@ -103,7 +112,7 @@ export function SearchOverlay() {
           onClick={() => { haptic("light"); setOpen(false); }}
           className="tap px-1 text-sm font-medium text-charcoal-400"
         >
-          Bekor
+          {t("search.cancel")}
         </button>
       </div>
 
@@ -113,7 +122,7 @@ export function SearchOverlay() {
         {debounced.length >= 2 ? (
           <div>
             {isFetching && (
-              <p className="py-3 text-center text-xs text-charcoal-400">Qidirilmoqda...</p>
+              <p className="py-3 text-center text-xs text-charcoal-400">{t("search.searching")}</p>
             )}
             {results && results.length > 0 ? (
               <ul className="space-y-2">
@@ -140,13 +149,13 @@ export function SearchOverlay() {
                 })}
                 <li>
                   <button onClick={() => submit(debounced)} className="tap mt-1 w-full rounded-ios border border-white/10 py-3 text-center text-sm text-gold">
-                    "{debounced}" bo'yicha barcha natijalar →
+                    {t("search.allResults", { query: debounced })}
                   </button>
                 </li>
               </ul>
             ) : (
               !isFetching && (
-                <p className="py-8 text-center text-sm text-charcoal-400">Hech narsa topilmadi</p>
+                <p className="py-8 text-center text-sm text-charcoal-400">{t("search.noResults")}</p>
               )
             )}
           </div>
@@ -157,9 +166,9 @@ export function SearchOverlay() {
               <div>
                 <div className="mb-2 flex items-center justify-between px-1">
                   <span className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-charcoal-400">
-                    <Clock className="h-3.5 w-3.5" /> Tarix
+                    <Clock className="h-3.5 w-3.5" /> {t("search.history")}
                   </span>
-                  <button onClick={() => { haptic("light"); clearHistory(); }} className="text-xs text-charcoal-400 hover:text-gold">Tozalash</button>
+                  <button onClick={() => { haptic("light"); clearHistory(); }} className="text-xs text-charcoal-400 hover:text-gold">{t("filters.reset")}</button>
                 </div>
                 <ul className="space-y-1">
                   {history.map((h) => (
@@ -179,7 +188,7 @@ export function SearchOverlay() {
             {/* Mashhur */}
             <div>
               <span className="mb-2.5 flex items-center gap-1.5 px-1 text-xs font-medium uppercase tracking-wider text-charcoal-400">
-                <TrendingUp className="h-3.5 w-3.5" /> Mashhur qidiruvlar
+                <TrendingUp className="h-3.5 w-3.5" /> {t("search.popular")}
               </span>
               <div className="flex flex-wrap gap-2">
                 {POPULAR.map((p) => (

@@ -52,7 +52,7 @@ export default function AppearancePage() {
       e.target.value = "";
     }
   }
-  function setStat(i: number, key: "val" | "label", v: string) {
+  function setStat(i: number, key: "val" | "label" | "label_ru", v: string) {
     setForm((f) => ({ ...f, heroStats: f.heroStats.map((s, idx) => idx === i ? { ...s, [key]: v } : s) }));
     dirty();
   }
@@ -79,6 +79,9 @@ export default function AppearancePage() {
         { key: SITE_KEYS.heroTitle1, value: form.heroTitle1 ?? "" },
         { key: SITE_KEYS.heroTitle2, value: form.heroTitle2 ?? "" },
         { key: SITE_KEYS.heroSubtitle, value: form.heroSubtitle ?? "" },
+        { key: SITE_KEYS.heroTitle1Ru, value: form.heroTitle1Ru ?? "" },
+        { key: SITE_KEYS.heroTitle2Ru, value: form.heroTitle2Ru ?? "" },
+        { key: SITE_KEYS.heroSubtitleRu, value: form.heroSubtitleRu ?? "" },
         { key: SITE_KEYS.heroStats, value: JSON.stringify(form.heroStats) },
         { key: SITE_KEYS.sections, value: JSON.stringify(form.sections) },
       ];
@@ -143,13 +146,41 @@ export default function AppearancePage() {
           />
         </Field>
 
+        {/* ── Ruscha variantlar (RU rejim uchun; bo'sh qolsa UZ ko'rsatiladi) ── */}
+        <div className="rounded-xl border border-border bg-black/[0.02] p-4">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-charcoal">
+            🇷🇺 Ruscha variant <span className="font-normal normal-case text-muted-foreground">(bo'sh qolsa — o'zbekcha ko'rinadi)</span>
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field icon={<Type className="h-4 w-4" />} label="Заголовок — 1-строка">
+              <Input value={form.heroTitle1Ru} onChange={(e) => setHero("heroTitle1Ru", e.target.value)} placeholder="Скроенное" />
+            </Field>
+            <Field icon={<Type className="h-4 w-4" />} label="Заголовок — 2-строка">
+              <Input value={form.heroTitle2Ru} onChange={(e) => setHero("heroTitle2Ru", e.target.value)} placeholder="совершенство" />
+            </Field>
+          </div>
+          <div className="mt-4">
+            <Field icon={<Type className="h-4 w-4" />} label="Описание (RU)">
+              <textarea
+                className="w-full rounded-xl border border-border bg-white px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-gold/40"
+                rows={2}
+                value={form.heroSubtitleRu}
+                onChange={(e) => setHero("heroSubtitleRu", e.target.value)}
+              />
+            </Field>
+          </div>
+        </div>
+
         <div>
-          <label className="mb-2 block text-xs font-medium text-muted-foreground">Statistika (3 ta)</label>
+          <label className="mb-2 block text-xs font-medium text-muted-foreground">
+            Statistika (3 ta) — qiymat · yorliq (UZ) · yorliq (RU)
+          </label>
           <div className="space-y-2.5">
             {form.heroStats.map((s, i) => (
-              <div key={i} className="grid grid-cols-2 gap-2.5">
+              <div key={i} className="grid grid-cols-3 gap-2.5">
                 <Input value={s.val} onChange={(e) => setStat(i, "val", e.target.value)} placeholder="500+" />
                 <Input value={s.label} onChange={(e) => setStat(i, "label", e.target.value)} placeholder="Mamnun mijoz" />
+                <Input value={s.label_ru ?? ""} onChange={(e) => setStat(i, "label_ru", e.target.value)} placeholder="Довольных клиентов" />
               </div>
             ))}
           </div>

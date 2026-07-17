@@ -1,16 +1,18 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import i18n from "@/i18n/index";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// UZS formatida narx ko'rsatish: 1290000 → "1 290 000 so'm"
+// UZS formatida narx ko'rsatish: 1290000 → "1 290 000 so'm" / "1 290 000 сум"
 export function formatPrice(amount: number): string {
+  const currency = i18n.language?.startsWith("ru") ? "сум" : "so'm";
   return (
     new Intl.NumberFormat("ru-RU", {
       maximumFractionDigits: 0,
-    }).format(amount) + " so'm"
+    }).format(amount) + " " + currency
   );
 }
 

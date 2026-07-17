@@ -200,7 +200,7 @@ export default function ProductPage() {
         await navigator.share({ title, text: `${title} — Kaster.uz`, url });
       } else {
         await navigator.clipboard.writeText(url);
-        toast.success("Havola nusxalandi");
+        toast.success(t("product.linkCopied"));
       }
     } catch {
       /* foydalanuvchi bekor qildi */
@@ -256,10 +256,10 @@ export default function ProductPage() {
       quantity,
     });
     setAdded(true);
-    toast.cart("Savatchaga qo'shildi", {
+    toast.cart(t("product.addedToCart"), {
       subtitle: `${name} · ${selectedVariant.size}`,
       imageUrl: img ?? undefined,
-      action: { label: "Savatcha", to: "/cart" },
+      action: { label: t("cart.viewCart"), to: "/cart" },
     });
     setTimeout(() => setAdded(false), 2000);
   }
@@ -339,7 +339,7 @@ export default function ProductPage() {
                 if (productId) toggleWishlist(productId);
               }}
               className="tap absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full glass shadow-glass-sm"
-              aria-label="Sevimlilarga qo'shish"
+              aria-label={t("product.addToWishlist")}
             >
               <Heart
                 className={cn(
@@ -377,7 +377,7 @@ export default function ProductPage() {
             <button
               onClick={handleShare}
               className="tap mt-1 flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full glass shadow-glass-sm transition-transform hover:scale-105"
-              aria-label="Ulashish"
+              aria-label={t("product.share")}
             >
               <Share2 className="h-4 w-4 text-charcoal" />
             </button>
@@ -468,7 +468,7 @@ export default function ProductPage() {
                     key={variant.id}
                     onClick={() => !oos && setSelectedSize(variant.size)}
                     disabled={oos}
-                    title={oos ? "Tugagan" : undefined}
+                    title={oos ? t("product.outOfStock") : undefined}
                     className={cn(
                       "tap relative flex h-11 min-w-11 items-center justify-center rounded-md px-3 text-sm font-medium transition-all duration-300 sm:h-12 sm:min-w-12",
                       oos
@@ -509,7 +509,7 @@ export default function ProductPage() {
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                 disabled={quantity <= 1}
                 className="tap flex h-12 w-12 items-center justify-center rounded-l-md transition-colors hover:bg-black/5 disabled:opacity-40"
-                aria-label="Kamaytirish"
+                aria-label={t("product.decrease")}
               >
                 <Minus className="h-4 w-4" />
               </button>
@@ -520,7 +520,7 @@ export default function ProductPage() {
                 onClick={() => setQuantity((q) => Math.min(maxQty, q + 1))}
                 disabled={quantity >= maxQty}
                 className="tap flex h-12 w-12 items-center justify-center rounded-r-md transition-colors hover:bg-black/5 disabled:opacity-40"
-                aria-label="Ko'paytirish"
+                aria-label={t("product.increase")}
               >
                 <Plus className="h-4 w-4" />
               </button>
@@ -549,9 +549,9 @@ export default function ProductPage() {
           {/* Kafolat / ishonch chiplari */}
           <div className="mt-6 grid grid-cols-3 gap-2.5">
             {[
-              { icon: Truck, label: "Tez yetkazish" },
-              { icon: RotateCcw, label: "Qaytarish" },
-              { icon: ShieldCheck, label: "Kafolat" },
+              { icon: Truck, label: t("product.fastDelivery") },
+              { icon: RotateCcw, label: t("footer.returns") },
+              { icon: ShieldCheck, label: t("product.warranty") },
             ].map((g) => (
               <div key={g.label} className="glass-card flex flex-col items-center gap-1.5 rounded-2xl py-3 sm:gap-2 sm:py-4">
                 <g.icon className="h-4 w-4 text-gold" strokeWidth={1.7} />
@@ -592,15 +592,15 @@ export default function ProductPage() {
               )}
               {product.fit_type && (
                 <div className="glass-card rounded-2xl p-4">
-                  <p className="text-[0.62rem] uppercase tracking-wider text-muted-foreground">Fason</p>
+                  <p className="text-[0.62rem] uppercase tracking-wider text-muted-foreground">{t("product.fit")}</p>
                   <p className="mt-1.5 text-sm font-medium text-charcoal">
                     {product.fit_type === "slim" ? "Slim fit" : product.fit_type === "regular" ? "Regular fit" : "Comfort fit"}
                   </p>
                 </div>
               )}
               <div className="glass-card rounded-2xl p-4">
-                <p className="text-[0.62rem] uppercase tracking-wider text-muted-foreground">Kafolat</p>
-                <p className="mt-1.5 text-sm font-medium text-charcoal">Original · Kaster</p>
+                <p className="text-[0.62rem] uppercase tracking-wider text-muted-foreground">{t("product.warranty")}</p>
+                <p className="mt-1.5 text-sm font-medium text-charcoal">{t("product.warrantyValue")}</p>
               </div>
             </div>
           </div>
@@ -632,7 +632,7 @@ export default function ProductPage() {
         <div className="glass-strong mx-auto flex max-w-md items-center gap-3 rounded-ios-lg p-2.5 shadow-float">
           <div className="min-w-0 pl-2">
             <p className="truncate text-[0.6rem] uppercase tracking-wider text-muted-foreground">
-              {selectedVariant ? `${selectedVariant.color} · ${selectedVariant.size}` : "O'lchamni tanlang"}
+              {selectedVariant ? `${selectedVariant.color} · ${selectedVariant.size}` : t("product.selectSize")}
             </p>
             <p className="text-base font-semibold text-charcoal">{formatPrice(displayPrice)}</p>
           </div>
@@ -645,7 +645,7 @@ export default function ProductPage() {
             {added ? (
               <><Check className="mr-2 h-4 w-4" />{t("common.success")}</>
             ) : (
-              <><ShoppingBag className="mr-2 h-4 w-4" />Savatga</>
+              <><ShoppingBag className="mr-2 h-4 w-4" />{t("product.addToCartShort")}</>
             )}
           </Button>
         </div>

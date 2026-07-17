@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { MessageCircle, X, Phone, Send } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useStoreContact, telHref } from "@/hooks/useStoreContact";
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
 
 // Suzuvchi qo'llab-quvvatlash tugmasi — Telegram / WhatsApp / Qo'ng'iroq
 export function SupportWidget() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const { data: contact } = useStoreContact();
 
@@ -28,7 +30,7 @@ export function SupportWidget() {
       external: true,
     },
     contact?.phone && {
-      label: "Qo'ng'iroq",
+      label: t("support.call"),
       href: telHref(contact.phone),
       icon: Phone,
       color: "bg-gold",
@@ -75,7 +77,7 @@ export function SupportWidget() {
           haptic("medium");
           setOpen((o) => !o);
         }}
-        aria-label={open ? "Yopish" : "Yordam"}
+        aria-label={open ? t("common.close") : t("footer.help")}
         className={cn(
           "tap flex h-14 w-14 items-center justify-center rounded-full text-white shadow-float transition-all duration-300 hover:scale-105",
           open ? "rotate-90 bg-charcoal" : "bg-gold"

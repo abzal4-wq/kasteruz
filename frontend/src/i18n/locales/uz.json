@@ -24,7 +24,14 @@
     "pieces": "dona",
     "all": "Barchasi",
     "required": "Majburiy",
-    "optional": "Ixtiyoriy"
+    "optional": "Ixtiyoriy",
+    "backToTop": "Tepaga",
+    "details": "Batafsil",
+    "install": "O'rnatish",
+    "installTitle": "Kaster ilovasini o'rnating",
+    "installSubtitle": "Tezroq kirish · offline ishlaydi · bildirishnomalar",
+    "offline": "Internet aloqasi yo'q — offline rejim",
+    "backOnline": "Aloqa tiklandi"
   },
   "nav": {
     "home": "Bosh sahifa",
@@ -34,7 +41,9 @@
     "shirts": "Ko'ylaklar",
     "accessories": "Aksessuarlar",
     "about": "Biz haqimizda",
-    "contact": "Aloqa"
+    "contact": "Aloqa",
+    "menu": "Menyu",
+    "brandHome": "Kaster — bosh sahifa"
   },
   "product": {
     "addToCart": "Savatga qo'shish",
@@ -58,7 +67,19 @@
     "sku": "Kod",
     "discount": "-{{percent}}%",
     "featured": "Tavsiya etilgan",
-    "new": "Yangi"
+    "new": "Yangi",
+    "addToCartShort": "Savatga",
+    "added": "Qo'shildi",
+    "addedToCart": "Savatchaga qo'shildi",
+    "decrease": "Kamaytirish",
+    "increase": "Ko'paytirish",
+    "fastDelivery": "Tez yetkazish",
+    "featuredBadge": "Tavsiya",
+    "fit": "Fason",
+    "linkCopied": "Havola nusxalandi",
+    "share": "Ulashish",
+    "warranty": "Kafolat",
+    "warrantyValue": "Original · Kaster"
   },
   "cart": {
     "title": "Savat",
@@ -78,7 +99,8 @@
     "promoApplied": "Promo-kod qo'llandi",
     "promoError": "Noto'g'ri promo-kod",
     "freeDelivery": "Bepul yetkazib berish",
-    "freeDeliveryLeft": "Bepul yetkazib berish uchun {{amount}} qo'shing"
+    "freeDeliveryLeft": "Bepul yetkazib berish uchun {{amount}} qo'shing",
+    "viewCart": "Savatcha"
   },
   "checkout": {
     "title": "Buyurtma rasmiylashtirish",
@@ -143,7 +165,11 @@
     "orderNumber": "Buyurtma #{{number}}",
     "orderDate": "Sana",
     "orderStatus": "Holat",
-    "orderTotal": "Jami"
+    "orderTotal": "Jami",
+    "profileInfo": "Profil ma'lumotlari",
+    "settings": "Sozlamalar",
+    "help": "Yordam va aloqa",
+    "guest": "Mehmon"
   },
   "orderStatus": {
     "new": "Yangi",
@@ -181,7 +207,90 @@
     "featured": "Tavsiya etilgan",
     "newArrivals": "Yangi keldi",
     "categories": "Kategoriyalar",
-    "viewAll": "Hammasini ko'rish"
+    "viewAll": "Hammasini ko'rish",
+    "marqueeSuit": "Kostyum",
+    "marqueePants": "Shim",
+    "marqueeTashkent": "Toshkent",
+    "heroEyebrow": "Erkaklar klassikasi",
+    "heroCta": "Kolleksiya",
+    "heroAlt": "Kaster — premium kostyum",
+    "featuredEyebrow": "Tanlangan buyumlar",
+    "featuredTitleLead": "Tavsiya",
+    "featuredTitleAccent": "etilgan",
+    "featuredSub": "Mavsumning eng nafis va talabgir kostyumlari — qo'lda saralangan.",
+    "categoriesEyebrow": "Kolleksiya boblari",
+    "categoriesTitleLead": "Katalog",
+    "categoriesTitleAccent": "fasllari",
+    "chapter": "Bob",
+    "items": "buyum",
+    "openChapter": "Bobni ochish",
+    "brandsEyebrow": "Hamkor uylar",
+    "brandsTitleLead": "Brendlar",
+    "brandsTitleAccent": "reestri",
+    "standardEyebrow": "Maison va'dasi",
+    "standardTitleLead": "Atelier",
+    "standardTitleAccent": "qoidalari",
+    "features": {
+      "fabrics": {
+        "title": "Premium matolar",
+        "desc": "Italyan juni, ipak va kashmir — eng sara tolalardan tikilgan kiyimlar."
+      },
+      "cut": {
+        "title": "Mukammal bichim",
+        "desc": "Har bir kostyum nafis silueti bilan siz uchun bichilgandek o'tiradi."
+      },
+      "delivery": {
+        "title": "Ehtiyotkor yetkazish",
+        "desc": "Buyurtmangiz dazmollangan holda, maxsus qadoqlanib yetkaziladi."
+      },
+      "quality": {
+        "title": "Sifat kafolati",
+        "desc": "Har bir tikuvga javobgarmiz — original Kaster sifati."
+      }
+    },
+    "storyEyebrow": "Maison hikoyasi",
+    "storyTitle1": "Toshkent yuragida",
+    "storyTitle2": "tug'ilgan nafosat",
+    "storyText": "Kaster — bu shunchaki kiyim emas, balki erkak salobati va didining ifodasi. Har bir kostyum an'anaviy mahorat va zamonaviy uslub uyg'unligida, eng sara matolardan tikiladi. Biz uchun har bir mijoz — alohida hikoya: sizni siz gapirmasingizdan oldin tanitadigan kiyim yaratamiz.",
+    "storyStats": {
+      "clients": "Mamnun mijoz",
+      "original": "Original mahsulot",
+      "rating": "O'rtacha baho",
+      "support": "Qo'llab-quvvatlash"
+    },
+    "storyMore": "To'liq hikoya",
+    "yearsLabel": "Yillik tajriba",
+    "workshopAlt": "Kaster ustaxonasi",
+    "reviewsEyebrow": "Mijozlar kitobi",
+    "reviewsTitleLead": "Janoblar",
+    "reviewsTitleAccent": "e'tirofi",
+    "reviewsSub": "Beshdan besh — yuzlab minnatdor janobning dastxati.",
+    "reviews": {
+      "r1": {
+        "role": "Tadbirkor",
+        "text": "Kostyum ideal o'tirdi — go'yo men uchun maxsus tikilgandek. Sifat kutganimdan ham yuqori bo'ldi."
+      },
+      "r2": {
+        "role": "IT direktor",
+        "text": "To'yim uchun olgan kostyumim mukammal edi. Uslub bo'yicha juda yaxshi maslahat berishdi."
+      },
+      "r3": {
+        "role": "Advokat",
+        "text": "Mato, tikuv, detallar — hammasi haqiqiy did bilan. Bu mening uchinchi xaridim va oxirgisi emas."
+      },
+      "r4": {
+        "role": "Shifokor",
+        "text": "Yetkazib berish tez, qadoqlash chiroyli. Kaster — bu ishonchli maison."
+      }
+    },
+    "newsEyebrow": "Taklifnoma",
+    "newsTitleLead": "Kaster",
+    "newsTitleAccent": "doirasiga",
+    "newsTitleTail": "qo'shiling",
+    "newsSub": "Yangi kolleksiyalar, yopiq takliflar va shaxsiy uslub maslahatlari — faqat doira a'zolari uchun.",
+    "newsWelcome": "Xush kelibsiz — siz endi doiradasiz.",
+    "newsPlaceholder": "Email manzilingiz",
+    "newsJoin": "Qo'shilish"
   },
   "footer": {
     "about": "Biz haqimizda",
@@ -192,6 +301,67 @@
     "returns": "Qaytarish",
     "sizeGuide": "O'lcham jadvali",
     "contacts": "Aloqa",
-    "rights": "© 2025 Kaster.uz. Barcha huquqlar himoyalangan."
+    "rights": "© 2025 Kaster.uz. Barcha huquqlar himoyalangan.",
+    "aboutMaison": "Maison haqida"
+  },
+  "catalog": {
+    "all": "Hammasi",
+    "brand": "Brend",
+    "collection": "Kolleksiya",
+    "fullCatalog": "Butun katalog",
+    "searchResult": "Qidiruv natijasi",
+    "metaTagline": "Erkaklar kiyimlari"
+  },
+  "quickView": {
+    "title": "Tez ko'rish"
+  },
+  "reviews": {
+    "title": "Sharhlar",
+    "count": "{{count}} ta",
+    "loginPrompt": "Sharh qoldirish uchun",
+    "loginLink": "tizimga kiring",
+    "alreadyReviewed": "Siz bu mahsulotga sharh qoldirgansiz. Rahmat!",
+    "yourRating": "Bahoyingiz",
+    "selectStars": "Yulduz tanlang",
+    "thanks": "Sharhingiz uchun rahmat!",
+    "error": "Xatolik"
+  },
+  "search": {
+    "placeholder": "Mahsulot, brend qidiring...",
+    "cancel": "Bekor qilish",
+    "searching": "Qidirilmoqda...",
+    "allResults": "\"{{query}}\" bo'yicha barcha natijalar →",
+    "noResults": "Hech narsa topilmadi",
+    "history": "Tarix",
+    "popular": "Mashhur qidiruvlar",
+    "termSuit": "Kostyum",
+    "termPants": "Shim",
+    "termShirt": "Ko'ylak",
+    "termTie": "Galstuk"
+  },
+  "lookbook": {
+    "eyebrow": "Tayyor kombinatsiyalar",
+    "titleLead": "Maison",
+    "titleAccent": "looklari",
+    "sub": "Kiyov, biznes va ziyofat uchun — stilist yig'gan to'liq obrazlar.",
+    "total": "Look jami",
+    "assemble": "Lookni yig'ish",
+    "looks": {
+      "kiyov": {
+        "title": "Kiyov libosi",
+        "tagline": "Nikoh kuni uchun benuqson klassika"
+      },
+      "biznes": {
+        "title": "Biznes klassika",
+        "tagline": "Muzokaralar uchun salobatli qiyofa"
+      },
+      "ziyofat": {
+        "title": "Ziyofat oqshomi",
+        "tagline": "Kechki davralar uchun nafis obraz"
+      }
+    }
+  },
+  "support": {
+    "call": "Qo'ng'iroq"
   }
 }

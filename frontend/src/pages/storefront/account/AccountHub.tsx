@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import {
   Package, Heart, MapPin, User as UserIcon, Settings,
   Headphones, LogOut, ChevronRight,
@@ -14,6 +15,7 @@ import { Group, Row } from "./AccountUI";
 import type { Customer } from "@/types/database";
 
 export default function AccountHub() {
+  const { t } = useTranslation();
   const { customer, user, profile, signOut } = useAuthStore();
   const wishlistCount = useWishlistStore((s) => s.ids.length);
   const { data: contact } = useStoreContact();
@@ -45,7 +47,7 @@ export default function AccountHub() {
   });
 
   const displayName =
-    stats?.full_name || customer?.full_name || profile?.full_name || user?.email?.split("@")[0] || "Mehmon";
+    stats?.full_name || customer?.full_name || profile?.full_name || user?.email?.split("@")[0] || t("account.guest");
 
   return (
     <div className="space-y-5">
@@ -60,20 +62,20 @@ export default function AccountHub() {
       <Group>
         <Row
           icon={<Package className="h-5 w-5" />}
-          label="Buyurtmalarim"
+          label={t("account.orders")}
           to="/account/orders"
           right={<ChevronRight className="h-4 w-4 text-charcoal-300" />}
         />
         <Row
           icon={<Heart className="h-5 w-5" />}
-          label="Sevimlilar"
+          label={t("account.wishlist")}
           to="/wishlist"
           value={wishlistCount > 0 ? String(wishlistCount) : undefined}
           right={<ChevronRight className="h-4 w-4 text-charcoal-300" />}
         />
         <Row
           icon={<MapPin className="h-5 w-5" />}
-          label="Manzillarim"
+          label={t("account.addresses")}
           to="/account/addresses"
           right={<ChevronRight className="h-4 w-4 text-charcoal-300" />}
         />
@@ -83,13 +85,13 @@ export default function AccountHub() {
       <Group>
         <Row
           icon={<UserIcon className="h-5 w-5" />}
-          label="Profil ma'lumotlari"
+          label={t("account.profileInfo")}
           to="/account/profile"
           right={<ChevronRight className="h-4 w-4 text-charcoal-300" />}
         />
         <Row
           icon={<Settings className="h-5 w-5" />}
-          label="Sozlamalar"
+          label={t("account.settings")}
           to="/account/settings"
           right={<ChevronRight className="h-4 w-4 text-charcoal-300" />}
         />
@@ -99,13 +101,13 @@ export default function AccountHub() {
       <Group>
         <Row
           icon={<Headphones className="h-5 w-5" />}
-          label="Yordam va aloqa"
+          label={t("account.help")}
           onClick={() => { if (contact?.phone) window.location.href = telHref(contact.phone); }}
           right={<ChevronRight className="h-4 w-4 text-charcoal-300" />}
         />
         <Row
           icon={<LogOut className="h-5 w-5" />}
-          label="Chiqish"
+          label={t("account.logout")}
           danger
           onClick={() => { haptic("warning"); void signOut(); }}
         />

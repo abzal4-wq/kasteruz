@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Star, Scissors, Layers, Truck, ShieldCheck, ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import { Reveal } from "@/components/app/Reveal";
 import { CardSlider } from "@/components/storefront/CardSlider";
@@ -95,28 +96,29 @@ function StarRating({ rating, size = 12 }: { rating: number; size?: number }) {
 
 // ─── "Atelier qoidalari" (Kaster standarti) ──────────────────
 const FEATURES = [
-  { icon: Layers, numeral: "I", title: "Premium matolar", desc: "Italyan juni, ipak va kashmir — eng sara tolalardan tikilgan kiyimlar." },
-  { icon: Scissors, numeral: "II", title: "Mukammal bichim", desc: "Har bir kostyum nafis silueti bilan siz uchun bichilgandek o'tiradi." },
-  { icon: Truck, numeral: "III", title: "Ehtiyotkor yetkazish", desc: "Buyurtmangiz dazmollangan holda, maxsus qadoqlanib yetkaziladi." },
-  { icon: ShieldCheck, numeral: "IV", title: "Sifat kafolati", desc: "Har bir tikuvga javobgarmiz — original Kaster sifati." },
+  { icon: Layers, numeral: "I", k: "fabrics" },
+  { icon: Scissors, numeral: "II", k: "cut" },
+  { icon: Truck, numeral: "III", k: "delivery" },
+  { icon: ShieldCheck, numeral: "IV", k: "quality" },
 ];
 
 export function KasterStandard() {
+  const { t } = useTranslation();
   return (
     <section className="py-8 sm:py-14 lg:py-24">
       <div className="container-page">
         <Reveal className="mb-6 sm:mb-12 lg:mb-16">
           <SectionHeading
             numeral="✦"
-            eyebrow="Maison va'dasi"
-            title={<>Atelier <em className="italic text-gold">qoidalari</em></>}
+            eyebrow={t("home.standardEyebrow")}
+            title={<>{t("home.standardTitleLead")} <em className="italic text-gold">{t("home.standardTitleAccent")}</em></>}
           />
         </Reveal>
 
         <div className="frame-double">
           <div className="grid grid-cols-2 lg:grid-cols-4">
             {FEATURES.map((f, i) => (
-              <Reveal key={f.title} delay={i * 90}>
+              <Reveal key={f.k} delay={i * 90}>
                 <div
                   className={cn(
                     "relative h-full border-charcoal/10 px-3 py-5 text-center sm:px-7 sm:py-9 lg:px-8 lg:py-12",
@@ -130,9 +132,9 @@ export function KasterStandard() {
                 >
                   <div className="font-serif text-xs italic text-charcoal-300 sm:text-sm">{f.numeral}</div>
                   <f.icon className="mx-auto mt-2.5 h-5 w-5 text-gold sm:mt-3 sm:h-6 sm:w-6" strokeWidth={1.2} />
-                  <h3 className="mt-2.5 font-serif text-[0.95rem] font-medium leading-snug text-charcoal sm:mt-4 sm:text-xl lg:text-[1.35rem]">{f.title}</h3>
+                  <h3 className="mt-2.5 font-serif text-[0.95rem] font-medium leading-snug text-charcoal sm:mt-4 sm:text-xl lg:text-[1.35rem]">{t(`home.features.${f.k}.title`)}</h3>
                   <div className="mx-auto mt-2.5 h-px w-8 bg-gold/50 sm:mt-3" />
-                  <p className="mt-2.5 text-[0.7rem] leading-relaxed text-muted-foreground sm:mt-3 sm:text-[0.8rem]">{f.desc}</p>
+                  <p className="mt-2.5 text-[0.7rem] leading-relaxed text-muted-foreground sm:mt-3 sm:text-[0.8rem]">{t(`home.features.${f.k}.desc`)}</p>
                 </div>
               </Reveal>
             ))}
@@ -145,13 +147,14 @@ export function KasterStandard() {
 
 // ─── Maison hikoyasi — drop-cap + ramkalangan surat ──────────
 const STATS: [string, string][] = [
-  ["500+", "Mamnun mijoz"],
-  ["100%", "Original mahsulot"],
-  ["5.0", "O'rtacha baho"],
-  ["24/7", "Qo'llab-quvvatlash"],
+  ["500+", "clients"],
+  ["100%", "original"],
+  ["5.0", "rating"],
+  ["24/7", "support"],
 ];
 
 export function BrandStory() {
+  const { t } = useTranslation();
   return (
     <section className="container-page py-9 sm:py-16 lg:py-28">
       <div className="grid items-center gap-7 lg:grid-cols-2 lg:gap-20">
@@ -161,14 +164,14 @@ export function BrandStory() {
             <div className="relative aspect-[16/10] overflow-hidden sm:aspect-[16/9] lg:aspect-[4/5]">
               <img
                 src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=900&q=80&auto=format&fit=crop"
-                alt="Kaster ustaxonasi"
+                alt={t("home.workshopAlt")}
                 className="h-full w-full object-cover"
               />
               <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.45), transparent 55%)" }} />
               <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
                 <div>
                   <div className="font-serif text-3xl font-medium text-cream lg:text-4xl">XVI</div>
-                  <div className="mt-0.5 text-[0.56rem] uppercase tracking-[0.24em] text-cream/70">Yillik tajriba</div>
+                  <div className="mt-0.5 text-[0.56rem] uppercase tracking-[0.24em] text-cream/70">{t("home.yearsLabel")}</div>
                 </div>
                 <LogoCrest size={30} className="text-cream/80" />
               </div>
@@ -181,24 +184,22 @@ export function BrandStory() {
           <SectionHeading
             align="left"
             numeral="✦"
-            eyebrow="Maison hikoyasi"
-            title={<>Toshkent yuragida<br /><em className="italic text-gold">tug'ilgan nafosat</em></>}
+            eyebrow={t("home.storyEyebrow")}
+            title={<>{t("home.storyTitle1")}<br /><em className="italic text-gold">{t("home.storyTitle2")}</em></>}
           />
           <p className="dropcap mt-5 max-w-lg text-[0.88rem] leading-[1.85] text-muted-foreground sm:mt-7 sm:text-[0.95rem] sm:leading-[1.9]">
-            Kaster — bu shunchaki kiyim emas, balki erkak salobati va didining ifodasi. Har bir kostyum
-            an'anaviy mahorat va zamonaviy uslub uyg'unligida, eng sara matolardan tikiladi. Biz uchun
-            har bir mijoz — alohida hikoya: sizni siz gapirmasingizdan oldin tanitadigan kiyim yaratamiz.
+            {t("home.storyText")}
           </p>
 
           <div className="mt-6 grid grid-cols-2 gap-x-5 gap-y-4 sm:mt-9 sm:gap-x-8 sm:gap-y-7">
-            {STATS.map(([val, label], i) => (
-              <div key={label}>
+            {STATS.map(([val, k], i) => (
+              <div key={k}>
                 <div className="flex items-baseline gap-2.5">
                   <span className="font-serif text-xs italic text-charcoal-300">{["I", "II", "III", "IV"][i]}</span>
                   <span className="font-serif text-lg font-medium text-charcoal sm:text-2xl lg:text-3xl">{val}</span>
                 </div>
                 <div className="mt-1.5 stitch-h w-16" />
-                <div className="mt-1.5 text-[0.58rem] uppercase tracking-[0.16em] text-charcoal-400 sm:text-[0.62rem] sm:tracking-[0.18em]">{label}</div>
+                <div className="mt-1.5 text-[0.58rem] uppercase tracking-[0.16em] text-charcoal-400 sm:text-[0.62rem] sm:tracking-[0.18em]">{t(`home.storyStats.${k}`)}</div>
               </div>
             ))}
           </div>
@@ -207,7 +208,7 @@ export function BrandStory() {
             to="/about"
             className="group mt-6 inline-flex items-center gap-3 text-[0.62rem] uppercase tracking-[0.24em] text-gold transition-all hover:gap-5 sm:mt-10 sm:text-[0.66rem]"
           >
-            To'liq hikoya <ArrowRight className="h-4 w-4" />
+            {t("home.storyMore")} <ArrowRight className="h-4 w-4" />
           </Link>
         </Reveal>
       </div>
@@ -217,22 +218,23 @@ export function BrandStory() {
 
 // ─── Janoblar e'tirofi (sharhlar) ────────────────────────────
 const REVIEWS = [
-  { name: "Jasur A.", role: "Tadbirkor", rating: 5, text: "Kostyum ideal o'tirdi — go'yo men uchun maxsus tikilgandek. Sifat kutganimdan ham yuqori bo'ldi." },
-  { name: "Bobur M.", role: "IT direktor", rating: 5, text: "To'yim uchun olgan kostyumim mukammal edi. Uslub bo'yicha juda yaxshi maslahat berishdi." },
-  { name: "Sardor K.", role: "Advokat", rating: 5, text: "Mato, tikuv, detallar — hammasi haqiqiy did bilan. Bu mening uchinchi xaridim va oxirgisi emas." },
-  { name: "Aziz R.", role: "Shifokor", rating: 5, text: "Yetkazib berish tez, qadoqlash chiroyli. Kaster — bu ishonchli maison." },
+  { name: "Jasur A.", k: "r1", rating: 5 },
+  { name: "Bobur M.", k: "r2", rating: 5 },
+  { name: "Sardor K.", k: "r3", rating: 5 },
+  { name: "Aziz R.", k: "r4", rating: 5 },
 ];
 
 export function CustomerReviews() {
+  const { t } = useTranslation();
   return (
     <section className="py-9 sm:py-16 lg:py-28" style={{ background: "rgb(var(--brand-500)/0.045)" }}>
       <div className="container-page">
         <Reveal className="mb-6 sm:mb-12 lg:mb-16">
           <SectionHeading
             numeral="✦"
-            eyebrow="Mijozlar kitobi"
-            title={<>Janoblar <em className="italic text-gold">e'tirofi</em></>}
-            sub="Beshdan besh — yuzlab minnatdor janobning dastxati."
+            eyebrow={t("home.reviewsEyebrow")}
+            title={<>{t("home.reviewsTitleLead")} <em className="italic text-gold">{t("home.reviewsTitleAccent")}</em></>}
+            sub={t("home.reviewsSub")}
           />
         </Reveal>
 
@@ -245,12 +247,12 @@ export function CustomerReviews() {
                   <span className="font-serif text-xs italic text-charcoal-300">{["I", "II", "III", "IV"][i]}</span>
                 </div>
                 <p className="mt-2.5 flex-1 font-serif text-[0.88rem] font-light italic leading-relaxed text-charcoal-600 sm:mt-4 sm:text-[1.05rem]">
-                  {r.text}
+                  {t(`home.reviews.${r.k}.text`)}
                 </p>
                 <GoldDivider className="my-4 sm:my-6" />
                 <div className="text-center">
                   <div className="font-serif text-base font-medium text-charcoal sm:text-lg">{r.name}</div>
-                  <div className="mt-0.5 text-[0.56rem] uppercase tracking-[0.2em] text-charcoal-400 sm:text-[0.6rem] sm:tracking-[0.22em]">{r.role}</div>
+                  <div className="mt-0.5 text-[0.56rem] uppercase tracking-[0.2em] text-charcoal-400 sm:text-[0.6rem] sm:tracking-[0.22em]">{t(`home.reviews.${r.k}.role`)}</div>
                   <div className="mt-2 flex justify-center sm:mt-2.5"><StarRating rating={r.rating} /></div>
                 </div>
               </div>
@@ -264,6 +266,7 @@ export function CustomerReviews() {
 
 // ─── Taklifnoma — "Kaster doirasi" ───────────────────────────
 export function Newsletter() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [done, setDone] = useState(false);
 
@@ -272,17 +275,17 @@ export function Newsletter() {
       <Reveal>
         <div className="frame-double mx-auto max-w-3xl px-4 py-8 text-center sm:px-12 sm:py-12 lg:py-16">
           <LogoCrest size={30} className="mx-auto text-gold" />
-          <p className="mt-3.5 text-[0.56rem] uppercase tracking-[0.3em] text-gold sm:mt-5 sm:text-[0.62rem] sm:tracking-[0.34em]">Taklifnoma</p>
+          <p className="mt-3.5 text-[0.56rem] uppercase tracking-[0.3em] text-gold sm:mt-5 sm:text-[0.62rem] sm:tracking-[0.34em]">{t("home.newsEyebrow")}</p>
           <h2 className="mt-2 font-serif text-[1.45rem] font-medium leading-tight text-charcoal sm:mt-3 sm:text-4xl lg:text-[2.9rem]">
-            Kaster <em className="italic text-gold">doirasi</em>ga qo'shiling
+            {t("home.newsTitleLead")} <em className="italic text-gold">{t("home.newsTitleAccent")}</em> {t("home.newsTitleTail")}
           </h2>
           <p className="mx-auto mt-2.5 max-w-md font-serif text-[0.88rem] italic leading-relaxed text-charcoal-500 sm:mt-4 sm:text-base">
-            Yangi kolleksiyalar, yopiq takliflar va shaxsiy uslub maslahatlari — faqat doira a'zolari uchun.
+            {t("home.newsSub")}
           </p>
 
           {done ? (
             <div className="mt-6 flex items-center justify-center gap-2 font-serif text-lg italic text-gold sm:mt-9">
-              <Check className="h-5 w-5" /> Xush kelibsiz — siz endi doiradasiz.
+              <Check className="h-5 w-5" /> {t("home.newsWelcome")}
             </div>
           ) : (
             <form
@@ -294,12 +297,12 @@ export function Newsletter() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email manzilingiz"
+                  placeholder={t("home.newsPlaceholder")}
                   className="w-full bg-transparent px-1 py-3 text-center font-serif text-base italic text-charcoal outline-none placeholder:text-charcoal-300 sm:text-left"
                 />
               </div>
               <button type="submit" className="btn-press tap px-7 py-3 text-[0.6rem] font-semibold uppercase tracking-[0.24em] sm:px-8 sm:py-3.5 sm:text-[0.62rem]">
-                Qo'shilish
+                {t("home.newsJoin")}
               </button>
             </form>
           )}

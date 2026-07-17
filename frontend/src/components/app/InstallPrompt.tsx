@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Download, X, Sparkles } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useInstallPrompt } from "@/lib/pwa";
 import { haptic } from "@/lib/haptics";
 
@@ -7,6 +8,7 @@ const DISMISS_KEY = "kaster-install-dismissed";
 
 // Pastdan suzib chiqadigan "Ilovani o'rnating" banneri (mobil + desktop)
 export function InstallPrompt() {
+  const { t } = useTranslation();
   const { canInstall, installed, promptInstall } = useInstallPrompt();
   const [dismissed, setDismissed] = useState(true);
   const [visible, setVisible] = useState(false);
@@ -55,8 +57,8 @@ export function InstallPrompt() {
         </div>
 
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-charcoal">Kaster ilovasini o'rnating</p>
-          <p className="text-xs text-charcoal-400">Tezroq kirish · offline ishlaydi · bildirishnomalar</p>
+          <p className="text-sm font-semibold text-charcoal">{t("common.installTitle")}</p>
+          <p className="text-xs text-charcoal-400">{t("common.installSubtitle")}</p>
         </div>
 
         <button
@@ -64,13 +66,13 @@ export function InstallPrompt() {
           className="tap flex flex-shrink-0 items-center gap-1.5 rounded-full bg-gold px-4 py-2.5 text-xs font-semibold text-white shadow-glass-sm"
         >
           <Download className="h-4 w-4" />
-          O'rnatish
+          {t("common.install")}
         </button>
 
         <button
           onClick={close}
           className="tap flex-shrink-0 text-charcoal-300 hover:text-charcoal"
-          aria-label="Yopish"
+          aria-label={t("common.close")}
         >
           <X className="h-4 w-4" />
         </button>

@@ -166,7 +166,7 @@ export default function CatalogPage() {
       {availableColors.length > 0 && (
         <div>
           <h4 className="mb-3 font-sans text-xs font-semibold uppercase tracking-widest text-charcoal">
-            Rang
+            {t("filters.color")}
           </h4>
           <div className="flex flex-wrap gap-2.5">
             {availableColors.map(([color, hex]) => (
@@ -191,7 +191,7 @@ export default function CatalogPage() {
       {/* Narx */}
       <div>
         <h4 className="mb-3 font-sans text-xs font-semibold uppercase tracking-widest text-charcoal">
-          Narx (so'm)
+          {t("filters.price")} ({t("common.currency")})
         </h4>
         <div className="flex items-center gap-2">
           <input
@@ -199,7 +199,7 @@ export default function CatalogPage() {
             inputMode="numeric"
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
-            placeholder="dan"
+            placeholder={t("filters.priceFrom")}
             className="input-kaster w-full"
           />
           <span className="text-charcoal-400">—</span>
@@ -208,7 +208,7 @@ export default function CatalogPage() {
             inputMode="numeric"
             value={maxPrice}
             onChange={(e) => setMaxPrice(e.target.value)}
-            placeholder="gacha"
+            placeholder={t("filters.priceTo")}
             className="input-kaster w-full"
           />
         </div>
@@ -224,12 +224,12 @@ export default function CatalogPage() {
   );
 
   const eyebrow = currentBrand
-    ? "Brend"
+    ? t("catalog.brand")
     : searchQuery
-    ? "Qidiruv natijasi"
+    ? t("catalog.searchResult")
     : currentCategory
-    ? "Kolleksiya"
-    : "Butun katalog";
+    ? t("catalog.collection")
+    : t("catalog.fullCatalog");
   const heading = currentBrand
     ? currentBrand.name
     : searchQuery
@@ -238,7 +238,7 @@ export default function CatalogPage() {
     ? pick(currentCategory, "name")
     : t("nav.catalog");
 
-  usePageMeta(`${heading} — Kaster.uz | Erkaklar kiyimlari`);
+  usePageMeta(`${heading} — Kaster.uz | ${t("catalog.metaTagline")}`);
 
   return (
     <div className="container-page py-10">
@@ -250,7 +250,7 @@ export default function CatalogPage() {
               <button
                 onClick={() => navigate("/catalog")}
                 className="tap mt-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-foreground/8 text-charcoal transition-colors hover:bg-foreground/15"
-                aria-label="Orqaga"
+                aria-label={t("common.back")}
               >
                 <ArrowLeft className="h-4 w-4" />
               </button>
@@ -293,7 +293,7 @@ export default function CatalogPage() {
                 : "glass text-charcoal"
             )}
           >
-            Hammasi
+            {t("catalog.all")}
           </Link>
           {categories?.map((c) => (
             <Link

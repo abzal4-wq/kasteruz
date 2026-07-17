@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Heart, ArrowUpRight, Eye } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Product } from "@/types/database";
 import { useLang } from "@/hooks/useLang";
 import { formatPrice, discountPercent, getStorageUrl } from "@/lib/utils";
@@ -14,6 +15,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, index }: ProductCardProps) {
+  const { t } = useTranslation();
   const { pick } = useLang();
   const isWishlisted = useWishlistStore((s) => s.ids.includes(product.id));
   const toggleWishlist = useWishlistStore((s) => s.toggle);
@@ -56,7 +58,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
             <div className="absolute left-0 top-3 z-20 flex flex-col items-start gap-1.5">
               {product.is_featured && (
                 <span className="bg-charcoal-900/85 px-3 py-1 text-[0.54rem] font-medium uppercase tracking-[0.2em] text-cream backdrop-blur-sm">
-                  Tavsiya
+                  {t("product.featuredBadge")}
                 </span>
               )}
               {hasDiscount && (
@@ -78,7 +80,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
                 className="tap flex items-center gap-1.5 border border-cream/50 px-4 py-2 text-[0.56rem] font-medium uppercase tracking-[0.22em] text-cream backdrop-blur-sm transition-colors hover:border-cream hover:bg-cream/10"
               >
                 <Eye className="h-3.5 w-3.5" />
-                Tez ko'rish
+                {t("quickView.title")}
               </button>
               <span className="flex h-8 w-8 items-center justify-center border border-cream/50 text-cream backdrop-blur-sm">
                 <ArrowUpRight className="h-3.5 w-3.5" />
@@ -95,7 +97,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
           toggleWishlist(product.id);
         }}
         className="tap absolute right-3 top-3 z-30 flex h-8 w-8 items-center justify-center rounded-full glass transition-transform duration-300 hover:scale-110 sm:right-4 sm:top-4 sm:h-9 sm:w-9"
-        aria-label="Sevimlilarga qo'shish"
+        aria-label={t("product.addToWishlist")}
       >
         <Heart
           className={cn(

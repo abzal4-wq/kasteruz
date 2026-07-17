@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { haptic } from "@/lib/haptics";
 
 // Pastga scroll qilganda paydo bo'ladigan suzuvchi tugma
 export function BackToTop() {
+  const { t } = useTranslation();
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -20,7 +22,7 @@ export function BackToTop() {
         haptic("light");
         window.scrollTo({ top: 0, behavior: "smooth" });
       }}
-      aria-label="Tepaga"
+      aria-label={t("common.backToTop")}
       className="fab-lift glass-strong tap fixed bottom-28 right-4 z-40 flex h-11 w-11 animate-[scale-in_0.25s_ease-out] items-center justify-center rounded-full text-charcoal shadow-float transition-[bottom] duration-300 lg:bottom-6"
     >
       <ArrowUp className="h-5 w-5" />

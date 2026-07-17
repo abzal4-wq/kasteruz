@@ -45,10 +45,19 @@ function HeritageSeal({ className }: { className?: string }) {
 }
 
 // ─── Siyoh lenta (marquee) — sartorial so'zlar ───────────────
-const MARQUEE_WORDS = ["Kostyum", "Shim", "Sartoria", "Bespoke", "Su Misura", "Toshkent"];
+// Sartoria / Bespoke / Su Misura — brend terminlari, tarjima qilinmaydi
+const MARQUEE_ITEMS: { labelKey?: string; label?: string }[] = [
+  { labelKey: "home.marqueeSuit" },
+  { labelKey: "home.marqueePants" },
+  { label: "Sartoria" },
+  { label: "Bespoke" },
+  { label: "Su Misura" },
+  { labelKey: "home.marqueeTashkent" },
+];
 
 function InkMarquee() {
-  const row = [...MARQUEE_WORDS, ...MARQUEE_WORDS];
+  const { t } = useTranslation();
+  const row = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
   return (
     <div className="scene-dark relative overflow-hidden py-3 sm:py-5 lg:py-6">
       <div className="pointer-events-none absolute inset-x-0 top-2 stitch-h opacity-40" style={{ backgroundImage: "linear-gradient(90deg, rgba(250,248,244,0.5) 42%, transparent 42%)" }} />
@@ -59,7 +68,7 @@ function InkMarquee() {
             {row.map((w, i) => (
               <span key={`${half}-${i}`} className="flex items-center">
                 <span className="px-4 font-serif text-base font-light italic text-cream/85 sm:px-6 sm:text-2xl lg:px-9 lg:text-3xl">
-                  {w}
+                  {w.labelKey ? t(w.labelKey) : w.label}
                 </span>
                 <span className="text-[0.55rem] text-gold">◆</span>
               </span>
@@ -73,12 +82,19 @@ function InkMarquee() {
 
 export default function HomePage() {
   const { t } = useTranslation();
-  const { pick } = useLang();
+  const { pick, lang } = useLang();
   const { data: featured, isLoading } = useProducts({ featuredOnly: true });
   const { data: categories } = useCategories();
   const { data: allProducts } = useProducts();
   const { data: site } = useSiteSettings();
   const cfg = site ?? SITE_DEFAULTS;
+
+  // RU rejimda ruscha hero matnlari (bo'sh bo'lsa — uz)
+  const heroTitle1 = lang === "ru" && cfg.heroTitle1Ru ? cfg.heroTitle1Ru : cfg.heroTitle1;
+  const heroTitle2 = lang === "ru" && cfg.heroTitle2Ru ? cfg.heroTitle2Ru : cfg.heroTitle2;
+  const heroSubtitle = lang === "ru" && cfg.heroSubtitleRu ? cfg.heroSubtitleRu : cfg.heroSubtitle;
+  const statLabel = (s: { label: string; label_ru?: string }) =>
+    lang === "ru" && s.label_ru ? s.label_ru : s.label;
 
   // Har kategoriyadagi buyumlar soni (ark kartalarda ko'rsatiladi)
   const catCounts = useMemo(() => {
@@ -96,10 +112,10 @@ export default function HomePage() {
       <Reveal>
         <SectionHeading
           numeral="I"
-          eyebrow="Tanlangan buyumlar"
-          title={<>Tavsiya <em className="italic text-gold">etilgan</em></>}
-          sub="Mavsumning eng nafis va talabgir kostyumlari — qo'lda saralangan."
-          more={{ to: "/catalog", label: "Barchasi" }}
+          eyebrow={t("home.featuredEyebrow")}
+          title={<>{t("home.featuredTitleLead")} <em className="italic text-gold">{t("home.featuredTitleAccent")}</em></>}
+          sub={t("home.featuredSub")}
+          more={{ to: "/catalog", label: t("home.viewAll") }}
         />
       </Reveal>
 
@@ -128,8 +144,8 @@ export default function HomePage() {
       <Reveal>
         <SectionHeading
           numeral="II"
-          eyebrow="Kolleksiya boblari"
-          title={<>Katalog <em className="italic text-gold">fasllari</em></>}
+          eyebrow={t("home.categoriesEyebrow")}
+          title={<>{t("home.categoriesTitleLead")} <em className="italic text-gold">{t("home.categoriesTitleAccent")}</em></>}
         />
       </Reveal>
 
@@ -162,7 +178,7 @@ export default function HomePage() {
                     <div className="absolute left-1/2 top-0 z-10 flex -translate-x-1/2 flex-col items-center">
                       <span className="h-4 w-px bg-cream/50 sm:h-5" />
                       <span className="border border-cream/40 bg-black/35 px-2 py-0.5 font-serif text-[0.6rem] italic text-cream backdrop-blur-sm transition-colors duration-500 group-hover:border-gold/70 sm:px-2.5 sm:text-[0.68rem]">
-                        Bob {ROMAN[i] ?? i + 1}
+                        {t("home.chapter")} {ROMAN[i] ?? i + 1}
                       </span>
                     </div>
 
@@ -177,17 +193,17 @@ export default function HomePage() {
                       </div>
                       {count > 0 && (
                         <p className="mt-1.5 text-[0.52rem] uppercase tracking-[0.26em] text-cream/70 sm:text-[0.58rem]">
-                          {count} buyum
+                          {count} {t("home.items")}
                         </p>
                       )}
                     </div>
                   </div>
                 </div>
 
-                {/* "Bobni ochish" — o'suvchi ostki chiziq bilan */}
+                {/* "{t("home.openChapter")}" — o'suvchi ostki chiziq bilan */}
                 <div className="mt-3 flex justify-center sm:mt-4">
                   <span className="relative inline-flex items-center gap-2 pb-1 text-[0.56rem] uppercase tracking-[0.24em] text-charcoal-400 transition-colors group-hover:text-gold sm:text-[0.6rem] sm:tracking-[0.28em]">
-                    Bobni ochish
+                    {t("home.openChapter")}
                     <ArrowUpRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     <span className="absolute bottom-0 left-1/2 h-px w-0 -translate-x-1/2 bg-gold transition-all duration-500 group-hover:w-full" />
                   </span>
@@ -205,8 +221,8 @@ export default function HomePage() {
       <Reveal className="container-page">
         <SectionHeading
           numeral="III"
-          eyebrow="Hamkor uylar"
-          title={<>Brendlar <em className="italic text-gold">reestri</em></>}
+          eyebrow={t("home.brandsEyebrow")}
+          title={<>{t("home.brandsTitleLead")} <em className="italic text-gold">{t("home.brandsTitleAccent")}</em></>}
         />
       </Reveal>
       <div className="mt-6 sm:mt-8 lg:mt-10">
@@ -261,7 +277,7 @@ export default function HomePage() {
               >
                 <span className="hidden h-px w-9 bg-gold/60 sm:block" />
                 <span className="text-[0.5rem]">◆</span>
-                Erkaklar klassikasi
+                {t("home.heroEyebrow")}
                 <span className="text-[0.5rem]">◆</span>
                 <span className="hidden h-px w-9 bg-gold/60 sm:block" />
               </p>
@@ -272,7 +288,7 @@ export default function HomePage() {
                     className="inline-block text-[12vw] sm:text-[12vw] lg:text-[6.8rem] xl:text-[7.6rem]"
                     style={{ animation: "kineticUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.3s both" }}
                   >
-                    {cfg.heroTitle1}
+                    {heroTitle1}
                   </span>
                 </span>
                 <span className="block overflow-hidden">
@@ -280,7 +296,7 @@ export default function HomePage() {
                     className="inline-block pr-2 text-[12vw] font-light italic text-gold sm:text-[12vw] lg:text-[6.8rem] xl:text-[7.6rem]"
                     style={{ animation: "kineticUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.48s both" }}
                   >
-                    {cfg.heroTitle2}
+                    {heroTitle2}
                   </span>
                 </span>
               </h1>
@@ -289,7 +305,7 @@ export default function HomePage() {
                 className="mx-auto mt-4 max-w-md font-serif text-[0.95rem] font-light italic leading-relaxed text-charcoal-500 sm:mt-6 sm:text-lg lg:mx-0 lg:text-xl"
                 style={{ animation: "splashFade 0.9s ease-out 0.62s both" }}
               >
-                {cfg.heroSubtitle}
+                {heroSubtitle}
               </p>
 
               <div
@@ -300,14 +316,14 @@ export default function HomePage() {
                   to="/catalog"
                   className="btn-press tap group px-2 py-3 text-[0.56rem] font-semibold uppercase tracking-[0.16em] sm:px-11 sm:py-4 sm:text-[0.66rem] sm:tracking-[0.24em]"
                 >
-                  Kolleksiya
+                  {t("home.heroCta")}
                   <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1 sm:h-3.5 sm:w-3.5" />
                 </Link>
                 <Link
                   to="/about"
                   className="btn-hairline tap px-2 py-3 text-[0.56rem] font-medium uppercase tracking-[0.16em] sm:px-11 sm:py-4 sm:text-[0.66rem] sm:tracking-[0.24em]"
                 >
-                  Maison haqida
+                  {t("footer.aboutMaison")}
                 </Link>
               </div>
 
@@ -319,7 +335,7 @@ export default function HomePage() {
                     <div key={i} className="text-center lg:text-left">
                       <div className="font-serif text-xs italic text-gold">{ROMAN[i]}</div>
                       <div className="mt-1 font-serif text-lg font-medium text-charcoal sm:text-xl lg:text-2xl">{s.val}</div>
-                      <div className="mt-0.5 text-[0.54rem] uppercase tracking-[0.18em] text-charcoal-400 sm:text-[0.56rem] sm:tracking-[0.2em]">{s.label}</div>
+                      <div className="mt-0.5 text-[0.54rem] uppercase tracking-[0.18em] text-charcoal-400 sm:text-[0.56rem] sm:tracking-[0.2em]">{statLabel(s)}</div>
                     </div>
                   ))}
                 </div>
@@ -333,7 +349,7 @@ export default function HomePage() {
               <div className="relative aspect-[3/4] overflow-hidden rounded-t-[999px] bg-charcoal/5">
                 <img
                   src={cfg.heroImage}
-                  alt="Kaster — premium kostyum"
+                  alt={t("home.heroAlt")}
                   loading="eager"
                   decoding="async"
                   onError={(e) => { e.currentTarget.style.display = "none"; }}

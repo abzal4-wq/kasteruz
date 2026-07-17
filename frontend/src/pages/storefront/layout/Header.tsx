@@ -77,7 +77,7 @@ export function Header() {
             <SheetTrigger asChild>
               <button
                 className="tap flex h-10 w-10 items-center justify-center text-charcoal transition-colors hover:text-gold lg:hidden"
-                aria-label="Menyu"
+                aria-label={t("nav.menu")}
               >
                 <Menu className="h-5 w-5" strokeWidth={1.5} />
               </button>
@@ -123,7 +123,7 @@ export function Header() {
         {/* Markaz: gerb-logo */}
         <div className="justify-self-center">
           <Logo className="lg:hidden" />
-          <Link to="/" className="group hidden flex-col items-center leading-none lg:inline-flex" aria-label="Kaster — bosh sahifa">
+          <Link to="/" className="group hidden flex-col items-center leading-none lg:inline-flex" aria-label={t("nav.brandHome")}>
             <LogoCrest className="text-gold transition-transform duration-500 group-hover:scale-110" size={30} />
             <span className="mt-1.5 font-display text-lg font-semibold uppercase tracking-[0.34em] text-charcoal">
               Kaster

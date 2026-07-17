@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingBag, Check, ArrowUpRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useQuickView } from "@/store/quickview";
 import { useCartStore } from "@/store/cart";
 import { useLang } from "@/hooks/useLang";
@@ -11,6 +12,7 @@ import { toast } from "@/store/toast";
 import { haptic } from "@/lib/haptics";
 
 export function QuickView() {
+  const { t } = useTranslation();
   const { product, close } = useQuickView();
   const { pick } = useLang();
   const addItem = useCartStore((s) => s.addItem);
@@ -67,10 +69,10 @@ export function QuickView() {
     });
     setAdded(true);
     haptic("success");
-    toast.cart("Savatchaga qo'shildi", {
+    toast.cart(t("product.addedToCart"), {
       subtitle: `${name} · ${selected.size}`,
       imageUrl: img ?? undefined,
-      action: { label: "Savatcha", to: "/cart" },
+      action: { label: t("cart.viewCart"), to: "/cart" },
     });
     setTimeout(() => setAdded(false), 1800);
   }
@@ -111,7 +113,7 @@ export function QuickView() {
 
               {colors.length > 0 && (
                 <div className="mt-5">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-charcoal">Rang</p>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-charcoal">{t("filters.color")}</p>
                   <div className="flex flex-wrap gap-2">
                     {colors.map(([c, hex]) => (
                       <button
@@ -131,7 +133,7 @@ export function QuickView() {
               )}
 
               <div className="mt-5">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-charcoal">O'lcham</p>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-charcoal">{t("filters.size")}</p>
                 <div className="flex flex-wrap gap-2">
                   {sizes.map((v) => (
                     <button
@@ -156,9 +158,9 @@ export function QuickView() {
                   onClick={add}
                 >
                   {added ? (
-                    <><Check className="mr-2 h-4 w-4" /> Qo'shildi</>
+                    <><Check className="mr-2 h-4 w-4" /> {t("product.added")}</>
                   ) : (
-                    <><ShoppingBag className="mr-2 h-4 w-4" /> {selected ? "Savatga" : "O'lcham tanlang"}</>
+                    <><ShoppingBag className="mr-2 h-4 w-4" /> {selected ? t("product.addToCartShort") : t("product.selectSize")}</>
                   )}
                 </Button>
                 <Link
@@ -166,7 +168,7 @@ export function QuickView() {
                   onClick={close}
                   className="inline-flex items-center justify-center gap-1.5 text-xs uppercase tracking-[0.16em] text-charcoal transition-colors hover:text-gold"
                 >
-                  Batafsil <ArrowUpRight className="h-3.5 w-3.5" />
+                  {t("common.details")} <ArrowUpRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
             </div>

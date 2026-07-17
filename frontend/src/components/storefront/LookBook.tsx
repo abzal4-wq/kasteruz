@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
 import { useLang } from "@/hooks/useLang";
@@ -15,22 +16,22 @@ const RECIPES = [
   {
     id: "kiyov",
     numeral: "I",
-    title: "Kiyov libosi",
-    tagline: "Nikoh kuni uchun benuqson klassika",
+    titleKey: "lookbook.looks.kiyov.title",
+    taglineKey: "lookbook.looks.kiyov.tagline",
     slots: ["kostyumlar", "koylaklar", "aksessuarlar"],
   },
   {
     id: "biznes",
     numeral: "II",
-    title: "Biznes klassika",
-    tagline: "Muzokaralar uchun salobatli qiyofa",
+    titleKey: "lookbook.looks.biznes.title",
+    taglineKey: "lookbook.looks.biznes.tagline",
     slots: ["kostyumlar", "shimlar", "koylaklar"],
   },
   {
     id: "ziyofat",
     numeral: "III",
-    title: "Ziyofat oqshomi",
-    tagline: "Kechki davralar uchun nafis obraz",
+    titleKey: "lookbook.looks.ziyofat.title",
+    taglineKey: "lookbook.looks.ziyofat.tagline",
     slots: ["shimlar", "koylaklar", "aksessuarlar"],
   },
 ];
@@ -60,6 +61,7 @@ interface Look {
 }
 
 export function LookBook() {
+  const { t } = useTranslation();
   const { pick } = useLang();
   const { data: products } = useProducts();
 
@@ -93,9 +95,9 @@ export function LookBook() {
         <Reveal className="mb-6 sm:mb-12 lg:mb-16">
           <SectionHeading
             numeral="✦"
-            eyebrow="Tayyor kombinatsiyalar"
-            title={<>Maison <em className="italic text-gold">looklari</em></>}
-            sub="Kiyov, biznes va ziyofat uchun — stilist yig'gan to'liq obrazlar."
+            eyebrow={t("lookbook.eyebrow")}
+            title={<>{t("lookbook.titleLead")} <em className="italic text-gold">{t("lookbook.titleAccent")}</em></>}
+            sub={t("lookbook.sub")}
           />
         </Reveal>
 
@@ -171,12 +173,12 @@ export function LookBook() {
                   {/* Sarlavha */}
                   <div className="mt-3 flex items-baseline justify-between gap-3 sm:mt-5">
                     <h3 className="font-serif text-lg font-medium text-charcoal sm:text-2xl">
-                      {look.recipe.title}
+                      {t(look.recipe.titleKey)}
                     </h3>
                     <span className="font-serif text-sm italic text-charcoal-300">{look.recipe.numeral}</span>
                   </div>
                   <p className="mt-0.5 font-serif text-[0.82rem] italic text-charcoal-500 sm:mt-1 sm:text-[0.95rem]">
-                    {look.recipe.tagline}
+                    {t(look.recipe.taglineKey)}
                   </p>
 
                   {/* Tarkib — reestr qatorlari */}
@@ -202,14 +204,14 @@ export function LookBook() {
                   <div className="mt-2 stitch-h" />
                   <div className="mt-2.5 flex items-center justify-between gap-3 sm:mt-3">
                     <div>
-                      <div className="text-[0.5rem] uppercase tracking-[0.22em] text-charcoal-400 sm:text-[0.54rem] sm:tracking-[0.24em]">Look jami</div>
+                      <div className="text-[0.5rem] uppercase tracking-[0.22em] text-charcoal-400 sm:text-[0.54rem] sm:tracking-[0.24em]">{t("lookbook.total")}</div>
                       <div className="font-serif text-base font-semibold text-gold sm:text-xl">{formatPrice(look.total)}</div>
                     </div>
                     <Link
                       to={`/product/${main.id}`}
                       className="btn-press tap group px-4 py-2.5 text-[0.54rem] font-semibold uppercase tracking-[0.18em] sm:px-6 sm:py-3 sm:text-[0.6rem] sm:tracking-[0.2em]"
                     >
-                      Lookni yig'ish
+                      {t("lookbook.assemble")}
                       <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" />
                     </Link>
                   </div>

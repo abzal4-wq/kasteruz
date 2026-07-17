@@ -80,7 +80,7 @@ export function Footer() {
               <li><Link to="/delivery" className="transition-colors hover:text-gold">{t("footer.delivery")}</Link></li>
               <li><Link to="/returns" className="transition-colors hover:text-gold">{t("footer.returns")}</Link></li>
               <li><Link to="/size-guide" className="transition-colors hover:text-gold">{t("footer.sizeGuide")}</Link></li>
-              <li><Link to="/about" className="transition-colors hover:text-gold">Maison haqida</Link></li>
+              <li><Link to="/about" className="transition-colors hover:text-gold">{t("footer.aboutMaison")}</Link></li>
             </ul>
           </div>
 

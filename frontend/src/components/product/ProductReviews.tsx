@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Star } from "lucide-react";
 import { useProductReviews, reviewAverage, useSubmitReview } from "@/hooks/useReviews";
 import { useAuthStore } from "@/store/auth";
@@ -34,6 +35,7 @@ function fmtDate(iso: string) {
 }
 
 export function ProductReviews({ productId }: { productId: string }) {
+  const { t } = useTranslation();
   const { data: reviews = [], isLoading } = useProductReviews(productId);
   const customer = useAuthStore((s) => s.customer);
   const submit = useSubmitReview(productId);
@@ -48,7 +50,7 @@ export function ProductReviews({ productId }: { productId: string }) {
 
   function handleSubmit() {
     if (rating < 1) {
-      toast.error("Yulduz tanlang");
+      toast.error(t("reviews.selectStars"));
       return;
     }
     submit.mutate(
@@ -56,11 +58,11 @@ export function ProductReviews({ productId }: { productId: string }) {
       {
         onSuccess: () => {
           haptic("success");
-          toast.success("Sharhingiz uchun rahmat!");
+          toast.success(t("reviews.thanks"));
           setRating(0);
           setComment("");
         },
-        onError: (e) => toast.error(e instanceof Error ? e.message : "Xatolik"),
+        onError: (e) => toast.error(e instanceof Error ? e.message : t("reviews.error")),
       }
     );
   }
@@ -68,12 +70,12 @@ export function ProductReviews({ productId }: { productId: string }) {
   return (
     <section className="mt-10 border-t border-border pt-8">
       <div className="flex items-center justify-between">
-        <h4 className="text-xs font-semibold uppercase tracking-widest">Sharhlar</h4>
+        <h4 className="text-xs font-semibold uppercase tracking-widest">{t("reviews.title")}</h4>
         {count > 0 && (
           <div className="flex items-center gap-2">
             <StarRow value={average} className="h-4 w-4" />
             <span className="text-sm text-charcoal">
-              {average.toFixed(1)} <span className="text-muted-foreground">· {count} ta</span>
+              {average.toFixed(1)} <span className="text-muted-foreground">· {t("reviews.count", { count })}</span>
             </span>
           </div>
         )}
@@ -82,19 +84,19 @@ export function ProductReviews({ productId }: { productId: string }) {
       {/* Sharh qoldirish */}
       {!customer ? (
         <div className="mt-5 rounded-lg bg-black/5 p-4 text-sm text-muted-foreground">
-          Sharh qoldirish uchun{" "}
+          {t("reviews.loginPrompt")}{" "}
           <Link to="/auth" className="font-medium text-gold hover:underline">
-            tizimga kiring
+            {t("reviews.loginLink")}
           </Link>
           .
         </div>
       ) : alreadyReviewed ? (
         <div className="mt-5 rounded-lg border border-gold/25 bg-gold/5 p-4 text-sm text-charcoal">
-          Siz bu mahsulotga sharh qoldirgansiz. Rahmat!
+          {t("reviews.alreadyReviewed")}
         </div>
       ) : (
         <div className="mt-5 rounded-xl border border-border p-4">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-charcoal">Bahoyingiz</p>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-charcoal">{t("reviews.yourRating")}</p>
           <div className="flex items-center gap-1" onMouseLeave={() => setHover(0)}>
             {[1, 2, 3, 4, 5].map((i) => (
               <button
