@@ -9,7 +9,8 @@ export function Footer() {
   const { data: contact } = useStoreContact();
 
   return (
-    <footer className="container-page mt-8 pb-6 sm:mt-14 sm:pb-8 lg:mt-20">
+    /* Mobilda pastki tab-bar to'lov qismini to'sib qo'ymasin — pb-28 */
+    <footer className="container-page mt-8 pb-28 sm:mt-14 lg:mt-20 lg:pb-8">
       <div className="frame-double px-4 py-7 sm:px-10 sm:py-12 lg:px-14 lg:py-16">
         {/* Blanka boshi — gerb + wordmark */}
         <div className="text-center">

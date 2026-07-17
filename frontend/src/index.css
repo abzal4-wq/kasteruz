@@ -894,3 +894,34 @@ html[data-theme="platinum"] .admin-skin {
     bottom: 11rem;
   }
 }
+
+/* ─── Brend sahnasi fon-monogrami (desktopda suzadi, mobilda statik) ─── */
+.brand-ghost {
+  animation: driftY 9s ease-in-out infinite;
+}
+
+/* ═══ MOBIL UNUMDORLIK ═══
+   Telefonlarda backdrop-blur va doimiy bezak animatsiyalari scroll'da
+   kadr tushishiga (jank) sabab bo'ladi — ularni o'chiramiz. */
+@media (max-width: 1023.98px) {
+  .glass,
+  .glass-card,
+  .glass-strong,
+  .glass-nav {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  /* Blur'siz header shaffof qolib ketmasin — quyuqroq fon */
+  .glass-nav,
+  .app-light .glass-nav {
+    background: rgba(247, 242, 231, 0.97);
+  }
+  .app-dark .glass-nav {
+    background: rgba(22, 18, 14, 0.96);
+  }
+  /* Doimiy dekorativ animatsiyalar — mobilda statik */
+  .seal-spin,
+  .brand-ghost {
+    animation: none !important;
+  }
+}

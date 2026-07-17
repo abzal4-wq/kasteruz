@@ -128,12 +128,11 @@ export function BrandCarousel() {
         <span
           key={`ghost-${brand.id}`}
           aria-hidden
-          className="pointer-events-none absolute -right-4 -top-8 z-0 select-none font-serif italic leading-none sm:-right-8 sm:-top-14"
+          className="brand-ghost pointer-events-none absolute -right-4 -top-8 z-0 select-none font-serif italic leading-none sm:-right-8 sm:-top-14"
           style={{
             color: tx,
             opacity: 0.06,
             fontSize: "clamp(13rem, 38vw, 26rem)",
-            animation: "driftY 9s ease-in-out infinite",
           }}
         >
           {(brand.name || "K").charAt(0).toUpperCase()}

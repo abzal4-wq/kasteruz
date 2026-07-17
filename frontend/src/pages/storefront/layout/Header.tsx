@@ -136,6 +136,8 @@ export function Header() {
 
         {/* O'ng: amallar */}
         <div className="flex items-center justify-end gap-0.5 sm:gap-1">
+          {/* Mobil: til tugmasi (desktopda yuqori panelda turadi) */}
+          <LangSwitch className="mr-1 text-charcoal lg:hidden" />
           <button
             onClick={launchSearch}
             aria-label={t("common.search")}
