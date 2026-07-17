@@ -105,7 +105,13 @@ export default function ProductPage() {
     const filtered = selectedColor
       ? product.variants.filter((v) => v.color === selectedColor)
       : product.variants;
-    return filtered;
+    // Rang tanlanmaganda bir o'lcham bir marta ko'rinsin (ko'p rangda takrorlanadi)
+    const seen = new Set<string>();
+    return filtered.filter((v) => {
+      if (seen.has(v.size)) return false;
+      seen.add(v.size);
+      return true;
+    });
   }, [product, selectedColor]);
 
   // Tanlangan variant

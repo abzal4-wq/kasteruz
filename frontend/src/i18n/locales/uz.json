@@ -363,5 +363,22 @@
   },
   "support": {
     "call": "Qo'ng'iroq"
+  },
+  "sizeGuide": {
+    "trigger": "O'lcham yordamchisi",
+    "chartTab": "O'lcham jadvali",
+    "finderTab": "Mening o'lchamim",
+    "chest": "Ko'krak",
+    "waist": "Bel",
+    "length": "Uzunlik",
+    "you": "siz",
+    "allCm": "Barcha o'lchamlar santimetrda.",
+    "finderHint": "Bo'yingiz va vazningizni kiriting — mos o'lchamni taklif qilamiz.",
+    "height": "Bo'y (sm)",
+    "weight": "Vazn (kg)",
+    "recommended": "Tavsiya etilgan o'lcham",
+    "seeChart": "Jadvalda ko'rish",
+    "enterWeight": "Vazningizni kiriting",
+    "disclaimer": "* Taxminiy tavsiya. Aniq o'lcham uchun jadvaldagi santimetrlarga qarang."
   }
 }
