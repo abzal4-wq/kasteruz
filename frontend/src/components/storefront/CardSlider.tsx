@@ -22,9 +22,11 @@ export function CardSlider({
     el.scrollBy({ left: dir * el.clientWidth * 0.85, behavior: "smooth" });
   }
 
-  // Avtomatik o'tish — hover yoki teginishda to'xtaydi, oxiriga yetganda boshiga qaytadi
+  // Avtomatik o'tish — hover yoki teginishda to'xtaydi, oxiriga yetganda boshiga qaytadi.
+  // MOBILDA O'CHIQ: telefonda slider o'zi surilib, kartalarni bosib bo'lmay qolardi.
   useEffect(() => {
     if (!autoPlay) return;
+    if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) return;
     const el = ref.current;
     if (!el) return;
 
@@ -60,7 +62,7 @@ export function CardSlider({
       <div
         ref={ref}
         className={cn(
-          "scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 sm:gap-5",
+          "scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-2 sm:gap-5",
           className
         )}
       >

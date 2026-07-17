@@ -467,6 +467,8 @@ html[data-theme="platinum"] .admin-skin {
   /* iOS bosish effekti */
   .tap {
     @apply transition-transform duration-150 active:scale-95;
+    /* Mobil: double-tap zoom va bosish kechikishini o'chiradi */
+    touch-action: manipulation;
   }
 
   /* Safe-area (iPhone pastki chizig'i) */
@@ -923,5 +925,13 @@ html[data-theme="platinum"] .admin-skin {
   .seal-spin,
   .brand-ghost {
     animation: none !important;
+  }
+
+  /* iOS: 16px dan kichik input fokusda sahifani avtomatik zoom qiladi —
+     mobilda barcha kiritish maydonlari 16px bo'lsin */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
   }
 }
