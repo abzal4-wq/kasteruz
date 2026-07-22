@@ -20,11 +20,13 @@ export async function uploadProductImages(files: File[]): Promise<string[]> {
 
   const urls: string[] = [];
   for (const file of files) {
-    const ext = file.name.split(".").pop() ?? "jpg";
-    const path = `products/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+    // Bucket allaqachon "products" — yo'lga yana "products/" qo'shmaymiz (ilgari
+    // "products/products/..." bo'lib, 400 xato berardi)
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
     const { error } = await supabase.storage
       .from("products")
-      .upload(path, file, { upsert: true, contentType: file.type });
+      .upload(path, file, { upsert: true, contentType: file.type || `image/${ext}` });
     if (error) throw error;
     const { data } = supabase.storage.from("products").getPublicUrl(path);
     urls.push(data.publicUrl);
