@@ -943,4 +943,27 @@ html[data-theme="platinum"] .admin-skin {
   html {
     font-size: 14.5px;
   }
+  /* Marquee (siyoh lenta) mobilda ham to'xtaydi — doimiy repaint = lag */
+  .marquee-track {
+    animation: none !important;
+  }
+}
+
+/* ═══ UNUMDORLIK: harakatni kamaytirish rejimi ═══
+   Foydalanuvchi tizimda "reduce motion" yoqsa — barcha doimiy/bezak
+   animatsiyalarni to'liq o'chiramiz (batareya + eski telefonlar uchun). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .seal-spin,
+  .brand-ghost,
+  .marquee-track {
+    animation: none !important;
+  }
 }

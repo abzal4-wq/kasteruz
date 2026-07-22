@@ -1,8 +1,8 @@
 // Kaster.uz Service Worker — offline qo'llab-quvvatlash
 // HMR (dev) ni buzmaslik uchun ehtiyotkor: faqat GET, navigatsiya va statik fayllar
 
-const CACHE = "kaster-v5";
-const APP_SHELL = ["/", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/favicon.svg"];
+const CACHE = "kaster-v6";
+const APP_SHELL = ["/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/favicon.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -12,12 +12,20 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    const old = keys.filter((k) => k !== CACHE);
+    await Promise.all(old.map((k) => caches.delete(k)));
+    await self.clients.claim();
+    // Yangilanish bo'lsa (eski kesh bor edi) — ochiq sahifalarni majburan
+    // eng so'nggi versiyaga yangilaymiz (kesh "qotib qolish" muammosi hal).
+    if (old.length > 0) {
+      const clients = await self.clients.matchAll({ type: "window" });
+      for (const c of clients) {
+        try { await c.navigate(c.url); } catch { /* e'tiborsiz */ }
+      }
+    }
+  })());
 });
 
 self.addEventListener("fetch", (event) => {

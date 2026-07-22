@@ -17,10 +17,27 @@ export function registerSW() {
     return;
   }
 
+  // Yangi SW nazoratni olganda — sahifani bir marta yangilaymiz (eng so'nggi kod).
+  // Bu "telefonda eski versiya ko'rinadi" muammosini hal qiladi.
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (reloaded) return;
+    reloaded = true;
+    window.location.reload();
+  });
+
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch(() => {
-      /* SW xato — jim o'tkazamiz */
-    });
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then((reg) => {
+        // Har ochilishda yangilanish bor-yo'qligini tekshiramiz
+        reg.update().catch(() => {});
+        // Sahifa faol turганда ham vaqti-vaqti bilan tekshirib turamiz
+        setInterval(() => reg.update().catch(() => {}), 60_000);
+      })
+      .catch(() => {
+        /* SW xato — jim o'tkazamiz */
+      });
   });
 }
 
