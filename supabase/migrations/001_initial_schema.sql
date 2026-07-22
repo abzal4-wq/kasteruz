@@ -721,3 +721,35 @@ alter table store_settings enable row level security;
 create policy "Hamma sozlamalarni o'qiydi" on store_settings for select using (true);
 create policy "Admin sozlamalarni o'zgartiradi" on store_settings for all
   using (is_admin_or_above()) with check (is_admin_or_above());
+
+
+-- ============================================================
+-- STORAGE — rasm bucketlari (mahsulot, banner, logo)
+-- Ommaviy o'qish, admin (staff) yozadi. Idempotent.
+-- ============================================================
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values
+  ('products', 'products', true, 10485760, array['image/png','image/jpeg','image/webp','image/avif']),
+  ('banners',  'banners',  true, 10485760, array['image/png','image/jpeg','image/webp','image/avif']),
+  ('logos',    'logos',    true,  5242880, array['image/png','image/jpeg','image/webp','image/svg+xml'])
+on conflict (id) do update set public = excluded.public, file_size_limit = excluded.file_size_limit;
+
+-- Har bir bucket uchun: ommaviy o'qish + admin (staff) yozish/yangilash/o'chirish
+do $$
+declare b text;
+begin
+  foreach b in array array['products','banners','logos'] loop
+    execute format('drop policy if exists "%1$s_read" on storage.objects', b);
+    execute format('create policy "%1$s_read" on storage.objects for select using (bucket_id = %1$L)', b);
+
+    execute format('drop policy if exists "%1$s_write" on storage.objects', b);
+    execute format('create policy "%1$s_write" on storage.objects for insert with check (bucket_id = %1$L and (select is_staff()))', b);
+
+    execute format('drop policy if exists "%1$s_update" on storage.objects', b);
+    execute format('create policy "%1$s_update" on storage.objects for update using (bucket_id = %1$L and (select is_staff()))', b);
+
+    execute format('drop policy if exists "%1$s_delete" on storage.objects', b);
+    execute format('create policy "%1$s_delete" on storage.objects for delete using (bucket_id = %1$L and (select is_staff()))', b);
+  end loop;
+end $$;
