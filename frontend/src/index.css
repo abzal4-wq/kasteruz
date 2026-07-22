@@ -927,6 +927,25 @@ html[data-theme="platinum"] .admin-skin {
     animation: none !important;
   }
 
+  /* Tailwind `backdrop-blur-*` utility'lari (modal/sheet overlay, ProductCard
+     nishonlari, qidiruv oynasi) — mobilda backdrop-filter butun ekran ortini
+     blur qilib GPU'ni bo'g'adi va ayniqsa modal ochilganda "qotib qolish"ga
+     sabab bo'ladi. Hammasini o'chiramiz — fon baribir yarim-shaffof qoladi,
+     vizual jihatdan deyarli farq yo'q, lekin ancha silliq. */
+  [class*="backdrop-blur"] {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* will-change layer'lari (animatsiya o'chiq bo'lsa ham) keraksiz GPU-xotira
+     band qiladi — mobilda tozalaymiz */
+  .seal-spin,
+  .brand-ghost,
+  .marquee-track,
+  .confetti {
+    will-change: auto !important;
+  }
+
   /* iOS: 16px dan kichik input fokusda sahifani avtomatik zoom qiladi —
      mobilda barcha kiritish maydonlari 16px bo'lsin (bu qatorga tegmaydi,
      chunki px qattiq belgilangan — quyidagi root font-size'dan mustaqil) */

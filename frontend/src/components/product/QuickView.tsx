@@ -88,8 +88,9 @@ export function QuickView() {
       <DialogContent className="max-w-3xl overflow-hidden p-0">
         {product && (
           <div className="grid grid-cols-1 sm:grid-cols-2">
-            {/* Rasm */}
-            <div className="relative aspect-[3/4] bg-white/5">
+            {/* Rasm — mobilda balandligi cheklangan (butun ekranni egallamasin,
+                narx/rang/o'lcham/tugma darhol ko'rinsin), desktopda 3:4 portret */}
+            <div className="relative aspect-auto h-[38vh] w-full overflow-hidden bg-white/5 sm:aspect-[3/4] sm:h-auto">
               {img ? (
                 <img src={img} alt={name} className="h-full w-full object-cover" />
               ) : (
