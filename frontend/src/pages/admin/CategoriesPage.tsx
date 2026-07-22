@@ -82,9 +82,15 @@ function CategoryModal({
       try {
         const [uploaded] = await uploadProductImages([file]);
         imageUrl = uploaded;
-      } catch {
+      } catch (err: any) {
         setSaving(false);
-        alert("Rasm yuklashda xato");
+        const msg = err?.message ?? String(err);
+        // Eng ko'p uchraydigan sabab — bucket yaratilmagan
+        if (/bucket not found/i.test(msg)) {
+          alert("Rasm yuklanmadi: 'products' bucket yaratilmagan.\n\nSupabase SQL Editor'da 009_storage_products_banners.sql ni ishga tushiring.");
+        } else {
+          alert("Rasm yuklashda xato: " + msg);
+        }
         return;
       }
     }
