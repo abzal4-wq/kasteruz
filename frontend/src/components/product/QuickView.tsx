@@ -31,10 +31,16 @@ export function QuickView() {
     () => Array.from(new Map(variants.map((v) => [v.color, v.color_hex])).entries()),
     [variants]
   );
-  const sizes = useMemo(
-    () => variants.filter((v) => !color || v.color === color),
-    [variants, color]
-  );
+  // Rang tanlanmaganda bir o'lcham bir marta ko'rinsin (ko'p rangda takrorlanadi)
+  const sizes = useMemo(() => {
+    const filtered = variants.filter((v) => !color || v.color === color);
+    const seen = new Set<string>();
+    return filtered.filter((v) => {
+      if (seen.has(v.size)) return false;
+      seen.add(v.size);
+      return true;
+    });
+  }, [variants, color]);
   const selected = variants.find((v) => v.size === size && (color ? v.color === color : true));
 
   // Bitta rang bo'lsa avtomatik tanlash
