@@ -1,4 +1,5 @@
 import { Crown, Star } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getTier, getPoints, tierProgress, TIERS } from "@/lib/loyalty";
 import { formatPrice } from "@/lib/utils";
 
@@ -12,10 +13,11 @@ export function LoyaltyCard({
   totalSpent: number;
   totalOrders: number;
 }) {
+  const { t } = useTranslation();
   const tier = getTier(totalSpent);
   const points = getPoints(totalSpent);
   const progress = tierProgress(totalSpent);
-  const nextTier = TIERS.find((t) => t.min === tier.next);
+  const nextTier = TIERS.find((tr) => tr.min === tier.next);
 
   return (
     <div
@@ -33,7 +35,7 @@ export function LoyaltyCard({
             <div className="mt-1 flex items-center gap-1.5">
               <Crown className="h-4 w-4" style={{ color: tier.accent }} />
               <span className="text-lg font-semibold" style={{ color: tier.accent }}>
-                {tier.name}
+                {t(`loyalty.tiers.${tier.id}`)}
               </span>
             </div>
           </div>
@@ -47,12 +49,12 @@ export function LoyaltyCard({
             <div className="flex items-center gap-1.5">
               <Star className="h-4 w-4 fill-current" style={{ color: tier.accent }} />
               <span className="text-2xl font-bold tabular-nums">{points.toLocaleString()}</span>
-              <span className="text-xs opacity-70">ball</span>
+              <span className="text-xs opacity-70">{t("loyalty.points")}</span>
             </div>
-            <p className="mt-0.5 text-[0.65rem] opacity-60">{totalOrders} ta buyurtma</p>
+            <p className="mt-0.5 text-[0.65rem] opacity-60">{totalOrders} {t("loyalty.orders")}</p>
           </div>
           <p className="text-right text-xs opacity-70">
-            Jami xarid
+            {t("loyalty.totalSpent")}
             <br />
             <span className="font-semibold opacity-100">{formatPrice(totalSpent)}</span>
           </p>
@@ -62,8 +64,8 @@ export function LoyaltyCard({
         {tier.next != null && nextTier && (
           <div className="mt-4">
             <div className="flex items-center justify-between text-[0.65rem] opacity-75">
-              <span>{tier.name}</span>
-              <span>{nextTier.name}gacha {formatPrice(tier.next - totalSpent)}</span>
+              <span>{t(`loyalty.tiers.${tier.id}`)}</span>
+              <span>{t("loyalty.until", { tier: t(`loyalty.tiers.${nextTier.id}`), amount: formatPrice(tier.next - totalSpent) })}</span>
             </div>
             <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-black/25">
               <div
@@ -75,7 +77,7 @@ export function LoyaltyCard({
         )}
         {tier.next == null && (
           <p className="mt-4 text-[0.7rem]" style={{ color: tier.accent }}>
-            ✦ Eng yuqori daraja — VIP a'zo
+            ✦ {t("loyalty.topTier")}
           </p>
         )}
       </div>

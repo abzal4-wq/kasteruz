@@ -928,10 +928,19 @@ html[data-theme="platinum"] .admin-skin {
   }
 
   /* iOS: 16px dan kichik input fokusda sahifani avtomatik zoom qiladi —
-     mobilda barcha kiritish maydonlari 16px bo'lsin */
+     mobilda barcha kiritish maydonlari 16px bo'lsin (bu qatorga tegmaydi,
+     chunki px qattiq belgilangan — quyidagi root font-size'dan mustaqil) */
   input,
   select,
   textarea {
     font-size: 16px !important;
+  }
+}
+
+/* Telefonda umumiy zichlik: barcha rem-asosli o'lchamlar (shrift, bo'shliq,
+   tugma) mutanosib ravishda kichrayadi — sayt "og'ir/katta" tuyulmasin */
+@media (max-width: 639.98px) {
+  html {
+    font-size: 14.5px;
   }
 }

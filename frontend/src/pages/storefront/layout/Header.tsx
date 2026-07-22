@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Search, ShoppingBag, User, Menu, Heart } from "lucide-react";
+import { Search, ShoppingBag, User, Menu, Heart, Sun, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { Logo, LogoCrest } from "@/components/brand/Logo";
@@ -18,6 +18,7 @@ import { useAuthStore } from "@/store/auth";
 import { useWishlistStore } from "@/store/wishlist";
 import { useSearchStore } from "@/store/search";
 import { useStoreContact } from "@/hooks/useStoreContact";
+import { useThemeStore } from "@/store/theme";
 import { haptic } from "@/lib/haptics";
 
 export function Header() {
@@ -27,6 +28,7 @@ export function Header() {
   const user = useAuthStore((s) => s.user);
   const openSearch = useSearchStore((s) => s.setOpen);
   const { data: contact } = useStoreContact();
+  const { bgMode, setBgMode } = useThemeStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
@@ -103,6 +105,19 @@ export function Header() {
                   </Link>
                 ))}
               </nav>
+
+              {/* Til va fon rejimi — mobilda header ikonalari sig'may qolgani uchun shu yerda */}
+              <div className="mt-2 flex items-center justify-between border-t border-border px-6 py-4">
+                <LangSwitch className="text-charcoal" />
+                <button
+                  onClick={() => { haptic("select"); setBgMode(bgMode === "dark" ? "light" : "dark"); }}
+                  className="tap flex items-center gap-2 text-sm text-charcoal"
+                  aria-label={t("common.themeToggle")}
+                >
+                  {bgMode === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                  {bgMode === "dark" ? t("common.lightMode") : t("common.darkMode")}
+                </button>
+              </div>
             </SheetContent>
           </Sheet>
 
@@ -134,20 +149,18 @@ export function Header() {
           </Link>
         </div>
 
-        {/* O'ng: amallar */}
-        <div className="flex items-center justify-end gap-0.5 sm:gap-1">
-          {/* Mobil: til tugmasi (desktopda yuqori panelda turadi) */}
-          <LangSwitch className="mr-1 text-charcoal lg:hidden" />
+        {/* O'ng: amallar (mobilda ixcham — til/mavzu tugmasi hamburger menyuda) */}
+        <div className="flex items-center justify-end gap-0 sm:gap-1">
           <button
             onClick={launchSearch}
             aria-label={t("common.search")}
-            className="tap flex h-10 w-10 items-center justify-center text-charcoal transition-colors hover:text-gold"
+            className="tap flex h-9 w-9 items-center justify-center text-charcoal transition-colors hover:text-gold sm:h-10 sm:w-10"
           >
             <Search className="h-[1.1rem] w-[1.1rem]" strokeWidth={1.5} />
           </button>
 
-          {/* Orqa fon rejimi (Qog'oz / Siyoh) */}
-          <BgModeQuickButton />
+          {/* Orqa fon rejimi (Qog'oz / Siyoh) — desktopda ko'rinadi, mobilda hamburger menyuda */}
+          <BgModeQuickButton className="hidden lg:flex" />
 
           <Link
             to="/wishlist"
@@ -173,7 +186,7 @@ export function Header() {
           <Link
             to="/cart"
             aria-label={t("common.cart")}
-            className="tap relative flex h-10 w-10 items-center justify-center text-charcoal transition-colors hover:text-gold"
+            className="tap relative flex h-9 w-9 items-center justify-center text-charcoal transition-colors hover:text-gold sm:h-10 sm:w-10"
           >
             <ShoppingBag className="h-[1.1rem] w-[1.1rem]" strokeWidth={1.5} />
             {totalItems > 0 && (

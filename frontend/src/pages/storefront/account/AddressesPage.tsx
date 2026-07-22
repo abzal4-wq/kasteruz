@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MapPin, Plus, Trash2, Star, Home, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@/store/auth";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
@@ -14,10 +15,20 @@ import type { Address } from "@/types/database";
 
 const REGIONS = ["Toshkent", "Toshkent viloyati", "Samarqand", "Buxoro", "Andijon", "Farg'ona", "Namangan", "Qashqadaryo", "Surxondaryo", "Xorazm", "Navoiy", "Jizzax", "Sirdaryo", "Qoraqalpog'iston"];
 
+// Viloyat nomlari — bazada saqlangan qiymat UZ, ko'rinishi tilga qarab
+const REGION_RU: Record<string, string> = {
+  "Toshkent": "Ташкент", "Toshkent viloyati": "Ташкентская область", "Samarqand": "Самарканд",
+  "Buxoro": "Бухара", "Andijon": "Андижан", "Farg'ona": "Фергана", "Namangan": "Наманган",
+  "Qashqadaryo": "Кашкадарья", "Surxondaryo": "Сурхандарья", "Xorazm": "Хорезм",
+  "Navoiy": "Навои", "Jizzax": "Джизак", "Sirdaryo": "Сырдарья", "Qoraqalpog'iston": "Каракалпакстан",
+};
+
 // Demo manzillar (xotirada)
 const demoAddresses: Address[] = [];
 
 export default function AddressesPage() {
+  const { t, i18n } = useTranslation();
+  const regionLabel = (r: string) => (i18n.language?.startsWith("ru") ? REGION_RU[r] ?? r : r);
   const qc = useQueryClient();
   const { user, customer } = useAuthStore();
   const [adding, setAdding] = useState(false);
@@ -57,13 +68,13 @@ export default function AddressesPage() {
       });
       qc.invalidateQueries({ queryKey: ["my-addresses"] });
       reset();
-      toast.success("Manzil qo'shildi", { subtitle: "Demo rejimda" });
+      toast.success(t("addressesPage.added"), { subtitle: t("profilePage.demoMode") });
       return;
     }
 
     const cid = await getCustomerId();
     if (!cid) {
-      toast.error("Avval profilni to'ldiring");
+      toast.error(t("addressesPage.fillProfileFirst"));
       return;
     }
     const { error } = await supabase.from("addresses").insert({
@@ -71,10 +82,10 @@ export default function AddressesPage() {
       address_line: form.address_line, landmark: form.landmark || null,
       is_default: (addresses?.length ?? 0) === 0,
     });
-    if (error) { toast.error("Xatolik", { subtitle: error.message }); return; }
+    if (error) { toast.error(t("common.error"), { subtitle: error.message }); return; }
     qc.invalidateQueries({ queryKey: ["my-addresses"] });
     reset();
-    toast.success("Manzil qo'shildi");
+    toast.success(t("addressesPage.added"));
   }
 
   async function makeDefault(addr: Address) {
@@ -99,7 +110,7 @@ export default function AddressesPage() {
     }
     await supabase.from("addresses").delete().eq("id", addr.id);
     qc.invalidateQueries({ queryKey: ["my-addresses"] });
-    toast.success("Manzil o'chirildi");
+    toast.success(t("addressesPage.removed"));
   }
 
   function reset() {
@@ -110,13 +121,13 @@ export default function AddressesPage() {
   return (
     <div>
       <SubPageHeader
-        title="Manzillarim"
+        title={t("account.addresses")}
         right={
           !adding ? (
             <button
               onClick={() => { haptic("light"); setAdding(true); }}
               className="tap flex h-9 w-9 items-center justify-center rounded-full bg-gold text-white"
-              aria-label="Qo'shish"
+              aria-label={t("common.add")}
             >
               <Plus className="h-5 w-5" />
             </button>
@@ -128,20 +139,20 @@ export default function AddressesPage() {
       {adding && (
         <div className="glass-card mb-5 animate-[scale-in_0.2s_ease-out] space-y-3 rounded-ios p-5">
           <div className="flex items-center justify-between">
-            <p className="font-medium text-charcoal">Yangi manzil</p>
-            <button onClick={reset} className="tap text-charcoal-300"><X className="h-4 w-4" /></button>
+            <p className="font-medium text-charcoal">{t("addressesPage.newAddress")}</p>
+            <button onClick={reset} className="tap text-charcoal-300" aria-label={t("common.close")}><X className="h-4 w-4" /></button>
           </div>
           <select
             className="input-kaster"
             value={form.region}
             onChange={(e) => setForm({ ...form, region: e.target.value })}
           >
-            {REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
+            {REGIONS.map((r) => <option key={r} value={r}>{regionLabel(r)}</option>)}
           </select>
-          <input className="input-kaster" placeholder="Tuman (masalan: Chilonzor)" value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} />
-          <input className="input-kaster" placeholder="Ko'cha, uy, kvartira *" value={form.address_line} onChange={(e) => setForm({ ...form, address_line: e.target.value })} />
-          <input className="input-kaster" placeholder="Mo'ljal (ixtiyoriy)" value={form.landmark} onChange={(e) => setForm({ ...form, landmark: e.target.value })} />
-          <Button onClick={saveAddress} disabled={!form.address_line.trim()} className="w-full">Saqlash</Button>
+          <input className="input-kaster" placeholder={t("addressesPage.districtPlaceholder")} value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} />
+          <input className="input-kaster" placeholder={t("addressesPage.addressPlaceholder")} value={form.address_line} onChange={(e) => setForm({ ...form, address_line: e.target.value })} />
+          <input className="input-kaster" placeholder={t("addressesPage.landmarkPlaceholder")} value={form.landmark} onChange={(e) => setForm({ ...form, landmark: e.target.value })} />
+          <Button onClick={saveAddress} disabled={!form.address_line.trim()} className="w-full">{t("common.save")}</Button>
         </div>
       )}
 
@@ -160,23 +171,23 @@ export default function AddressesPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <p className="font-medium text-charcoal">{addr.region}{addr.district ? `, ${addr.district}` : ""}</p>
+                    <p className="font-medium text-charcoal">{regionLabel(addr.region)}{addr.district ? `, ${addr.district}` : ""}</p>
                     {addr.is_default && (
-                      <span className="rounded-full bg-gold/20 px-2 py-0.5 text-[0.6rem] font-semibold text-gold">Asosiy</span>
+                      <span className="rounded-full bg-gold/20 px-2 py-0.5 text-[0.6rem] font-semibold text-gold">{t("addressesPage.defaultBadge")}</span>
                     )}
                   </div>
                   <p className="mt-0.5 text-sm text-charcoal-400">{addr.address_line}</p>
-                  {addr.landmark && <p className="text-xs text-charcoal-400">Mo'ljal: {addr.landmark}</p>}
+                  {addr.landmark && <p className="text-xs text-charcoal-400">{t("addressesPage.landmarkLabel")}: {addr.landmark}</p>}
                 </div>
               </div>
               <div className="mt-3 flex gap-2 border-t border-white/10 pt-3">
                 {!addr.is_default && (
                   <button onClick={() => makeDefault(addr)} className="tap flex items-center gap-1.5 text-xs text-charcoal-400 hover:text-gold">
-                    <Star className="h-3.5 w-3.5" /> Asosiy qilish
+                    <Star className="h-3.5 w-3.5" /> {t("addressesPage.makeDefault")}
                   </button>
                 )}
                 <button onClick={() => remove(addr)} className="tap ml-auto flex items-center gap-1.5 text-xs text-charcoal-400 hover:text-rose-400">
-                  <Trash2 className="h-3.5 w-3.5" /> O'chirish
+                  <Trash2 className="h-3.5 w-3.5" /> {t("common.delete")}
                 </button>
               </div>
             </li>
@@ -185,9 +196,9 @@ export default function AddressesPage() {
       ) : !adding ? (
         <div className="glass-card rounded-ios-lg py-16 text-center">
           <MapPin className="mx-auto h-12 w-12 text-charcoal-300" strokeWidth={1} />
-          <p className="mt-4 text-charcoal-400">Saqlangan manzil yo'q</p>
+          <p className="mt-4 text-charcoal-400">{t("addressesPage.empty")}</p>
           <Button onClick={() => setAdding(true)} className="mt-6">
-            <Plus className="mr-2 h-4 w-4" /> Manzil qo'shish
+            <Plus className="mr-2 h-4 w-4" /> {t("addressesPage.add")}
           </Button>
         </div>
       ) : null}

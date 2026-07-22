@@ -31,10 +31,10 @@ const buttonVariants = cva(
           "glass text-charcoal hover:bg-white/10",
       },
       size: {
-        default: "h-11 px-6 py-2",
+        default: "h-10 px-5 py-2 sm:h-11 sm:px-6",
         sm: "h-9 px-4 text-xs",
-        lg: "h-14 px-8 text-base",
-        icon: "h-10 w-10",
+        lg: "h-12 px-6 text-sm sm:h-14 sm:px-8 sm:text-base",
+        icon: "h-9 w-9 sm:h-10 sm:w-10",
       },
     },
     defaultVariants: {

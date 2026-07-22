@@ -12,7 +12,7 @@ import { BgModeToggle } from "@/components/brand/BgModeToggle";
 import { Group, Row, SubPageHeader } from "./AccountUI";
 
 export default function SettingsPage() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { haptics, notifications, reduceMotion, setHaptics, setNotifications, setReduceMotion } = useSettingsStore();
   const { canInstall, installed, promptInstall } = useInstallPrompt();
 
@@ -29,10 +29,10 @@ export default function SettingsPage() {
       const perm = await Notification.requestPermission();
       if (perm === "granted") {
         setNotifications(true);
-        new Notification("Kaster.uz", { body: "Bildirishnomalar yoqildi ✓", icon: "/icon-192.png" });
-        toast.success("Bildirishnomalar yoqildi");
+        new Notification("Kaster.uz", { body: t("settingsPage.notifOnBody"), icon: "/icon-192.png" });
+        toast.success(t("settingsPage.notifOn"));
       } else {
-        toast.error("Ruxsat berilmadi");
+        toast.error(t("settingsPage.notifDenied"));
       }
     } else {
       setNotifications(v);
@@ -41,28 +41,28 @@ export default function SettingsPage() {
 
   function clearCache() {
     haptic("warning");
-    if (confirm("Vaqtinchalik ma'lumotlar (cache) tozalansinmi?")) {
+    if (confirm(t("settingsPage.clearCacheConfirm"))) {
       try {
         if ("caches" in window) caches.keys().then((ks) => ks.forEach((k) => caches.delete(k)));
         localStorage.removeItem("kaster-recently-viewed");
-        toast.success("Cache tozalandi");
+        toast.success(t("settingsPage.cacheCleared"));
       } catch {
-        toast.error("Xatolik");
+        toast.error(t("common.error"));
       }
     }
   }
 
   return (
     <div className="space-y-5">
-      <SubPageHeader title="Sozlamalar" />
+      <SubPageHeader title={t("account.settings")} />
 
       {/* ── Til & ko'rinish ── */}
       <div>
-        <p className="mb-2 px-1 text-xs font-medium uppercase tracking-wider text-charcoal-400">Ko'rinish</p>
+        <p className="mb-2 px-1 text-xs font-medium uppercase tracking-wider text-charcoal-400">{t("settingsPage.appearance")}</p>
         <Group>
           <Row
             icon={<Languages className="h-5 w-5" />}
-            label="Til"
+            label={t("settingsPage.language")}
             value={lang === "uz" ? "O'zbekcha" : "Русский"}
             onClick={toggleLang}
           />
@@ -71,70 +71,70 @@ export default function SettingsPage() {
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gold/15 text-gold">
                 <Moon className="h-5 w-5" />
               </div>
-              <span className="text-sm font-medium text-charcoal">Orqa fon rejimi</span>
+              <span className="text-sm font-medium text-charcoal">{t("common.themeToggle")}</span>
             </div>
             <BgModeToggle />
           </div>
           <Row
             icon={<Sparkles className="h-5 w-5" />}
-            label="Animatsiyalarni kamaytirish"
-            right={<Switch checked={reduceMotion} onChange={setReduceMotion} aria-label="Animatsiya" />}
+            label={t("settingsPage.reduceMotion")}
+            right={<Switch checked={reduceMotion} onChange={setReduceMotion} aria-label={t("settingsPage.reduceMotion")} />}
           />
         </Group>
       </div>
 
       {/* ── Bildirishnoma & his ── */}
       <div>
-        <p className="mb-2 px-1 text-xs font-medium uppercase tracking-wider text-charcoal-400">Bildirishnoma & His</p>
+        <p className="mb-2 px-1 text-xs font-medium uppercase tracking-wider text-charcoal-400">{t("settingsPage.notifSection")}</p>
         <Group>
           <Row
             icon={<Bell className="h-5 w-5" />}
-            label="Bildirishnomalar"
-            right={<Switch checked={notifications} onChange={requestNotif} aria-label="Bildirishnoma" />}
+            label={t("settingsPage.notifications")}
+            right={<Switch checked={notifications} onChange={requestNotif} aria-label={t("settingsPage.notifications")} />}
           />
           <Row
             icon={<Vibrate className="h-5 w-5" />}
-            label="Tebranish (haptic)"
-            right={<Switch checked={haptics} onChange={setHaptics} aria-label="Tebranish" />}
+            label={t("settingsPage.haptics")}
+            right={<Switch checked={haptics} onChange={setHaptics} aria-label={t("settingsPage.haptics")} />}
           />
         </Group>
       </div>
 
       {/* ── Ilova ── */}
       <div>
-        <p className="mb-2 px-1 text-xs font-medium uppercase tracking-wider text-charcoal-400">Ilova</p>
+        <p className="mb-2 px-1 text-xs font-medium uppercase tracking-wider text-charcoal-400">{t("settingsPage.app")}</p>
         <Group>
           {!installed && (
             <Row
               icon={<Download className="h-5 w-5" />}
-              label={canInstall ? "Ilovani o'rnatish" : "Telefonga o'rnatish"}
+              label={canInstall ? t("settingsPage.installApp") : t("settingsPage.installToPhone")}
               onClick={async () => {
                 const res = await promptInstall();
                 if (res === "unavailable") {
-                  toast.info("Brauzer menyusidan 'Bosh ekranga qo'shish'ni tanlang");
+                  toast.info(t("settingsPage.installManual"));
                 }
               }}
             />
           )}
           {installed && (
-            <Row icon={<Smartphone className="h-5 w-5" />} label="Ilova o'rnatilgan" value="✓" />
+            <Row icon={<Smartphone className="h-5 w-5" />} label={t("settingsPage.appInstalled")} value="✓" />
           )}
-          <Row icon={<Trash2 className="h-5 w-5" />} label="Cache tozalash" onClick={clearCache} />
+          <Row icon={<Trash2 className="h-5 w-5" />} label={t("settingsPage.clearCache")} onClick={clearCache} />
         </Group>
       </div>
 
       {/* ── Ma'lumot ── */}
       <div>
-        <p className="mb-2 px-1 text-xs font-medium uppercase tracking-wider text-charcoal-400">Ma'lumot</p>
+        <p className="mb-2 px-1 text-xs font-medium uppercase tracking-wider text-charcoal-400">{t("settingsPage.infoSection")}</p>
         <Group>
-          <Row icon={<Info className="h-5 w-5" />} label="Biz haqimizda" to="/about" />
-          <Row icon={<Shield className="h-5 w-5" />} label="Maxfiylik siyosati" to="/privacy" />
-          <Row icon={<FileText className="h-5 w-5" />} label="Foydalanish shartlari" to="/terms" />
+          <Row icon={<Info className="h-5 w-5" />} label={t("nav.about")} to="/about" />
+          <Row icon={<Shield className="h-5 w-5" />} label={t("info.privacy.title")} to="/privacy" />
+          <Row icon={<FileText className="h-5 w-5" />} label={t("info.terms.title")} to="/terms" />
         </Group>
       </div>
 
       <p className="pt-1 text-center text-[0.65rem] text-charcoal-400">
-        Kaster.uz · Versiya 1.0.0 · Toshkent
+        Kaster.uz · {t("settingsPage.version")} 1.0.0 · Toshkent
       </p>
     </div>
   );

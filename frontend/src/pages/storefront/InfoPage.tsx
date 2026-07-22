@@ -1,5 +1,6 @@
 import { useLocation, Link } from "react-router-dom";
 import { Truck, RotateCcw, Ruler, Shield, FileText, ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Reveal } from "@/components/app/Reveal";
 
 type Topic = "delivery" | "returns" | "size-guide" | "privacy" | "terms";
@@ -13,12 +14,12 @@ const SIZES = [
   { size: "56", chest: "112", waist: "100", height: "180–186" },
 ];
 
-const META: Record<Topic, { icon: typeof Truck; title: string; eyebrow: string }> = {
-  delivery:     { icon: Truck,     title: "Yetkazib berish", eyebrow: "Xizmat" },
-  returns:      { icon: RotateCcw, title: "Qaytarish va almashtirish", eyebrow: "Xizmat" },
-  "size-guide": { icon: Ruler,     title: "O'lcham jadvali", eyebrow: "Yordam" },
-  privacy:      { icon: Shield,    title: "Maxfiylik siyosati", eyebrow: "Huquqiy" },
-  terms:        { icon: FileText,  title: "Foydalanish shartlari", eyebrow: "Huquqiy" },
+const ICONS: Record<Topic, typeof Truck> = {
+  delivery: Truck,
+  returns: RotateCcw,
+  "size-guide": Ruler,
+  privacy: Shield,
+  terms: FileText,
 };
 
 function topicFromPath(path: string): Topic {
@@ -30,28 +31,28 @@ function topicFromPath(path: string): Topic {
 }
 
 export default function InfoPage() {
+  const { t } = useTranslation();
   const { pathname } = useLocation();
   const topic = topicFromPath(pathname);
-  const meta = META[topic];
-  const Icon = meta.icon;
+  const Icon = ICONS[topic];
 
   return (
     <div className="container-page max-w-3xl py-12">
       <Reveal>
         <Link to="/" className="tap mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-gold">
-          <ArrowLeft className="h-4 w-4" /> Bosh sahifa
+          <ArrowLeft className="h-4 w-4" /> {t("nav.home")}
         </Link>
 
         <div className="mb-10 border-b border-foreground/10 pb-8">
           <p className="flex items-center gap-2.5 text-[0.7rem] uppercase tracking-[0.3em] text-gold">
             <span className="h-px w-8 bg-gold" />
-            {meta.eyebrow}
+            {t(`info.${topic}.eyebrow`)}
           </p>
           <div className="mt-4 flex items-center gap-4">
             <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gold/15 text-gold">
               <Icon className="h-6 w-6" />
             </span>
-            <h1 className="font-serif text-4xl font-light text-charcoal lg:text-5xl">{meta.title}</h1>
+            <h1 className="font-serif text-4xl font-light text-charcoal lg:text-5xl">{t(`info.${topic}.title`)}</h1>
           </div>
         </div>
       </Reveal>
@@ -60,35 +61,35 @@ export default function InfoPage() {
         <div className="glass-card rounded-[0.6rem] p-7 lg:p-9">
           {topic === "delivery" && (
             <div className="space-y-5 text-sm leading-relaxed text-muted-foreground">
-              <Para title="Toshkent bo'ylab">1–2 ish kuni ichida kuryer orqali yetkazib beramiz. Narxi — 25 000 so'm.</Para>
-              <Para title="Bepul yetkazish">500 000 so'mdan yuqori xaridlarда yetkazib berish butunlay bepul.</Para>
-              <Para title="Viloyatlarga">BTS yoki Pochta orqali 2–5 ish kunida. Narx hudud va og'irlikka qarab hisoblanadi.</Para>
-              <Para title="Olib ketish">Abu Sahiy bozoridagi do'konimizdan o'zingiz bepul olib ketishingiz mumkin.</Para>
+              <Para title={t("info.delivery.p1Title")}>{t("info.delivery.p1")}</Para>
+              <Para title={t("info.delivery.p2Title")}>{t("info.delivery.p2")}</Para>
+              <Para title={t("info.delivery.p3Title")}>{t("info.delivery.p3")}</Para>
+              <Para title={t("info.delivery.p4Title")}>{t("info.delivery.p4")}</Para>
             </div>
           )}
 
           {topic === "returns" && (
             <div className="space-y-5 text-sm leading-relaxed text-muted-foreground">
-              <Para title="7 kun muddat">Mahsulotni qabul qilganingizdan so'ng 7 kun ichida qaytarishingiz mumkin.</Para>
-              <Para title="Shartlar">Mahsulot asl holatда, kiyilmagan, etiketkasi va o'rami bilan bo'lishi kerak.</Para>
-              <Para title="Almashtirish">O'lcham yoki rang mos kelmasa — bepul almashtiramiz (mavjud bo'lsa).</Para>
-              <Para title="Pulni qaytarish">Qaytarish tasdiqlangach, 3–5 ish kunida to'liq summa qaytariladi.</Para>
+              <Para title={t("info.returns.p1Title")}>{t("info.returns.p1")}</Para>
+              <Para title={t("info.returns.p2Title")}>{t("info.returns.p2")}</Para>
+              <Para title={t("info.returns.p3Title")}>{t("info.returns.p3")}</Para>
+              <Para title={t("info.returns.p4Title")}>{t("info.returns.p4")}</Para>
             </div>
           )}
 
           {topic === "size-guide" && (
             <div>
               <p className="mb-5 text-sm leading-relaxed text-muted-foreground">
-                O'lchamlar santimetrда. Aniq mos kelishi uchun ko'krak va bel aylanasini o'lchang.
+                {t("info.sizeGuide.intro")}
               </p>
               <div className="overflow-hidden rounded-2xl border border-foreground/10">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="bg-foreground/5 text-left text-xs uppercase tracking-wider text-muted-foreground">
-                      <th className="px-4 py-3 font-semibold">O'lcham</th>
-                      <th className="px-4 py-3 font-semibold">Ko'krak</th>
-                      <th className="px-4 py-3 font-semibold">Bel</th>
-                      <th className="px-4 py-3 font-semibold">Bo'y</th>
+                      <th className="px-4 py-3 font-semibold">{t("filters.size")}</th>
+                      <th className="px-4 py-3 font-semibold">{t("sizeGuide.chest")}</th>
+                      <th className="px-4 py-3 font-semibold">{t("sizeGuide.waist")}</th>
+                      <th className="px-4 py-3 font-semibold">{t("info.sizeGuide.height")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-foreground/8">
@@ -108,17 +109,17 @@ export default function InfoPage() {
 
           {topic === "privacy" && (
             <div className="space-y-5 text-sm leading-relaxed text-muted-foreground">
-              <Para title="Ma'lumotlar himoyasi">Shaxsiy ma'lumotlaringiz (ism, telefon, manzil) faqat buyurtmani yetkazish uchun ishlatiladi.</Para>
-              <Para title="Uchinchi tomon">Ma'lumotlaringiz uchinchi shaxslarga sotilmaydi yoki berilmaydi.</Para>
-              <Para title="Xavfsizlik">Barcha ma'lumotlar shifrlangan holда saqlanadi va himoyalangan.</Para>
+              <Para title={t("info.privacy.p1Title")}>{t("info.privacy.p1")}</Para>
+              <Para title={t("info.privacy.p2Title")}>{t("info.privacy.p2")}</Para>
+              <Para title={t("info.privacy.p3Title")}>{t("info.privacy.p3")}</Para>
             </div>
           )}
 
           {topic === "terms" && (
             <div className="space-y-5 text-sm leading-relaxed text-muted-foreground">
-              <Para title="Umumiy">Saytdan foydalanish orqali ushbu shartlarga rozilik bildirasiz.</Para>
-              <Para title="Buyurtma">Buyurtma berilgach, operatorlarimiz tasdiqlash uchun bog'lanadi.</Para>
-              <Para title="Narxlar">Narxlar oldindan ogohlantirishsiz o'zgartirilishi mumkin.</Para>
+              <Para title={t("info.terms.p1Title")}>{t("info.terms.p1")}</Para>
+              <Para title={t("info.terms.p2Title")}>{t("info.terms.p2")}</Para>
+              <Para title={t("info.terms.p3Title")}>{t("info.terms.p3")}</Para>
             </div>
           )}
         </div>

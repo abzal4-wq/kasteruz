@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { Clock } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useRecentlyViewedStore } from "@/store/recentlyViewed";
 import { formatPrice } from "@/lib/utils";
 
 // Yaqinda ko'rilgan mahsulotlar — gorizontal sirpanma lenta
 export function RecentlyViewed({ excludeId }: { excludeId?: string }) {
+  const { t } = useTranslation();
   const items = useRecentlyViewedStore((s) => s.items).filter((p) => p.id !== excludeId);
 
   if (items.length < 2) return null;
@@ -13,7 +15,7 @@ export function RecentlyViewed({ excludeId }: { excludeId?: string }) {
     <section className="container-page py-8">
       <div className="mb-4 flex items-center gap-2">
         <Clock className="h-4 w-4 text-gold" />
-        <h2 className="font-serif text-xl font-light text-charcoal">Yaqinda ko'rilgan</h2>
+        <h2 className="font-serif text-xl font-light text-charcoal">{t("product.recentlyViewed")}</h2>
       </div>
 
       <div className="scrollbar-hide -mx-4 flex gap-3 overflow-x-auto px-4 pb-2">

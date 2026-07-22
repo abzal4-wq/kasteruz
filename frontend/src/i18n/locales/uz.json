@@ -8,6 +8,9 @@
     "logout": "Chiqish",
     "register": "Ro'yxatdan o'tish",
     "close": "Yopish",
+    "themeToggle": "Fon rejimi",
+    "lightMode": "Yorug' rejim",
+    "darkMode": "Qorong'i rejim",
     "save": "Saqlash",
     "cancel": "Bekor qilish",
     "delete": "O'chirish",
@@ -79,7 +82,8 @@
     "linkCopied": "Havola nusxalandi",
     "share": "Ulashish",
     "warranty": "Kafolat",
-    "warrantyValue": "Original · Kaster"
+    "warrantyValue": "Original · Kaster",
+    "recentlyViewed": "Yaqinda ko'rilgan"
   },
   "cart": {
     "title": "Savat",
@@ -100,7 +104,10 @@
     "promoError": "Noto'g'ri promo-kod",
     "freeDelivery": "Bepul yetkazib berish",
     "freeDeliveryLeft": "Bepul yetkazib berish uchun {{amount}} qo'shing",
-    "viewCart": "Savatcha"
+    "viewCart": "Savatcha",
+    "thankYou": "Haridingiz uchun rahmat!",
+    "orderReceived": "Buyurtmangiz qabul qilindi. Tez orada operatorlarimiz siz bilan bog'lanadi. Holatini quyida — xaridlar tarixida kuzatishingiz mumkin.",
+    "freeDeliveryEarned": "Bepul yetkazib berishga ega bo'ldingiz!"
   },
   "checkout": {
     "title": "Buyurtma rasmiylashtirish",
@@ -380,5 +387,207 @@
     "seeChart": "Jadvalda ko'rish",
     "enterWeight": "Vazningizni kiriting",
     "disclaimer": "* Taxminiy tavsiya. Aniq o'lcham uchun jadvaldagi santimetrlarga qarang."
+  },
+  "info": {
+    "delivery": {
+      "eyebrow": "Xizmat",
+      "title": "Yetkazib berish",
+      "p1Title": "Toshkent bo'ylab",
+      "p1": "1–2 ish kuni ichida kuryer orqali yetkazib beramiz. Narxi — 25 000 so'm.",
+      "p2Title": "Bepul yetkazish",
+      "p2": "500 000 so'mdan yuqori xaridlarda yetkazib berish butunlay bepul.",
+      "p3Title": "Viloyatlarga",
+      "p3": "BTS yoki Pochta orqali 2–5 ish kunida. Narx hudud va og'irlikka qarab hisoblanadi.",
+      "p4Title": "Olib ketish",
+      "p4": "Abu Sahiy bozoridagi do'konimizdan o'zingiz bepul olib ketishingiz mumkin."
+    },
+    "returns": {
+      "eyebrow": "Xizmat",
+      "title": "Qaytarish va almashtirish",
+      "p1Title": "7 kun muddat",
+      "p1": "Mahsulotni qabul qilganingizdan so'ng 7 kun ichida qaytarishingiz mumkin.",
+      "p2Title": "Shartlar",
+      "p2": "Mahsulot asl holatda, kiyilmagan, etiketkasi va o'rami bilan bo'lishi kerak.",
+      "p3Title": "Almashtirish",
+      "p3": "O'lcham yoki rang mos kelmasa — bepul almashtiramiz (mavjud bo'lsa).",
+      "p4Title": "Pulni qaytarish",
+      "p4": "Qaytarish tasdiqlangach, 3–5 ish kunida to'liq summa qaytariladi."
+    },
+    "sizeGuide": {
+      "eyebrow": "Yordam",
+      "title": "O'lcham jadvali",
+      "intro": "O'lchamlar santimetrda. Aniq mos kelishi uchun ko'krak va bel aylanasini o'lchang.",
+      "height": "Bo'y"
+    },
+    "privacy": {
+      "eyebrow": "Huquqiy",
+      "title": "Maxfiylik siyosati",
+      "p1Title": "Ma'lumotlar himoyasi",
+      "p1": "Shaxsiy ma'lumotlaringiz (ism, telefon, manzil) faqat buyurtmani yetkazish uchun ishlatiladi.",
+      "p2Title": "Uchinchi tomon",
+      "p2": "Ma'lumotlaringiz uchinchi shaxslarga sotilmaydi yoki berilmaydi.",
+      "p3Title": "Xavfsizlik",
+      "p3": "Barcha ma'lumotlar shifrlangan holda saqlanadi va himoyalangan."
+    },
+    "terms": {
+      "eyebrow": "Huquqiy",
+      "title": "Foydalanish shartlari",
+      "p1Title": "Umumiy",
+      "p1": "Saytdan foydalanish orqali ushbu shartlarga rozilik bildirasiz.",
+      "p2Title": "Buyurtma",
+      "p2": "Buyurtma berilgach, operatorlarimiz tasdiqlash uchun bog'lanadi.",
+      "p3Title": "Narxlar",
+      "p3": "Narxlar oldindan ogohlantirishsiz o'zgartirilishi mumkin."
+    }
+  },
+  "wishlistPage": {
+    "empty": "Sevimlilar bo'sh",
+    "emptyHint": "Yoqqan mahsulotlaringizni yurak belgisini bosib shu yerga saqlang.",
+    "goToCatalog": "Katalogga o'tish"
+  },
+  "about": {
+    "eyebrow": "Biz haqimizda",
+    "heroTitle": "Kaster — erkaklar uchun nafis kiyim",
+    "heroText": "Toshkent, Abu Sahiy bozorida boshlangan kichik do'kondan bugungi zamonaviy onlayn brendgacha — biz erkak go'zalligini qadrlaymiz.",
+    "stats": {
+      "experience": {
+        "value": "10+",
+        "label": "Yillik tajriba"
+      },
+      "clients": {
+        "value": "5000+",
+        "label": "Mamnun mijoz"
+      },
+      "models": {
+        "value": "200+",
+        "label": "Model va fason"
+      },
+      "sizes": {
+        "value": "46–56",
+        "label": "O'lcham oralig'i"
+      }
+    },
+    "perks": {
+      "quality": {
+        "title": "Sifat kafolati",
+        "desc": "Tanlangan matolar va puxta tikuv"
+      },
+      "delivery": {
+        "title": "Tez yetkazish",
+        "desc": "Toshkent bo'ylab 24 soat ichida"
+      },
+      "fit": {
+        "title": "O'lcham mosligi",
+        "desc": "46–56 oraliq, slim va regular"
+      }
+    },
+    "workshopAlt": "Kaster atelye",
+    "storyEyebrow": "Bizning hikoya",
+    "storyTitle": "An'ana va zamonaviylik uyg'unligi",
+    "storyP1": "Kaster.uz — bu Toshkentning yuragida, Abu Sahiy bozorida tug'ilgan brend. Yillar davomida biz minglab erkaklarni eng muhim kunlarida — to'ylar, biznes uchrashuvlar va tantanalarda kiyintirdik.",
+    "storyP2": "Bizning maqsadimiz oddiy: har bir erkak o'zini ishonchli va nafis his qilsin. Shuning uchun biz mato tanlashdan tortib oxirgi tikuvgacha har bir detalga e'tibor beramiz.",
+    "storyP3": "Bugun biz an'anaviy ustalik bilan zamonaviy onlayn xizmatni birlashtirib, butun O'zbekiston bo'ylab xizmat ko'rsatmoqdamiz.",
+    "viewCollection": "Kolleksiyani ko'rish",
+    "whyUsEyebrow": "Nega aynan biz",
+    "valuesTitle": "Bizning qadriyatlarimiz",
+    "values": {
+      "craft": {
+        "title": "Puxta tikuv",
+        "text": "Har bir kostyum tajribali ustalar tomonidan, tanlangan matolardan nafis tikiladi."
+      },
+      "quality": {
+        "title": "Sifat kafolati",
+        "text": "Faqat sinovdan o'tgan, bardoshli matolar. Har bir mahsulotga ishonch bilan kafolat beramiz."
+      },
+      "delivery": {
+        "title": "Tez yetkazish",
+        "text": "Toshkent bo'ylab 24 soat ichida, viloyatlarga BTS orqali xavfsiz yetkazib berish."
+      }
+    },
+    "findUs": "Bizni toping",
+    "address": "Manzil",
+    "hours": "Ish vaqti",
+    "mapTitle": "Kaster manzili"
+  },
+  "profilePage": {
+    "saved": "Profil saqlandi",
+    "demoMode": "Demo rejimda",
+    "enterName": "Ismingizni kiriting",
+    "namePlaceholder": "Ismingiz Familiyangiz",
+    "birthday": "Tug'ilgan kun",
+    "saving": "Saqlanmoqda..."
+  },
+  "addressesPage": {
+    "added": "Manzil qo'shildi",
+    "removed": "Manzil o'chirildi",
+    "fillProfileFirst": "Avval profilni to'ldiring",
+    "newAddress": "Yangi manzil",
+    "districtPlaceholder": "Tuman (masalan: Chilonzor)",
+    "addressPlaceholder": "Ko'cha, uy, kvartira *",
+    "landmarkPlaceholder": "Mo'ljal (ixtiyoriy)",
+    "defaultBadge": "Asosiy",
+    "landmarkLabel": "Mo'ljal",
+    "makeDefault": "Asosiy qilish",
+    "empty": "Saqlangan manzil yo'q",
+    "add": "Manzil qo'shish"
+  },
+  "settingsPage": {
+    "appearance": "Ko'rinish",
+    "language": "Til",
+    "reduceMotion": "Animatsiyalarni kamaytirish",
+    "notifSection": "Bildirishnoma va His",
+    "notifications": "Bildirishnomalar",
+    "haptics": "Tebranish (haptic)",
+    "app": "Ilova",
+    "installApp": "Ilovani o'rnatish",
+    "installToPhone": "Telefonga o'rnatish",
+    "installManual": "Brauzer menyusidan 'Bosh ekranga qo'shish'ni tanlang",
+    "appInstalled": "Ilova o'rnatilgan",
+    "clearCache": "Cache tozalash",
+    "clearCacheConfirm": "Vaqtinchalik ma'lumotlar (cache) tozalansinmi?",
+    "cacheCleared": "Cache tozalandi",
+    "notifOnBody": "Bildirishnomalar yoqildi ✓",
+    "notifOn": "Bildirishnomalar yoqildi",
+    "notifDenied": "Ruxsat berilmadi",
+    "infoSection": "Ma'lumot",
+    "version": "Versiya"
+  },
+  "purchaseHistory": {
+    "title": "Xaridlar tarixi"
+  },
+  "loyalty": {
+    "tiers": {
+      "bronze": "Bronza",
+      "silver": "Kumush",
+      "gold": "Oltin",
+      "platinum": "Platina"
+    },
+    "points": "ball",
+    "orders": "ta buyurtma",
+    "totalSpent": "Jami xarid",
+    "until": "{{tier}}gacha {{amount}}",
+    "topTier": "Eng yuqori daraja — VIP a'zo"
+  },
+  "authScreen": {
+    "nameRequired": "Ismingizni kiriting",
+    "emailRequired": "Email kiriting",
+    "passwordMin": "Parol kamida 6 ta belgi",
+    "welcomeBack": "Xush kelibsiz!",
+    "accountCreated": "Hisob yaratildi!",
+    "googleNotConfigured": "Google bilan kirish hozircha sozlanmagan",
+    "googleError": "Google bilan kirishda xatolik",
+    "connecting": "Ulanmoqda…",
+    "continueWithGoogle": "Google bilan davom etish",
+    "or": "yoki",
+    "phoneOptional": "Telefon (ixtiyoriy)",
+    "password": "Parol",
+    "togglePassword": "Parolni ko'rsatish",
+    "noAccount": "Hisobingiz yo'qmi? ",
+    "hasAccount": "Hisobingiz bormi? ",
+    "termsPrefix": "Davom etish orqali siz",
+    "termsLink": "Foydalanish shartlari",
+    "and": "va",
+    "privacyLink": "Maxfiylik siyosati",
+    "termsSuffix": "ga rozilik bildirasiz"
   }
 }

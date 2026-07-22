@@ -285,7 +285,7 @@ export default function HomePage() {
               <h1 className="mt-4 font-serif font-medium leading-[0.98] text-charcoal sm:mt-6">
                 <span className="block overflow-hidden">
                   <span
-                    className="inline-block text-[12vw] sm:text-[12vw] lg:text-[6.8rem] xl:text-[7.6rem]"
+                    className="inline-block text-[9.5vw] sm:text-[8vw] lg:text-[6.8rem] xl:text-[7.6rem]"
                     style={{ animation: "kineticUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.3s both" }}
                   >
                     {heroTitle1}

@@ -44,14 +44,13 @@ export default function CartPage() {
                 <PartyPopper className="h-10 w-10 text-gold" />
               </div>
               <h1 className="mt-6 font-serif text-3xl font-light text-charcoal">
-                Haridingiz uchun rahmat! 🎉
+                {t("cart.thankYou")} 🎉
               </h1>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Buyurtmangiz qabul qilindi. Tez orada operatorlarimiz siz bilan bog'lanadi.
-                Holatini quyida — xaridlar tarixida kuzatishingiz mumkin.
+                {t("cart.orderReceived")}
               </p>
               <Button asChild size="lg" className="mt-7 w-full">
-                <Link to="/catalog">Xaridни davom ettirish</Link>
+                <Link to="/catalog">{t("cart.continueShopping")}</Link>
               </Button>
             </div>
           </Reveal>
@@ -135,6 +134,7 @@ export default function CartPage() {
                         onClick={() =>
                           updateQuantity(item.variantId, item.quantity - 1)
                         }
+                        aria-label={t("product.decrease")}
                         className="tap flex h-9 w-9 items-center justify-center rounded-full hover:bg-black/5"
                       >
                         <Minus className="h-3 w-3" />
@@ -146,6 +146,7 @@ export default function CartPage() {
                         onClick={() =>
                           updateQuantity(item.variantId, item.quantity + 1)
                         }
+                        aria-label={t("product.increase")}
                         className="tap flex h-9 w-9 items-center justify-center rounded-full hover:bg-black/5"
                       >
                         <Plus className="h-3 w-3" />
@@ -189,7 +190,7 @@ export default function CartPage() {
               </div>
             ) : (
               <div className="mt-4 flex items-center gap-2 rounded-2xl bg-emerald-500/12 p-3.5 text-xs font-medium text-emerald-600">
-                <Check className="h-4 w-4" /> Bepul yetkazib berishga ega bo'ldingiz!
+                <Check className="h-4 w-4" /> {t("cart.freeDeliveryEarned")}
               </div>
             )}
 

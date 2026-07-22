@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { User as UserIcon, Phone, Mail, Calendar, Check } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@/store/auth";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { SubPageHeader } from "./AccountUI";
 import type { Customer } from "@/types/database";
 
 export default function ProfilePage() {
+  const { t } = useTranslation();
   const { user, customer, setCustomer } = useAuthStore();
   const [form, setForm] = useState({ full_name: "", phone: "", email: "", birthday: "" });
   const [saving, setSaving] = useState(false);
@@ -44,7 +46,7 @@ export default function ProfilePage() {
     if (IS_DEMO) {
       setTimeout(() => {
         setSaving(false);
-        toast.success("Profil saqlandi", { subtitle: "Demo rejimda" });
+        toast.success(t("profilePage.saved"), { subtitle: t("profilePage.demoMode") });
       }, 500);
       return;
     }
@@ -68,11 +70,11 @@ export default function ProfilePage() {
 
     setSaving(false);
     if (res.error) {
-      toast.error("Xatolik", { subtitle: res.error.message });
+      toast.error(t("common.error"), { subtitle: res.error.message });
       return;
     }
     setCustomer(res.data as Customer);
-    toast.success("Profil saqlandi");
+    toast.success(t("profilePage.saved"));
   }
 
   const initials = (form.full_name || user?.email || "K").slice(0, 1).toUpperCase();
@@ -80,7 +82,7 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <div>
-        <SubPageHeader title="Profil ma'lumotlari" />
+        <SubPageHeader title={t("account.profileInfo")} />
         <Skeleton className="h-64 w-full rounded-ios" />
       </div>
     );
@@ -88,28 +90,28 @@ export default function ProfilePage() {
 
   return (
     <div>
-      <SubPageHeader title="Profil ma'lumotlari" />
+      <SubPageHeader title={t("account.profileInfo")} />
 
       {/* Avatar */}
       <div className="mb-6 flex flex-col items-center">
         <div className="relative flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-gold to-gold-600 text-4xl font-semibold text-white shadow-float">
           {initials}
         </div>
-        <p className="mt-3 font-serif text-lg text-charcoal">{form.full_name || "Ismingizni kiriting"}</p>
+        <p className="mt-3 font-serif text-lg text-charcoal">{form.full_name || t("profilePage.enterName")}</p>
         {form.phone && <p className="text-xs text-charcoal-400">{form.phone}</p>}
       </div>
 
       {/* Forma */}
       <div className="glass-card space-y-4 rounded-ios p-5">
-        <Field icon={<UserIcon className="h-4 w-4" />} label="To'liq ism">
+        <Field icon={<UserIcon className="h-4 w-4" />} label={t("checkout.fullName")}>
           <input
             className="input-kaster"
-            placeholder="Ismingiz Familiyangiz"
+            placeholder={t("profilePage.namePlaceholder")}
             value={form.full_name}
             onChange={(e) => setForm({ ...form, full_name: e.target.value })}
           />
         </Field>
-        <Field icon={<Phone className="h-4 w-4" />} label="Telefon">
+        <Field icon={<Phone className="h-4 w-4" />} label={t("checkout.phone")}>
           <input
             className="input-kaster"
             placeholder="+998 90 123 45 67"
@@ -127,7 +129,7 @@ export default function ProfilePage() {
             onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
         </Field>
-        <Field icon={<Calendar className="h-4 w-4" />} label="Tug'ilgan kun">
+        <Field icon={<Calendar className="h-4 w-4" />} label={t("profilePage.birthday")}>
           <input
             type="date"
             className="input-kaster"
@@ -138,7 +140,7 @@ export default function ProfilePage() {
       </div>
 
       <Button onClick={save} disabled={saving || !form.phone} size="lg" className="mt-6 w-full">
-        {saving ? "Saqlanmoqda..." : (<><Check className="mr-2 h-4 w-4" /> Saqlash</>)}
+        {saving ? t("profilePage.saving") : (<><Check className="mr-2 h-4 w-4" /> {t("common.save")}</>)}
       </Button>
     </div>
   );

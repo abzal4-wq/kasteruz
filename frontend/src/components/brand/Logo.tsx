@@ -42,12 +42,12 @@ export function Logo({ className, variant = "dark" }: LogoProps) {
 
   return (
     <Link to="/" className={cn("group inline-flex items-center gap-2.5 leading-none sm:gap-3", className)}>
-      <LogoCrest size={26} className="flex-shrink-0 text-gold transition-transform duration-500 group-hover:scale-110 sm:h-[34px] sm:w-[34px]" />
+      <LogoCrest size={22} className="flex-shrink-0 text-gold transition-transform duration-500 group-hover:scale-110 sm:h-[34px] sm:w-[34px]" />
       <span className="flex flex-col">
-        <span className={cn("font-display text-[0.9rem] font-semibold uppercase tracking-[0.24em] sm:text-lg sm:tracking-[0.3em]", color)}>
+        <span className={cn("font-display text-[0.78rem] font-semibold uppercase tracking-[0.14em] sm:text-lg sm:tracking-[0.3em]", color)}>
           Kaster
         </span>
-        <span className="mt-1 whitespace-nowrap text-[0.44rem] uppercase tracking-[0.26em] text-gold sm:text-[0.48rem] sm:tracking-[0.3em]">
+        <span className="mt-0.5 whitespace-nowrap text-[0.38rem] uppercase tracking-[0.16em] text-gold sm:mt-1 sm:text-[0.48rem] sm:tracking-[0.3em]">
           Sartoria · Toshkent
         </span>
       </span>

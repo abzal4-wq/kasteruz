@@ -2,52 +2,29 @@ import { Link } from "react-router-dom";
 import {
   MapPin, Phone, Clock, Award, Scissors, Truck, ArrowRight, Instagram, Send,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useStoreContact, telHref } from "@/hooks/useStoreContact";
 
-const STATS = [
-  { value: "10+", label: "Yillik tajriba" },
-  { value: "5000+", label: "Mamnun mijoz" },
-  { value: "200+", label: "Model va fason" },
-  { value: "46–56", label: "O'lcham oralig'i" },
-];
-
-const VALUES = [
-  {
-    icon: Scissors,
-    title: "Puxta tikuv",
-    text: "Har bir kostyum tajribali ustalar tomonidan, tanlangan matolardan nafis tikiladi.",
-  },
-  {
-    icon: Award,
-    title: "Sifat kafolati",
-    text: "Faqat sinovdan o'tgan, bardoshli matolar. Har bir mahsulotga ishonch bilan kafolat beramiz.",
-  },
-  {
-    icon: Truck,
-    title: "Tez yetkazish",
-    text: "Toshkent bo'ylab 24 soat ichida, viloyatlarga BTS orqali xavfsiz yetkazib berish.",
-  },
-];
+const STAT_KEYS = ["experience", "clients", "models", "sizes"] as const;
+const VALUE_ICONS = [Scissors, Award, Truck];
 
 export default function AboutPage() {
+  const { t } = useTranslation();
   const { data: contact } = useStoreContact();
   return (
     <div>
       {/* ─── Hero ─────────────────────────────────────────── */}
       <section className="relative mx-3 mt-3 overflow-hidden rounded-ios-lg bg-[#0f0b07] shadow-float lg:mx-4">
-        <div className="pointer-events-none absolute -left-16 -top-10 h-64 w-64 rounded-full bg-gold/40 blur-3xl animate-float-slow" />
-        <div className="pointer-events-none absolute -right-10 bottom-0 h-72 w-72 rounded-full bg-gold/25 blur-3xl animate-float-slow [animation-delay:3s]" />
         <div className="container-page relative z-10 py-20 text-center">
           <p className="font-sans text-xs uppercase tracking-[0.3em] text-gold">
-            Biz haqimizda
+            {t("about.eyebrow")}
           </p>
           <h1 className="mx-auto mt-5 max-w-2xl font-serif text-4xl font-light leading-tight text-cream md:text-6xl">
-            Kaster — erkaklar uchun nafis kiyim
+            {t("about.heroTitle")}
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-base text-cream/70">
-            Toshkent, Abu Sahiy bozorida boshlangan kichik do'kondan bugungi
-            zamonaviy onlayn brendgacha — biz erkak go'zalligini qadrlaymiz.
+            {t("about.heroText")}
           </p>
         </div>
       </section>
@@ -55,28 +32,24 @@ export default function AboutPage() {
       {/* ─── Statistika ───────────────────────────────────── */}
       <section className="container-page py-12">
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {STATS.map((s) => (
-            <div key={s.label} className="glass-card rounded-ios p-6 text-center">
-              <p className="font-serif text-3xl font-medium text-gold">{s.value}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{s.label}</p>
+          {STAT_KEYS.map((k) => (
+            <div key={k} className="glass-card rounded-ios p-6 text-center">
+              <p className="font-serif text-3xl font-medium text-gold">{t(`about.stats.${k}.value`)}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{t(`about.stats.${k}.label`)}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ─── Afzalliklar (bosh sahifadan ko'chirilgan) ────── */}
+      {/* ─── Afzalliklar ──────────────────────────────────── */}
       <section className="container-page py-4">
         <div className="glass-card grid grid-cols-1 gap-8 rounded-ios-lg p-10 text-center md:grid-cols-3">
-          {[
-            { title: "Sifat kafolati", desc: "Tanlangan matolar va puxta tikuv" },
-            { title: "Tez yetkazish", desc: "Toshkent bo'ylab 24 soat ichida" },
-            { title: "O'lcham mosligi", desc: "46–56 oraliq, slim va regular" },
-          ].map((item) => (
-            <div key={item.title}>
+          {["quality", "delivery", "fit"].map((k) => (
+            <div key={k}>
               <h3 className="font-serif text-lg font-medium text-charcoal">
-                {item.title}
+                {t(`about.perks.${k}.title`)}
               </h3>
-              <p className="mt-2 text-sm text-muted-foreground">{item.desc}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{t(`about.perks.${k}.desc`)}</p>
             </div>
           ))}
         </div>
@@ -88,36 +61,25 @@ export default function AboutPage() {
           <div className="overflow-hidden rounded-ios-lg shadow-glass">
             <img
               src="https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=900&q=80&auto=format&fit=crop"
-              alt="Kaster atelye"
+              alt={t("about.workshopAlt")}
               className="h-full w-full object-cover"
             />
           </div>
           <div>
             <p className="font-sans text-xs uppercase tracking-widest text-gold">
-              Bizning hikoya
+              {t("about.storyEyebrow")}
             </p>
             <h2 className="mt-3 font-serif text-3xl font-light text-charcoal">
-              An'ana va zamonaviylik uyg'unligi
+              {t("about.storyTitle")}
             </h2>
             <div className="mt-5 space-y-4 text-sm leading-relaxed text-muted-foreground">
-              <p>
-                Kaster.uz — bu Toshkentning yuragida, Abu Sahiy bozorida tug'ilgan
-                brend. Yillar davomida biz minglab erkaklarni eng muhim kunlarida —
-                to'ylar, biznes uchrashuvlar va tantanalarda kiyintirdik.
-              </p>
-              <p>
-                Bizning maqsadimiz oddiy: har bir erkak o'zini ishonchli va nafis his
-                qilsin. Shuning uchun biz mato tanlashdan tortib oxirgi tikuvgacha
-                har bir detalga e'tibor beramiz.
-              </p>
-              <p>
-                Bugun biz an'anaviy ustalik bilan zamonaviy onlayn xizmatni
-                birlashtirib, butun O'zbekiston bo'ylab xizmat ko'rsatmoqdamiz.
-              </p>
+              <p>{t("about.storyP1")}</p>
+              <p>{t("about.storyP2")}</p>
+              <p>{t("about.storyP3")}</p>
             </div>
             <Button asChild className="mt-7">
               <Link to="/catalog">
-                Kolleksiyani ko'rish
+                {t("about.viewCollection")}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -129,26 +91,29 @@ export default function AboutPage() {
       <section className="container-page py-12">
         <div className="mb-8 text-center">
           <p className="font-sans text-xs uppercase tracking-widest text-gold">
-            Nega aynan biz
+            {t("about.whyUsEyebrow")}
           </p>
           <h2 className="mt-2 font-serif text-3xl font-light text-charcoal">
-            Bizning qadriyatlarimiz
+            {t("about.valuesTitle")}
           </h2>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {VALUES.map((v) => (
-            <div key={v.title} className="glass-card rounded-ios p-7 text-center">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gold/15">
-                <v.icon className="h-6 w-6 text-gold" />
+          {["craft", "quality", "delivery"].map((k, i) => {
+            const Icon = VALUE_ICONS[i];
+            return (
+              <div key={k} className="glass-card rounded-ios p-7 text-center">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gold/15">
+                  <Icon className="h-6 w-6 text-gold" />
+                </div>
+                <h3 className="mt-4 font-serif text-lg font-medium text-charcoal">
+                  {t(`about.values.${k}.title`)}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {t(`about.values.${k}.text`)}
+                </p>
               </div>
-              <h3 className="mt-4 font-serif text-lg font-medium text-charcoal">
-                {v.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {v.text}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
@@ -158,7 +123,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2">
             <div className="p-8 lg:p-10">
               <h2 className="font-serif text-2xl font-light text-charcoal">
-                Bizni toping
+                {t("about.findUs")}
               </h2>
               <ul className="mt-6 space-y-5 text-sm">
                 <li className="flex items-start gap-3">
@@ -166,7 +131,7 @@ export default function AboutPage() {
                     <MapPin className="h-5 w-5 text-gold" />
                   </span>
                   <div>
-                    <p className="font-medium text-charcoal">Manzil</p>
+                    <p className="font-medium text-charcoal">{t("about.address")}</p>
                     <p className="text-muted-foreground">
                       {contact?.address ?? "Toshkent, Abu Sahiy bozori"}
                     </p>
@@ -177,7 +142,7 @@ export default function AboutPage() {
                     <Phone className="h-5 w-5 text-gold" />
                   </span>
                   <div>
-                    <p className="font-medium text-charcoal">Telefon</p>
+                    <p className="font-medium text-charcoal">{t("checkout.phone")}</p>
                     <a href={telHref(contact?.phone ?? "")} className="text-muted-foreground hover:text-gold">
                       {contact?.phone ?? "+998 90 123 45 67"}
                     </a>
@@ -188,7 +153,7 @@ export default function AboutPage() {
                     <Clock className="h-5 w-5 text-gold" />
                   </span>
                   <div>
-                    <p className="font-medium text-charcoal">Ish vaqti</p>
+                    <p className="font-medium text-charcoal">{t("about.hours")}</p>
                     <p className="text-muted-foreground">{contact?.hours ?? "Har kuni 9:00 – 20:00"}</p>
                   </div>
                 </li>
@@ -222,7 +187,7 @@ export default function AboutPage() {
 
             <div className="min-h-[280px] bg-white/5">
               <iframe
-                title="Kaster manzili"
+                title={t("about.mapTitle")}
                 src="https://www.openstreetmap.org/export/embed.html?bbox=69.2,41.29,69.26,41.33&layer=mapnik"
                 className="h-full min-h-[280px] w-full border-0"
                 loading="lazy"

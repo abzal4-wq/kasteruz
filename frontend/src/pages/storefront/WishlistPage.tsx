@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { Heart } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { IS_DEMO } from "@/lib/demo-data";
@@ -24,6 +25,7 @@ const PRODUCT_SELECT = `
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export default function WishlistPage() {
+  const { t } = useTranslation();
   const ids = useWishlistStore((s) => s.ids);
   const prune = useWishlistStore((s) => s.prune);
 
@@ -62,13 +64,13 @@ export default function WishlistPage() {
       <div className="container-page flex min-h-[55vh] flex-col items-center justify-center py-20 text-center">
         <Heart className="h-16 w-16 text-charcoal-300" strokeWidth={1} />
         <h1 className="mt-6 font-serif text-2xl font-light text-charcoal">
-          Sevimlilar bo'sh
+          {t("wishlistPage.empty")}
         </h1>
         <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-          Yoqqan mahsulotlaringizni yurak belgisini bosib shu yerga saqlang.
+          {t("wishlistPage.emptyHint")}
         </p>
         <Button asChild className="mt-8">
-          <Link to="/catalog">Katalogga o'tish</Link>
+          <Link to="/catalog">{t("wishlistPage.goToCatalog")}</Link>
         </Button>
       </div>
     );
@@ -81,10 +83,10 @@ export default function WishlistPage() {
         <Heart className="h-6 w-6 fill-rose-500 text-rose-500" />
         <div>
           <h1 className="font-serif text-3xl font-light text-charcoal md:text-4xl">
-            Sevimlilar
+            {t("account.wishlist")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {ids.length} ta mahsulot
+            {ids.length} {t("common.pieces")}
           </p>
         </div>
       </div>

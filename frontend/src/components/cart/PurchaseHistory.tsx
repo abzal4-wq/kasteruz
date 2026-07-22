@@ -45,7 +45,7 @@ export function PurchaseHistory() {
     <div className="mx-auto mt-16 w-full max-w-2xl">
       <div className="mb-6 flex items-center gap-2.5">
         <Clock className="h-5 w-5 text-gold" />
-        <h2 className="font-serif text-2xl font-light text-charcoal">Xaridlar tarixi</h2>
+        <h2 className="font-serif text-2xl font-light text-charcoal">{t("purchaseHistory.title")}</h2>
       </div>
 
       {isLoading ? (

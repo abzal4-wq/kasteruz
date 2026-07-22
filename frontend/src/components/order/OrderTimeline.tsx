@@ -1,14 +1,15 @@
 import { Check, Package, ShoppingBag, Truck, Home, XCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { OrderStatus } from "@/types/database";
 import { cn } from "@/lib/utils";
 
-// Buyurtma bosqichlari (oddiy yo'l)
-const STEPS: { status: OrderStatus; label: string; icon: typeof Check }[] = [
-  { status: "new", label: "Qabul qilindi", icon: ShoppingBag },
-  { status: "confirmed", label: "Tasdiqlandi", icon: Check },
-  { status: "packed", label: "Tayyorlandi", icon: Package },
-  { status: "shipped", label: "Yo'lda", icon: Truck },
-  { status: "delivered", label: "Yetkazildi", icon: Home },
+// Buyurtma bosqichlari (oddiy yo'l) — yorliqlar orderStatus.* dan olinadi
+const STEPS: { status: OrderStatus; icon: typeof Check }[] = [
+  { status: "new", icon: ShoppingBag },
+  { status: "confirmed", icon: Check },
+  { status: "packed", icon: Package },
+  { status: "shipped", icon: Truck },
+  { status: "delivered", icon: Home },
 ];
 
 const ORDER_INDEX: Record<OrderStatus, number> = {
@@ -17,6 +18,7 @@ const ORDER_INDEX: Record<OrderStatus, number> = {
 };
 
 export function OrderTimeline({ status }: { status: OrderStatus }) {
+  const { t } = useTranslation();
   const current = ORDER_INDEX[status];
   const cancelled = current === -1;
 
@@ -25,7 +27,7 @@ export function OrderTimeline({ status }: { status: OrderStatus }) {
       <div className="flex items-center gap-3 rounded-xl bg-rose-500/10 px-4 py-3">
         <XCircle className="h-5 w-5 flex-shrink-0 text-rose-400" />
         <p className="text-sm font-medium text-rose-300">
-          {status === "cancelled" ? "Buyurtma bekor qilindi" : status === "returned" ? "Qaytarildi" : "Pul qaytarildi"}
+          {t(`orderStatus.${status}`)}
         </p>
       </div>
     );
@@ -68,7 +70,7 @@ export function OrderTimeline({ status }: { status: OrderStatus }) {
                 i <= current ? "text-charcoal" : "text-charcoal-400"
               )}
             >
-              {step.label}
+              {t(`orderStatus.${step.status}`)}
             </span>
           </div>
         );
