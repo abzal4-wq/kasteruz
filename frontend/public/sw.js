@@ -1,81 +1,46 @@
-// Kaster.uz Service Worker — offline qo'llab-quvvatlash
-// HMR (dev) ni buzmaslik uchun ehtiyotkor: faqat GET, navigatsiya va statik fayllar
+// Kaster.uz — SERVICE WORKER O'CHIRISH (kill-switch)
+// PWA keshi "telefonda eski versiya qotib qoladi" muammosini bir necha bor
+// keltirib chiqardi. Shuning uchun SW butunlay o'chiriladi: bu skript eski
+// keshlarni tozalaydi, o'zini ro'yxatdan chiqaradi va ochiq sahifalarni
+// eng so'nggi versiyaga qayta yuklaydi. Bundan keyin sayt to'g'ridan-to'g'ri
+// tarmoqdan (Vercel CDN) ishlaydi — har doim eng yangi.
 
-const CACHE = "kaster-v6";
-const APP_SHELL = ["/manifest.webmanifest", "/icon-192.png", "/icon-512.png", "/favicon.svg"];
-
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(APP_SHELL)).catch(() => {})
-  );
+self.addEventListener("install", () => {
   self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil((async () => {
-    const keys = await caches.keys();
-    const old = keys.filter((k) => k !== CACHE);
-    await Promise.all(old.map((k) => caches.delete(k)));
-    await self.clients.claim();
-    // Yangilanish bo'lsa (eski kesh bor edi) — ochiq sahifalarni majburan
-    // eng so'nggi versiyaga yangilaymiz (kesh "qotib qolish" muammosi hal).
-    if (old.length > 0) {
-      const clients = await self.clients.matchAll({ type: "window" });
-      for (const c of clients) {
-        try { await c.navigate(c.url); } catch { /* e'tiborsiz */ }
+  event.waitUntil(
+    (async () => {
+      // 1) Barcha eski keshlarni o'chiramiz
+      try {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((k) => caches.delete(k)));
+      } catch {
+        /* e'tiborsiz */
       }
-    }
-  })());
+      // 2) O'zimizni ro'yxatdan chiqaramiz (endi SW yo'q)
+      try {
+        await self.registration.unregister();
+      } catch {
+        /* e'tiborsiz */
+      }
+      // 3) Ochiq oynalarni eng so'nggi versiyaga yangilaymiz
+      try {
+        const clients = await self.clients.matchAll({ type: "window" });
+        for (const c of clients) {
+          try {
+            await c.navigate(c.url);
+          } catch {
+            /* e'tiborsiz */
+          }
+        }
+      } catch {
+        /* e'tiborsiz */
+      }
+    })()
+  );
 });
 
-self.addEventListener("fetch", (event) => {
-  const { request } = event;
-  const url = new URL(request.url);
-
-  // Faqat GET va shu origin
-  if (request.method !== "GET" || url.origin !== self.location.origin) return;
-
-  // Vite dev / HMR / manba modullarini tegmaymiz
-  if (
-    url.pathname.startsWith("/@") ||
-    url.pathname.startsWith("/src/") ||
-    url.pathname.startsWith("/node_modules/") ||
-    url.search.includes("import") ||
-    url.search.includes("t=") ||
-    url.pathname.includes("hot-update")
-  ) {
-    return;
-  }
-
-  // Navigatsiya (sahifa) — network-first, offline'da cache fallback
-  if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put("/", copy)).catch(() => {});
-          return res;
-        })
-        .catch(() => caches.match("/").then((r) => r || caches.match(request)))
-    );
-    return;
-  }
-
-  // Statik (rasm, ikonka, manifest) — cache-first
-  if (
-    /\.(png|jpg|jpeg|webp|svg|gif|ico|woff2?|ttf)$/.test(url.pathname) ||
-    url.pathname.endsWith(".webmanifest")
-  ) {
-    event.respondWith(
-      caches.match(request).then(
-        (cached) =>
-          cached ||
-          fetch(request).then((res) => {
-            const copy = res.clone();
-            caches.open(CACHE).then((c) => c.put(request, copy)).catch(() => {});
-            return res;
-          }).catch(() => cached)
-      )
-    );
-  }
-});
+// Fetch hodisasini ushlamaymiz — hamma so'rov to'g'ridan-to'g'ri tarmoqqa
+// (hech narsa keshlanmaydi).
